@@ -1,18 +1,41 @@
-import { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { Button, Card, SegmentProgress } from '../../shared/design/components';
+import { useQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../auth/AuthProvider';
 import { useShellProfile } from '../../app/shellContext';
+import { listMeasurements, listPrograms, listWorkoutSessions } from '../../data/supabase/profileDataRepository';
+import { profileKey } from '../../data/queryKeys';
+import { supabaseClient } from '../../data/supabase/client';
+import { Button, Card } from '../../shared/design/components';
 
 export function DashboardPreview() {
-  const { profileId = 'demo-a' } = useParams();
-  const { profileId: activeProfileId, setProfileId } = useShellProfile();
-  useEffect(() => { if (profileId !== activeProfileId) setProfileId(profileId); }, [activeProfileId, profileId, setProfileId]);
-  const title = profileId === 'demo-b' ? 'سلام، ورزشکار ب' : 'سلام، ورزشکار الف';
+  const { userId } = useAuth();
+  const { activeProfile } = useShellProfile();
+  const scope = activeProfile && userId ? { userId, householdId: activeProfile.householdId, profileId: activeProfile.id } : null;
+  const baseKey = scope ? profileKey(scope.userId, scope.householdId, scope.profileId) : ['gymrez', 'no-profile'];
+  const enabled = Boolean(scope && supabaseClient);
+  const programs = useQuery({ queryKey: [...baseKey, 'programs'], queryFn: () => listPrograms(supabaseClient!, scope!), enabled });
+  const workouts = useQuery({ queryKey: [...baseKey, 'workout-sessions'], queryFn: () => listWorkoutSessions(supabaseClient!, scope!), enabled });
+  const measurements = useQuery({ queryKey: [...baseKey, 'measurements'], queryFn: () => listMeasurements(supabaseClient!, scope!), enabled });
+  const activeProgram = programs.data?.find(item => item.status === 'active');
+  const recentWorkout = workouts.data?.[0];
+  const recentMeasurement = measurements.data?.[0];
 
   return <section className="pace-dashboard" aria-labelledby="dashboard-title">
-    <div className="pace-dashboard__intro"><p className="eyebrow">پیش‌نمایش نمایشی</p><h1 id="dashboard-title">{title}<span aria-hidden="true"> //</span></h1><p>نمونهٔ برنامه و سابقه — داده‌ای ثبت یا ذخیره نمی‌شود.</p></div>
-    <Card className="pace-dashboard__progress" title="پیشرفت ماهانه"><p>۸ از ۱۲ جلسهٔ برنامه‌ریزی‌شده</p><SegmentProgress value={8} max={12} label="پیشرفت نمونهٔ ماهانه" /></Card>
-    <Card className="pace-dashboard__workout" title="تمرین امروز"><div className="pace-media-placeholder" role="img" aria-label="جای تصویر حرکت؛ دارایی نهایی در مرحلهٔ گرافیک اضافه می‌شود." /><h2>پایین‌تنه</h2><p>۳ حرکت · حدود ۷۵ دقیقه</p><Button type="button" disabled>شروع تمرین</Button><p className="pace-demo-note">ثبت تمرین در مرحله‌های بعد فعال می‌شود.</p></Card>
-    <div className="pace-dashboard__links"><Card title="برنامهٔ این هفته"><p>برنامهٔ نمونه · ۳ جلسه</p><Link to="/programs">دیدن برنامه‌ها</Link></Card><Card title="ادامهٔ مسیر"><p>صفحه‌های تمرین، سابقه و پروفایل مرحله‌به‌مرحله تکمیل می‌شوند.</p><Link to="/progress">دیدن پیشرفت</Link></Card></div>
+    <div className="pace-dashboard__intro"><p className="eyebrow">GYMREZ / PACE</p><h1 id="dashboard-title">سلام، {activeProfile?.displayName}<span aria-hidden="true"> //</span></h1><p>اطلاعات این صفحه از workspace مجاز همین پروفایل خوانده می‌شود.</p></div>
+    {[programs, workouts, measurements].some(query => query.isPending) && <p role="status">در حال دریافت اطلاعات پروفایل…</p>}
+    {[programs, workouts, measurements].some(query => query.isError) && <p role="alert">بخشی از اطلاعات این پروفایل بارگذاری نشد.</p>}
+    <Card className="pace-dashboard__progress" title="برنامه فعال">
+      {activeProgram ? <><p>{activeProgram.title}</p><p>{activeProgram.starts_on ?? 'بدون تاریخ شروع'} تا {activeProgram.ends_on ?? 'بدون تاریخ پایان'}</p></> : <p>برای این پروفایل برنامه فعالی ثبت نشده است.</p>}
+      <Link to="/programs">دیدن برنامه‌ها</Link>
+    </Card>
+    <Card className="pace-dashboard__workout" title="آخرین جلسه">
+      {recentWorkout ? <><h2>{recentWorkout.title_snapshot}</h2><p>{recentWorkout.started_at} · {recentWorkout.status}</p></> : <p>برای این پروفایل جلسه تمرینی ثبت نشده است.</p>}
+      <Button type="button" disabled>شروع تمرین در مرحله بعد فعال می‌شود</Button>
+      <Link to="/workout">تاریخچه جلسه‌ها</Link>
+    </Card>
+    <div className="pace-dashboard__links">
+      <Card title="آخرین اندازه بدن"><p>{recentMeasurement?.weight_kg == null ? 'اندازه‌ای ثبت نشده است.' : recentMeasurement.weight_kg + ' کیلوگرم'}</p><Link to="/progress">دیدن سابقه</Link></Card>
+      <Card title="پروفایل فعال"><p>{activeProfile?.displayName}</p><Link to="/profile">دیدن پروفایل</Link></Card>
+    </div>
   </section>;
 }
