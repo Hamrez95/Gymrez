@@ -1,0 +1,60 @@
+/*
+ * Measured from the dark PACE panels in docs/mockups/pace/00..02.
+ * The mockups contain gradients, texture and compression; values below are
+ * stable representative samples, not a claim that every rendered pixel is flat.
+ * Font family and light-surface tokens remain provisional pending source assets.
+ */
+:root {
+  color-scheme: dark;
+
+  --pace-bg: #031320;
+  --pace-surface: #081a28;
+  --pace-surface-raised: #0b1e2d;
+  --pace-border: #536879;
+  --pace-border-subtle: #243847;
+  --pace-text: #f4f6f8;
+  --pace-text-muted: #aebbc6;
+  --pace-accent: #2555e0;
+  --pace-accent-hover: #3264f0;
+  --pace-accent-soft: #87a5ff;
+  --pace-on-accent: #ffffff;
+  --pace-danger: #ff7474;
+  --pace-focus: #a4bcff;
+
+  --pace-font-family: Tahoma, Arial, sans-serif;
+  --pace-text-xs: 0.75rem;
+  --pace-text-sm: 0.875rem;
+  --pace-text-md: 1rem;
+  --pace-text-lg: 1.25rem;
+  --pace-text-xl: 1.75rem;
+
+  --pace-space-1: 0.25rem;
+  --pace-space-2: 0.5rem;
+  --pace-space-3: 0.75rem;
+  --pace-space-4: 1rem;
+  --pace-space-6: 1.5rem;
+  --pace-space-8: 2rem;
+
+  --pace-radius-sm: 0.35rem;
+  --pace-radius-md: 0.55rem;
+  --pace-radius-lg: 0.8rem;
+  --pace-control-min-size: 2.75rem;
+}
+
+/* Light phone reference values sampled from the light panel in mockup 00. */
+[data-theme='light'] {
+  color-scheme: light;
+  --pace-bg: #eff2f5;
+  --pace-surface: #f5f7f9;
+  --pace-surface-raised: #ffffff;
+  --pace-border: #9aa8b5;
+  --pace-border-subtle: #d1d8df;
+  --pace-text: #081827;
+  --pace-text-muted: #455665;
+  --pace-accent: #2050db;
+  --pace-accent-hover: #1745c7;
+  --pace-accent-soft: #2555e0;
+  --pace-on-accent: #ffffff;
+  --pace-danger: #aa2630;
+  --pace-focus: #1745c7;
+}

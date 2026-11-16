@@ -12,6 +12,8 @@
 دانلود Chromium تست با خطای زنجیره گواهی در این سیستم مواجه شد؛ TLS غیرفعال نشد. تست محلی با مسیر Chrome نصب‌شده اجرا شد؛ CI از Chromium رسمی استفاده می‌کند. workflow Quality روی GitHub نیز موفق شد: نصب از رجیستری عمومی، typecheck، lint، unit، build و E2E هر دو viewport پاس شدند. [CI موفق](https://github.com/Hamrez95/Gymrez/actions/runs/43818645997)؛ [PR #26 ادغام‌شده](https://github.com/Hamrez95/Gymrez/pull/26).
 
 ## اقدام بعدی
+
+T03 implementation started: semantic dark/light reference tokens and accessible base components are in progress; image, motion, and graphic polish remain deliberately deferred to the final sol6.1 pass. See [T03 progress](T03_PROGRESS.md). The task remains open pending licensed font/assets and mobile/desktop visual comparison.
 [T03/#4](https://github.com/Hamrez95/Gymrez/issues/4): assetهای پاک، font self-host، نمونه‌گیری semantic CTA/border و کامپوننت‌های دقیق PACE از روی cropهای T01؛ سپس T04/#5. رنگ‌ها و فونت workbench موقت‌اند و نباید baseline طراحی شوند.
 
 ## ردیابی
