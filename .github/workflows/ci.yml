@@ -23,3 +23,10 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: t03-ui-evidence-${{ github.run_id }}
+          path: docs/implementation/evidence/T03/*.png
+          if-no-files-found: ignore
+          retention-days: 7
