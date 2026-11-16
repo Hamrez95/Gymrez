@@ -5,7 +5,7 @@
 - T01/#2 و T02/#3 تکمیل شدند؛ اسکلت React/TypeScript/Vite و CI در main است.
 - T03/#4: پایهٔ component و semantic tokens در [PR #27](https://github.com/Hamrez95/Gymrez/pull/27) ادغام شد. تطبیق دقیق تصاویر، فونت و assetهای نهایی هنوز باز است و در T19/T21 پیگیری می‌شود.
 - T04/#5: پوستهٔ responsive، مسیرهای نمایشی، انتخاب پروفایل synthetic، تم و حالت ورود نمایشی در [PR #28](https://github.com/Hamrez95/Gymrez/pull/28) ادغام شد. CI سبز: typecheck، lint، unit، build و E2E موبایل/دسکتاپ. [شواهد CI](https://github.com/Hamrez95/Gymrez/actions/runs/43859115714)؛ screenshot artifact تا 2026-11-23.
-- T05/#6: پروژهٔ مستقل Gymrez در سازمان Free متصل است. ۹ migration ثبت‌شده/اعمال‌شده، ۱۴ جدول با RLS، bucket خصوصی `profile-media`، ۸ حرکت seed، generated types و ۱۴ assertion موفق pgTAP. [PR #29](https://github.com/Hamrez95/Gymrez/pull/29) draft می‌ماند تا screenshotهای تطبیق موکاپ در پاس نهایی ثبت شوند.
+- T05/#6: پروژهٔ مستقل Gymrez در سازمان Free متصل است. ۹ migration ثبت‌شده/اعمال‌شده، ۱۴ جدول با RLS، bucket خصوصی `profile-media`، ۸ حرکت seed، generated types و ۱۴ assertion موفق pgTAP. [Quality CI سبز](https://github.com/Hamrez95/Gymrez/actions/runs/43878344808). [PR #29](https://github.com/Hamrez95/Gymrez/pull/29) draft می‌ماند تا screenshotهای تطبیق موکاپ در پاس نهایی ثبت شوند.
 - advisor امنیت و سلامت بدون lint است؛ advisor عملکرد FK بدون ایندکس ندارد و در حال حاضر ۱۸ ایندکس استفاده‌نشدهٔ INFO گزارش می‌کند.
 - T06/#7 هنوز شروع نشده؛ اپ در حالت demo است و Auth/ذخیره‌سازی واقعی به کلاینت وصل نشده است.
 
