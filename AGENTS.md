@@ -4,7 +4,7 @@
 - ابتدا docs/implementation/STATUS.md و docs/planning/PLAN.md را بخوان.
 - tracker اصلی: https://github.com/Hamrez95/Gymrez/issues/1 ؛ ۲۴ task با شناسه T01–T24.
 - docs/planning/ARCHITECTURE.md، DESIGN_SPEC.md و MOTION_SPEC.md و معیارهای Issue فعال الزام‌آورند.
-- Current work: T04/#5 app shell. T03 foundation PR #27 is merged; continue from current source rather than rebuilding it.
+- Current work: T05/#6 Supabase schema and RLS. T03 PR #27 and T04 PR #28 are merged; continue from current source rather than rebuilding them. T05 PR #29 is a draft; validate its migration before merge.
 
 ## دستور صریح طراحی
 کاربر **دقیقاً همان طراحی موکاپ‌های docs/mockups/pace/00 تا 07** را می‌خواهد؛ نه «مشابه» و نه بازطراحی سلیقه‌ای.
