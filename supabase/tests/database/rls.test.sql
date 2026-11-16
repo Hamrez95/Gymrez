@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(13);
+select plan(14);
 
 insert into auth.users(id,aud,role,email,encrypted_password,raw_app_meta_data,raw_user_meta_data)
 values ('a0000000-0000-4000-8000-000000000001','authenticated','authenticated','a@test.invalid','x','{}','{}'),
@@ -46,7 +46,10 @@ select is((select display_name from public.profiles where id='d0000000-0000-4000
 
 set local role anon;
 select throws_ok($test$select * from public.profiles$test$,'42501',null,'anon has no direct grant on profile data');
-select throws_ok($test$select * from storage.objects$test$,'42501',null,'anon has no direct grant on private storage objects');
+select is((select count(*)::int from storage.objects where bucket_id='profile-media'),0,'anon cannot read private storage objects');
+select throws_ok(
+  $test$insert into storage.objects(bucket_id,name,metadata) values ('profile-media','c0000000-0000-4000-8000-000000000003/d0000000-0000-4000-8000-000000000004/progress/anon.webp','{}'::jsonb)$test$,
+  '42501',null,'anon cannot upload private profile media');
 reset role;
 
 select throws_ok(
