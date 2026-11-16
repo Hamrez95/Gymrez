@@ -9,7 +9,7 @@
 
 ## محدودیت صادقانه
 صفحه موجود **workbench فنی** است، نه پیاده‌سازی نهایی موکاپ. T03/T04 و بقیه بازند؛ Supabase، login، ثبت تمرین، sync، نصب PWA و deployment هنوز پیاده نشده‌اند. نام دقیق فونت و assetهای پاک در T01 به‌عنوان unresolved ثبت و به T03 واگذار شده‌اند.
-دانلود Chromium تست با خطای زنجیره گواهی در این سیستم مواجه شد؛ TLS غیرفعال نشد. تست محلی با مسیر Chrome نصب‌شده اجرا شد؛ CI از Chromium رسمی استفاده می‌کند. اجرای خود workflow روی GitHub باید با نتیجه واقعی جدا بررسی شود.
+دانلود Chromium تست با خطای زنجیره گواهی در این سیستم مواجه شد؛ TLS غیرفعال نشد. تست محلی با مسیر Chrome نصب‌شده اجرا شد؛ CI از Chromium رسمی استفاده می‌کند. workflow Quality روی GitHub نیز موفق شد: نصب از رجیستری عمومی، typecheck، lint، unit، build و E2E هر دو viewport پاس شدند. [CI موفق](https://github.com/Hamrez95/Gymrez/actions/runs/43818645997)؛ [PR #26 ادغام‌شده](https://github.com/Hamrez95/Gymrez/pull/26).
 
 ## اقدام بعدی
 [T03/#4](https://github.com/Hamrez95/Gymrez/issues/4): assetهای پاک، font self-host، نمونه‌گیری semantic CTA/border و کامپوننت‌های دقیق PACE از روی cropهای T01؛ سپس T04/#5. رنگ‌ها و فونت workbench موقت‌اند و نباید baseline طراحی شوند.
@@ -17,7 +17,7 @@
 ## ردیابی
 | مرحله | وضعیت |
 | --- | --- |
-| M0 | T01 و T02 از نظر محلی تکمیل؛ نتیجه CI/PR در tracker |
+| M0 | تکمیل؛ T01/#2 و T02/#3 بسته شدند، PR #26 در main ادغام شد |
 | M1 | شروع نشده؛ T03 بعدی |
 | M2–M6 | شروع نشده |
 
