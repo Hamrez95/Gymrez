@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '../auth/AuthProvider';
+import { useAuth } from '../auth/useAuth';
 import { useShellProfile } from '../../app/shellContext';
 import { listMeasurements, listPrograms, listWorkoutSessions } from '../../data/supabase/profileDataRepository';
 import { profileKey } from '../../data/queryKeys';
