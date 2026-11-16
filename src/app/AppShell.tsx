@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../shared/design/components';
@@ -8,21 +8,11 @@ import { runtimeConfig, supabaseClient } from '../data/supabase/client';
 import type { Profile } from '../shared/contracts/profile';
 import type { ShellContext } from './shellContext';
 
-const selectionKey = (userId: string) => 'gymrez:active-profile:' + userId;
-
-function readSelection(userId: string): string | null {
-  try { return window.sessionStorage.getItem(selectionKey(userId)); } catch { return null; }
-}
-function writeSelection(userId: string, profileId: string): void {
-  try { window.sessionStorage.setItem(selectionKey(userId), profileId); } catch { /* Private browsing may block session storage. */ }
-}
-function removeSelection(userId: string): void {
-  try { window.sessionStorage.removeItem(selectionKey(userId)); } catch { /* Private browsing may block session storage. */ }
-}
+const EMPTY_PROFILES: readonly Profile[] = [];
 
 export function AppShell() {
   const { status, userId, email, signOut } = useAuth();
-  const [activeProfileId, setActiveProfileId] = useState<string | null>(null);
+  const [selection, setSelection] = useState<{ userId: string; profileId: string } | null>(null);
   const [signOutError, setSignOutError] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
@@ -31,32 +21,14 @@ export function AppShell() {
     queryFn: () => listAccessibleProfiles(supabaseClient!, userId!),
     enabled: status === 'signedIn' && runtimeConfig.mode === 'supabase' && Boolean(userId),
   });
-  const profiles = userProfiles.data ?? [];
-  const routeProfileId = useMemo(() => {
-    const match = location.pathname.match(/^\/dashboard\/([^/]+)$/);
-    return match?.[1] ?? null;
-  }, [location.pathname]);
+  const profiles = userProfiles.data ?? EMPTY_PROFILES;
+  const routeProfileId = location.pathname.match(/^\/dashboard\/([^/]+)$/)?.[1] ?? null;
+  const selectedProfileId = selection?.userId === userId ? selection.profileId : null;
+  const activeProfile = profiles.find(profile => profile.id === routeProfileId)
+    ?? profiles.find(profile => profile.id === selectedProfileId)
+    ?? profiles[0]
+    ?? null;
 
-  useEffect(() => {
-    setActiveProfileId(null);
-  }, [userId]);
-
-  useEffect(() => {
-    if (!userId || userProfiles.isPending || userProfiles.isError) return;
-    const requested = routeProfileId ? profiles.find(profile => profile.id === routeProfileId) : undefined;
-    const storedId = readSelection(userId);
-    const stored = storedId ? profiles.find(profile => profile.id === storedId) : undefined;
-    const selected = requested ?? stored ?? profiles[0] ?? null;
-    setActiveProfileId(selected?.id ?? null);
-    if (selected) writeSelection(userId, selected.id);
-  }, [profiles, routeProfileId, userId, userProfiles.isError, userProfiles.isPending]);
-
-  useEffect(() => {
-    if (!userId) return;
-    return () => removeSelection(userId);
-  }, [userId]);
-
-  const activeProfile = profiles.find(profile => profile.id === activeProfileId) ?? null;
   const isEntry = location.pathname === '/' || location.pathname === '/login';
   const showSidebar = location.pathname === '/progress' || location.pathname === '/profile';
   const isDashboard = location.pathname.startsWith('/dashboard/');
@@ -75,9 +47,8 @@ export function AppShell() {
   ];
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const changeProfile = (profile: Profile) => {
-    setActiveProfileId(profile.id);
+    if (userId) setSelection({ userId, profileId: profile.id });
     setSignOutError('');
-    if (userId) writeSelection(userId, profile.id);
     if (isDashboard) navigate('/dashboard/' + profile.id, { replace: true });
   };
 
