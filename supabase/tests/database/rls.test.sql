@@ -37,11 +37,12 @@ select throws_ok(
 select set_config('request.jwt.claim.sub','b0000000-0000-4000-8000-000000000002',true);
 select is((select count(*)::int from public.profiles),0,'non-member sees no profiles');
 select is((select count(*)::int from storage.objects where bucket_id='profile-media'),0,'non-member sees no profile media');
-select is((with changed as (update public.profiles set display_name='Unauthorized' where id='d0000000-0000-4000-8000-000000000004' returning id) select count(*)::int from changed),0,'non-member cannot update another profile');
+update public.profiles set display_name='Unauthorized' where id='d0000000-0000-4000-8000-000000000004';
 select throws_ok(
   $test$insert into storage.objects(bucket_id,name,metadata) values ('profile-media','c0000000-0000-4000-8000-000000000003/d0000000-0000-4000-8000-000000000004/progress/outsider.webp','{}'::jsonb)$test$,
   '42501',null,'non-member cannot upload profile media');
 reset role;
+select is((select display_name from public.profiles where id='d0000000-0000-4000-8000-000000000004'),'Synthetic','non-member cannot update another profile');
 
 set local role anon;
 select throws_ok($test$select * from public.profiles$test$,'42501',null,'anon has no direct grant on profile data');
