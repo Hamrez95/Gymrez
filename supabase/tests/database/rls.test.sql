@@ -23,7 +23,7 @@ select set_config('request.jwt.claim.sub','b0000000-0000-4000-8000-000000000002'
 select is((select count(*)::int from public.profiles),0,'non-member sees no profiles');
 reset role;
 select throws_ok($$insert into public.programs(household_id,profile_id,title) values ('c0000000-0000-4000-8000-000000000003','d0000000-0000-4000-8000-000000000099','bad')$$,'23503',null,'composite profile FK rejects mismatched ownership');
-select throws_ok($insert into public.program_imports(household_id,profile_id,source_id,source_version,checksum) values ('c0000000-0000-4000-8000-000000000003','d0000000-0000-4000-8000-000000000004','id','1','hash'),('c0000000-0000-4000-8000-000000000003','d0000000-0000-4000-8000-000000000004','id','1','hash')$,'23505',null,'program import idempotency key rejects duplicate import');
-select throws_ok($update public.program_sessions set name='Changed' where id='10000000-0000-4000-8000-000000000007'$,'55000','Published versions are immutable','published program session cannot be changed');
+select throws_ok($test$insert into public.program_imports(household_id,profile_id,source_id,source_version,checksum) values ('c0000000-0000-4000-8000-000000000003','d0000000-0000-4000-8000-000000000004','id','1','hash'),('c0000000-0000-4000-8000-000000000003','d0000000-0000-4000-8000-000000000004','id','1','hash')$test$,'23505',null,'program import idempotency key rejects duplicate import');
+select throws_ok($test$update public.program_sessions set name='Changed' where id='10000000-0000-4000-8000-000000000007'$test$,'55000','Published versions are immutable','published program session cannot be changed');
 select * from finish();
 rollback;
