@@ -11,7 +11,7 @@
 - Generated Supabase TypeScript definitions in `src/shared/database.types.ts`.
 
 ## Applied and reviewed
-- `20261116120000_initial_schema.sql` and `20261116140000_foreign_key_indexes.sql` applied successfully.
+- `20261116131437_initial_schema.sql` and `20261116132031_foreign_key_indexes.sql` applied successfully.
 - All 14 public tables have RLS enabled.
 - Security and health advisors report no lints.
 - The performance advisor no longer reports unindexed foreign keys. It reports 21 unused indexes, expected on this new empty project before application queries run.
