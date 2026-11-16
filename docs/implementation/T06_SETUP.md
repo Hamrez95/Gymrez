@@ -19,7 +19,7 @@
 1. ورود ایمیل/رمز را فعال نگه دار.
 2. گزینه اجازهٔ ثبت‌نام کاربران جدید را خاموش کن؛ مسیر sign-up در کلاینت وجود ندارد.
 3. Site URL را روی origin اصلی برنامه قرار بده.
-4. URL بازگشت `/login?flow=recovery` را برای originهای production، previewهای انتخاب‌شده و localhost مجاز کن. از اضافه‌کردن همهٔ دامنه‌های ناشناس preview خودداری کن.
+4. برای هر origin مجاز، pattern `https://<origin>/login?flow=recovery**` را در allowlist ثبت کن؛ callback PKCE می‌تواند پارامترهای query داشته باشد. خود کلاینت فقط originهای صریح و مسیر ثابت `/login?flow=recovery` را می‌فرستد. از اضافه‌کردن همهٔ دامنه‌های ناشناس preview خودداری کن.
 
 تنظیم dashboard از این ریپو قابل تغییر نیست و باید در پروژهٔ Supabase ثبت شود.
 

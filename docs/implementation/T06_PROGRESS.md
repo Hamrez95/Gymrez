@@ -12,6 +12,7 @@
 - queryها بر اساس user/household/profile کلید می‌خورند و خروج یا تغییر کاربر cache خصوصی را پاک می‌کند.
 - داشبورد، برنامه، جلسه و اندازه‌ها دیگر مقدار نمونه نشان نمی‌دهند؛ queryهای خواندنی با پروفایل فعال scope می‌شوند.
 - تست‌های واحد برای اعتبارسنجی کلید، origin مجاز و جداسازی cache اضافه شده‌اند.
+- [Quality CI run 40](https://github.com/Hamrez95/Gymrez/actions/runs/43962999328) سبز است: typecheck، lint، unit، build و E2E.
 
 ## موارد باز برای تکمیل واقعی T06
 
