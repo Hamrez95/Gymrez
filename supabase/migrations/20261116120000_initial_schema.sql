@@ -37,17 +37,43 @@ create trigger workouts_touch before update on public.workout_sessions for each 
 create trigger sets_touch before update on public.performed_sets for each row execute function public.touch_updated_at();
 create trigger measurements_touch before update on public.body_measurements for each row execute function public.touch_updated_at();
 
-create function private.guard_version_edits() returns trigger language plpgsql set search_path=pg_catalog,public as $$
-declare target uuid;
+create function private.guard_version_edits() returns trigger language plpgsql set search_path=pg_catalog,public as $
+declare
+  target uuid;
 begin
- if tg_table_name='program_versions' then
-   if tg_op='DELETE' then if old.published_at is not null then raise exception 'Published versions are immutable' using errcode='55000'; end if; return old; end if;
-   if old.published_at is not null then raise exception 'Published versions are immutable' using errcode='55000'; end if; return new;
- end if;
- if tg_op='DELETE' then target:=old.program_version_id; else target:=new.program_version_id; end if;
- if exists(select 1 from public.program_versions v where v.id=target and v.published_at is not null) then raise exception 'Published versions are immutable' using errcode='55000'; end if;
- if tg_op='DELETE' then return old; else return new; end if;
-end $$;
+  if tg_table_name = 'program_versions' then
+    if tg_op = 'DELETE' then
+      if old.published_at is not null then
+        raise exception 'Published versions are immutable' using errcode='55000';
+      end if;
+      return old;
+    end if;
+    if old.published_at is not null then
+      raise exception 'Published versions are immutable' using errcode='55000';
+    end if;
+    return new;
+  end if;
+
+  if tg_op = 'DELETE' then
+    target := old.program_version_id;
+    if exists (select 1 from public.program_versions v where v.id = target and v.published_at is not null) then
+      raise exception 'Published versions are immutable' using errcode='55000';
+    end if;
+    return old;
+  elsif tg_op = 'INSERT' then
+    target := new.program_version_id;
+    if exists (select 1 from public.program_versions v where v.id = target and v.published_at is not null) then
+      raise exception 'Published versions are immutable' using errcode='55000';
+    end if;
+    return new;
+  end if;
+
+  if exists (select 1 from public.program_versions v where v.id = old.program_version_id and v.published_at is not null)
+     or exists (select 1 from public.program_versions v where v.id = new.program_version_id and v.published_at is not null) then
+    raise exception 'Published versions are immutable' using errcode='55000';
+  end if;
+  return new;
+end $;
 create trigger versions_immutable before update or delete on public.program_versions for each row execute function private.guard_version_edits();
 create trigger sessions_draft_only before insert or update or delete on public.program_sessions for each row execute function private.guard_version_edits();
 create trigger planned_draft_only before insert or update or delete on public.planned_exercises for each row execute function private.guard_version_edits();
