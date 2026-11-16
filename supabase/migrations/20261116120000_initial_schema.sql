@@ -37,7 +37,7 @@ create trigger workouts_touch before update on public.workout_sessions for each 
 create trigger sets_touch before update on public.performed_sets for each row execute function public.touch_updated_at();
 create trigger measurements_touch before update on public.body_measurements for each row execute function public.touch_updated_at();
 
-create function private.guard_version_edits() returns trigger language plpgsql set search_path=pg_catalog,public as $
+create function private.guard_version_edits() returns trigger language plpgsql set search_path=pg_catalog,public as $guard$
 declare
   target uuid;
 begin
@@ -73,7 +73,7 @@ begin
     raise exception 'Published versions are immutable' using errcode='55000';
   end if;
   return new;
-end $;
+end $guard$;
 create trigger versions_immutable before update or delete on public.program_versions for each row execute function private.guard_version_edits();
 create trigger sessions_draft_only before insert or update or delete on public.program_sessions for each row execute function private.guard_version_edits();
 create trigger planned_draft_only before insert or update or delete on public.planned_exercises for each row execute function private.guard_version_edits();
