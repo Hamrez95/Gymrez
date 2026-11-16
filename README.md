@@ -31,3 +31,7 @@ npm run dev
 `npm run audit:design` تمام ۸ مرجع را اندازه‌گیری و ۲۵ crop را تولید می‌کند؛ PNGهای تکراری در git نرفته‌اند. [ممیزی T01](docs/implementation/T01_REFERENCE_AUDIT.md) و [نتایج T02](docs/implementation/evidence/T02/VERIFICATION.md).
 
 حالت فعلی فقط demo مصنوعی و خواندنی است. تنظیم حالت supabase بدون adapter، به خطای روشن ختم می‌شود؛ هیچ ذخیره واقعی یا ورود هنوز فعال نیست. `.env.example` فقط نمونه تنظیمات است.
+
+
+## Current preview
+The root route shows a synthetic profile chooser. Dashboard, mobile/desktop navigation, and sign-in remain previews; they do not save training data or authenticate. T04 stays open pending exact-reference screenshot review. See [T04 progress](docs/implementation/T04_PROGRESS.md) and [STATUS](docs/implementation/STATUS.md).

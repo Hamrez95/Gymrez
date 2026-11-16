@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import './tokens.css';
 @import './components.css';
+@import './shell.css';
 
 *,
 *::before,
@@ -63,12 +64,6 @@ a {
   inset-block-start: 1rem;
 }
 
-.foundation {
-  width: min(100% - 2rem, 62rem);
-  margin-inline: auto;
-  padding-block: 1.5rem 3rem;
-}
-
 .foundation-header {
   display: flex;
   align-items: center;
@@ -84,29 +79,6 @@ a {
   font-style: italic;
   font-weight: 900;
   letter-spacing: 0.1em;
-}
-
-.foundation-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-block: 1.5rem;
-}
-
-.foundation-nav a {
-  min-height: 2.75rem;
-  display: inline-flex;
-  align-items: center;
-  padding-inline: 1rem;
-  border: 1px solid var(--pace-border);
-  border-radius: var(--pace-radius-sm);
-  text-decoration: none;
-}
-
-.foundation-nav a[aria-current='page'] {
-  border-color: var(--pace-accent);
-  background: var(--pace-accent);
-  color: var(--pace-on-accent);
 }
 
 .foundation-content {

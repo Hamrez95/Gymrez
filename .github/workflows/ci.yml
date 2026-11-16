@@ -26,7 +26,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: t03-ui-evidence-${{ github.run_id }}
-          path: docs/implementation/evidence/T03/*.png
+          name: pace-ui-evidence-${{ github.run_id }}
+          path: |
+            docs/implementation/evidence/T03/*.png
+            docs/implementation/evidence/T04/*.png
           if-no-files-found: ignore
           retention-days: 7

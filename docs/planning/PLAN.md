@@ -30,14 +30,14 @@
 | M2 — داده و امنیت | Supabase، RLS و ورود دعوتی واقعی | T05–T06؛ تست دسترسی غیرمجاز |
 | M3 — برنامه | برنامه‌ها، بانک حرکت، editor، دریافت از ChatGPT و داشبورد | T07–T11؛ برنامه واقعی قابل فعال‌سازی |
 | M4 — استفاده در باشگاه | player، تایمر، سابقه و اندازه‌ها | T12–T15؛ اولین مسیر کامل قابل استفاده |
-| M5 — تکمیل 1.0 | پیشرفت، offline/sync، نصب، motion و PDF/تنظیمات | T16–T20؛ قابلیت‌های تمام شیت‌ها |
-| M6 — تحویل | تطبیق تصویری، E2E، انتشار و پایلوت دونفره | T21–T24؛ بدون باگ مسدودکننده |
+| M5 — تکمیل قابلیت‌ها | پیشرفت، offline/sync، نصب، تنظیمات و PDF | T16–T18 و T20؛ قابلیت‌های تمام شیت‌ها |
+| M6 — پولیش و تحویل | موشن/گرافیک نهایی، تطبیق تصویری، E2E، انتشار و پایلوت | T19 و T21–T24؛ بدون باگ مسدودکننده |
 
-در M1 یک پیش‌نمایش بصری قابل بررسی و در M4 یک مسیر عملی تمرین داریم؛ برای دیدن نتیجه تا پایان کل پروژه صبر نمی‌کنیم. این‌ها تحویل‌های میانی‌اند و جای نسخه کامل 1.0 را نمی‌گیرند.
+T19 is deliberately held until functional work is complete and runs immediately before T21 full-screen visual comparison. The user asked to use sol6.1 for final motion, generated/extracted images, and graphic polish. In M1 we still provide an early structural preview and in M4 a working exercise path; برای دیدن نتیجه تا پایان کل پروژه صبر نمی‌کنیم. این‌ها تحویل‌های میانی‌اند و جای نسخه کامل 1.0 را نمی‌گیرند.
 
 ## ترتیب اجرا و کنترل سرعت
 - ابتدا T01 → T02 → T03 → T04؛ سپس T05 → T06. در صورت اجرای توسط یک توسعه‌دهنده همین ترتیب روشن بماند.
-- T07 → T08 → T09 → T10 → T11 → T12 → T13 → T14 → T15 → T16 → T17 → T18 → T19 → T20 → T21 → T22 → T23 → T24.
+- T07 → T08 → T09 → T10 → T11 → T12 → T13 → T14 → T15 → T16 → T17 → T18 → T20 → T19 → T21 → T22 → T23 → T24.
 - وابستگی دقیق هر Issue ملاک است؛ تسک‌ها ذاتاً قابلیت اجرای مستقل دارند، اما افزایش نفرات یا delegation شرط اجرا نیست.
 - یک Issue فعال در هر جریان کاری، PR کوچک و قابل مرور؛ refactor فقط برای نیاز واقعی. mock برای پیش‌نمایش اولیه مجاز، ولی حالت production نباید آمار یا موفقیت ذخیره ساختگی نشان دهد.
 - پیچیدگی بالا: T05/T09/T12/T17/T21/T22. ابتدا در هرکدام مسیر اصلی را بساز، سپس edge caseهای همان Issue را کامل کن؛ تسک با edge case باز done نیست.
@@ -64,7 +64,7 @@
 | [T16](https://github.com/Hamrez95/Gymrez/issues/17) | M5 | داشبورد پیشرفت، استمرار و رکوردها با نمودارهای واقعی | [T14](https://github.com/Hamrez95/Gymrez/issues/15)، [T15](https://github.com/Hamrez95/Gymrez/issues/16) |
 | [T17](https://github.com/Hamrez95/Gymrez/issues/18) | M5 | صف همگام‌سازی آفلاین با Supabase و مدیریت تعارض دستگاه‌ها | [T06](https://github.com/Hamrez95/Gymrez/issues/7)، [T07](https://github.com/Hamrez95/Gymrez/issues/8)، [T12](https://github.com/Hamrez95/Gymrez/issues/13)، [T14](https://github.com/Hamrez95/Gymrez/issues/15)، [T15](https://github.com/Hamrez95/Gymrez/issues/16) |
 | [T18](https://github.com/Hamrez95/Gymrez/issues/19) | M5 | نصب PWA، کش آفلاین، نسخه جدید و راهنمای نصب | [T03](https://github.com/Hamrez95/Gymrez/issues/4)، [T04](https://github.com/Hamrez95/Gymrez/issues/5)، [T17](https://github.com/Hamrez95/Gymrez/issues/18) |
-| [T19](https://github.com/Hamrez95/Gymrez/issues/20) | M5 | پولیش حرفه‌ای موشن و گرافیک در تمام صفحات PACE | [T03](https://github.com/Hamrez95/Gymrez/issues/4)، [T11](https://github.com/Hamrez95/Gymrez/issues/12)، [T13](https://github.com/Hamrez95/Gymrez/issues/14)، [T14](https://github.com/Hamrez95/Gymrez/issues/15)، [T15](https://github.com/Hamrez95/Gymrez/issues/16)، [T16](https://github.com/Hamrez95/Gymrez/issues/17) |
+| [T19](https://github.com/Hamrez95/Gymrez/issues/20) | M6 — آخرین پولیش بصری | پولیش حرفه‌ای موشن و گرافیک در تمام صفحات PACE | [T03](https://github.com/Hamrez95/Gymrez/issues/4)، [T11](https://github.com/Hamrez95/Gymrez/issues/12)، [T13](https://github.com/Hamrez95/Gymrez/issues/14)، [T14](https://github.com/Hamrez95/Gymrez/issues/15)، [T15](https://github.com/Hamrez95/Gymrez/issues/16)، [T16](https://github.com/Hamrez95/Gymrez/issues/17) |
 | [T20](https://github.com/Hamrez95/Gymrez/issues/21) | M5 | تنظیمات، خروجی PDF مطابق موکاپ و پشتیبان‌گیری | [T07](https://github.com/Hamrez95/Gymrez/issues/8)، [T14](https://github.com/Hamrez95/Gymrez/issues/15)، [T15](https://github.com/Hamrez95/Gymrez/issues/16)، [T18](https://github.com/Hamrez95/Gymrez/issues/19) |
 | [T21](https://github.com/Hamrez95/Gymrez/issues/22) | M6 | بازبینی تطبیق تصویری تمام ۸ مرجع و رفع اختلاف‌ها | [T04](https://github.com/Hamrez95/Gymrez/issues/5)، [T07](https://github.com/Hamrez95/Gymrez/issues/8)، [T08](https://github.com/Hamrez95/Gymrez/issues/9)، [T09](https://github.com/Hamrez95/Gymrez/issues/10)، [T11](https://github.com/Hamrez95/Gymrez/issues/12)، [T14](https://github.com/Hamrez95/Gymrez/issues/15)، [T15](https://github.com/Hamrez95/Gymrez/issues/16)، [T16](https://github.com/Hamrez95/Gymrez/issues/17)، [T19](https://github.com/Hamrez95/Gymrez/issues/20)، [T20](https://github.com/Hamrez95/Gymrez/issues/21) |
 | [T22](https://github.com/Hamrez95/Gymrez/issues/23) | M6 | تست سرتاسری، امنیت RLS، دسترس‌پذیری و کارایی | [T05](https://github.com/Hamrez95/Gymrez/issues/6)، [T06](https://github.com/Hamrez95/Gymrez/issues/7)، [T10](https://github.com/Hamrez95/Gymrez/issues/11)، [T14](https://github.com/Hamrez95/Gymrez/issues/15)، [T15](https://github.com/Hamrez95/Gymrez/issues/16)، [T17](https://github.com/Hamrez95/Gymrez/issues/18)، [T18](https://github.com/Hamrez95/Gymrez/issues/19)، [T20](https://github.com/Hamrez95/Gymrez/issues/21) |
@@ -94,4 +94,4 @@ ChatGPT/Codex خروجی مطابق schema و exercise IDهای اپ تولید 
 - [Vite PWA](https://vite-pwa-org.netlify.app/guide/)
 - [PWA installation](https://web.dev/learn/pwa/installation)
 
-ادامه اجرا از [STATUS](../implementation/STATUS.md) و Issue #2 شروع شود.
+ادامه اجرا از [STATUS](../implementation/STATUS.md) و Issue #5 شروع شود.
