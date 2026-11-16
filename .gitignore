@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env*
+!.env.example
+*.tsbuildinfo
+playwright-report/
+test-results/
+*-result.tmp
+.cache/
+docs/implementation/evidence/T01/*-panel-*.png

@@ -1,0 +1,493 @@
+{
+  "note": "Raster measurements, not original Figma tokens. Font identity cannot be recovered exactly from PNG.",
+  "references": [
+    {
+      "source": "00-pace-design-direction.png",
+      "sha256": "75c6083863598b26c6dadb5a09455f0ceba9de2deda172e60000e3b5929af20f",
+      "width": 1536,
+      "height": 1024,
+      "panels": [
+        {
+          "file": "00-panel-1.png",
+          "x": 11,
+          "y": 155,
+          "width": 850,
+          "height": 834,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "00-panel-2.png",
+          "x": 880,
+          "y": 154,
+          "width": 310,
+          "height": 834,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "00-panel-3.png",
+          "x": 1213,
+          "y": 154,
+          "width": 316,
+          "height": 834,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        }
+      ],
+      "sampledRegion": {
+        "x": 380,
+        "y": 210,
+        "width": 270,
+        "height": 140
+      },
+      "mostFrequentExactColors": [
+        {
+          "hex": "#041421",
+          "count": 2911
+        },
+        {
+          "hex": "#051522",
+          "count": 1669
+        },
+        {
+          "hex": "#041320",
+          "count": 1345
+        },
+        {
+          "hex": "#051421",
+          "count": 1307
+        },
+        {
+          "hex": "#051523",
+          "count": 1290
+        }
+      ]
+    },
+    {
+      "source": "01-entry-and-dashboard.png",
+      "sha256": "9f78bbd5cfb1ee8bee63a95ec48a4be865256cbd349103f90d3266796ebbe831",
+      "width": 1536,
+      "height": 1024,
+      "panels": [
+        {
+          "file": "01-panel-1.png",
+          "x": 11,
+          "y": 155,
+          "width": 850,
+          "height": 834,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "01-panel-2.png",
+          "x": 879,
+          "y": 154,
+          "width": 313,
+          "height": 835,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "01-panel-3.png",
+          "x": 1212,
+          "y": 154,
+          "width": 314,
+          "height": 835,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        }
+      ],
+      "sampledRegion": {
+        "x": 380,
+        "y": 210,
+        "width": 270,
+        "height": 140
+      },
+      "mostFrequentExactColors": [
+        {
+          "hex": "#01121e",
+          "count": 3667
+        },
+        {
+          "hex": "#01111d",
+          "count": 3053
+        },
+        {
+          "hex": "#02121e",
+          "count": 2066
+        },
+        {
+          "hex": "#01121d",
+          "count": 1269
+        },
+        {
+          "hex": "#01111c",
+          "count": 1210
+        }
+      ]
+    },
+    {
+      "source": "02-workout-player-and-rest.png",
+      "sha256": "6522c7222910a55ad3c6d1a4cb96b1c5f294ba49f05094a45334cfc84063a34c",
+      "width": 1536,
+      "height": 1024,
+      "panels": [
+        {
+          "file": "02-panel-1.png",
+          "x": 24,
+          "y": 94,
+          "width": 479,
+          "height": 907,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "02-panel-2.png",
+          "x": 530,
+          "y": 94,
+          "width": 475,
+          "height": 907,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "02-panel-3.png",
+          "x": 1033,
+          "y": 94,
+          "width": 478,
+          "height": 907,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        }
+      ],
+      "sampledRegion": {
+        "x": 380,
+        "y": 210,
+        "width": 270,
+        "height": 140
+      },
+      "mostFrequentExactColors": [
+        {
+          "hex": "#02131f",
+          "count": 3050
+        },
+        {
+          "hex": "#02121e",
+          "count": 2651
+        },
+        {
+          "hex": "#02131e",
+          "count": 1086
+        },
+        {
+          "hex": "#03131f",
+          "count": 1002
+        },
+        {
+          "hex": "#01121e",
+          "count": 820
+        }
+      ]
+    },
+    {
+      "source": "03-plan-editor-and-exercise-library.png",
+      "sha256": "8ceb74d8561129e73ca1e50e310f86543a1ca1f1f80c773050aba1b2ec3d246d",
+      "width": 1536,
+      "height": 1024,
+      "panels": [
+        {
+          "file": "03-panel-1.png",
+          "x": 12,
+          "y": 135,
+          "width": 823,
+          "height": 843,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "03-panel-2.png",
+          "x": 852,
+          "y": 135,
+          "width": 313,
+          "height": 845,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "03-panel-3.png",
+          "x": 1188,
+          "y": 135,
+          "width": 336,
+          "height": 845,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        }
+      ],
+      "sampledRegion": {
+        "x": 380,
+        "y": 210,
+        "width": 270,
+        "height": 140
+      },
+      "mostFrequentExactColors": [
+        {
+          "hex": "#021422",
+          "count": 3663
+        },
+        {
+          "hex": "#021522",
+          "count": 2637
+        },
+        {
+          "hex": "#021421",
+          "count": 2474
+        },
+        {
+          "hex": "#011421",
+          "count": 2180
+        },
+        {
+          "hex": "#011320",
+          "count": 1710
+        }
+      ]
+    },
+    {
+      "source": "04-progress-settings-and-pdf.png",
+      "sha256": "35ee28e6656fc7253779d56483ddc6c34846ec0d04c369648715dfefc2825ae4",
+      "width": 1536,
+      "height": 1024,
+      "panels": [
+        {
+          "file": "04-panel-1.png",
+          "x": 36,
+          "y": 80,
+          "width": 975,
+          "height": 453,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "04-panel-2.png",
+          "x": 1044,
+          "y": 80,
+          "width": 455,
+          "height": 455,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "04-panel-3.png",
+          "x": 36,
+          "y": 549,
+          "width": 758,
+          "height": 456,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "04-panel-4.png",
+          "x": 813,
+          "y": 549,
+          "width": 684,
+          "height": 456,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        }
+      ],
+      "sampledRegion": {
+        "x": 380,
+        "y": 210,
+        "width": 270,
+        "height": 140
+      },
+      "mostFrequentExactColors": [
+        {
+          "hex": "#07192a",
+          "count": 978
+        },
+        {
+          "hex": "#071929",
+          "count": 810
+        },
+        {
+          "hex": "#061828",
+          "count": 714
+        },
+        {
+          "hex": "#061829",
+          "count": 637
+        },
+        {
+          "hex": "#061929",
+          "count": 591
+        }
+      ]
+    },
+    {
+      "source": "05-training-history.png",
+      "sha256": "dc90fc1fe9f7ba96b21db08f8628e2d450ca07d540629e22ce7270b05c3a94e7",
+      "width": 1536,
+      "height": 1024,
+      "panels": [
+        {
+          "file": "05-panel-1.png",
+          "x": 12,
+          "y": 155,
+          "width": 850,
+          "height": 834,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "05-panel-2.png",
+          "x": 880,
+          "y": 154,
+          "width": 313,
+          "height": 835,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "05-panel-3.png",
+          "x": 1212,
+          "y": 154,
+          "width": 314,
+          "height": 835,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        }
+      ],
+      "sampledRegion": {
+        "x": 380,
+        "y": 210,
+        "width": 270,
+        "height": 140
+      },
+      "mostFrequentExactColors": [
+        {
+          "hex": "#001120",
+          "count": 3687
+        },
+        {
+          "hex": "#001121",
+          "count": 2730
+        },
+        {
+          "hex": "#00111f",
+          "count": 1727
+        },
+        {
+          "hex": "#001221",
+          "count": 1724
+        },
+        {
+          "hex": "#001222",
+          "count": 1617
+        }
+      ]
+    },
+    {
+      "source": "06-profile-programs.png",
+      "sha256": "25ce3ecee8fd59aaabe9539cadd85f0004f068e8dd1798473402455b19e4488d",
+      "width": 1536,
+      "height": 1024,
+      "panels": [
+        {
+          "file": "06-panel-1.png",
+          "x": 12,
+          "y": 155,
+          "width": 850,
+          "height": 834,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "06-panel-2.png",
+          "x": 880,
+          "y": 154,
+          "width": 313,
+          "height": 835,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "06-panel-3.png",
+          "x": 1212,
+          "y": 154,
+          "width": 314,
+          "height": 835,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        }
+      ],
+      "sampledRegion": {
+        "x": 380,
+        "y": 210,
+        "width": 270,
+        "height": 140
+      },
+      "mostFrequentExactColors": [
+        {
+          "hex": "#001321",
+          "count": 2802
+        },
+        {
+          "hex": "#001220",
+          "count": 1934
+        },
+        {
+          "hex": "#001322",
+          "count": 1840
+        },
+        {
+          "hex": "#011321",
+          "count": 1623
+        },
+        {
+          "hex": "#001221",
+          "count": 1444
+        }
+      ]
+    },
+    {
+      "source": "07-body-profile-and-measurements.png",
+      "sha256": "2d50aaf79063094c87791f799d6d871719d8738410325c735b5b0321afbd3e7b",
+      "width": 1536,
+      "height": 1024,
+      "panels": [
+        {
+          "file": "07-panel-1.png",
+          "x": 12,
+          "y": 155,
+          "width": 850,
+          "height": 834,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "07-panel-2.png",
+          "x": 880,
+          "y": 154,
+          "width": 313,
+          "height": 835,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        },
+        {
+          "file": "07-panel-3.png",
+          "x": 1212,
+          "y": 154,
+          "width": 314,
+          "height": 835,
+          "method": "manual visible app bounds, ±2px; status bar/frame excluded where possible"
+        }
+      ],
+      "sampledRegion": {
+        "x": 380,
+        "y": 210,
+        "width": 270,
+        "height": 140
+      },
+      "mostFrequentExactColors": [
+        {
+          "hex": "#000f1a",
+          "count": 3448
+        },
+        {
+          "hex": "#000f19",
+          "count": 2722
+        },
+        {
+          "hex": "#00101b",
+          "count": 2694
+        },
+        {
+          "hex": "#00101c",
+          "count": 1993
+        },
+        {
+          "hex": "#00111c",
+          "count": 1212
+        }
+      ]
+    }
+  ]
+}
