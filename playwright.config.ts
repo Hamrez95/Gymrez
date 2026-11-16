@@ -1,0 +1,3 @@
+import { defineConfig, devices } from '@playwright/test';
+process.env.PLAYWRIGHT_BROWSERS_PATH ??= '.cache/playwright';
+export default defineConfig({ testDir: './tests/e2e', use: { launchOptions: { executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH }, baseURL: 'http://127.0.0.1:4173' }, webServer: { command: 'npm run dev -- --port 4173 --strictPort', url: 'http://127.0.0.1:4173', reuseExistingServer: !process.env.CI }, projects: [{ name: 'desktop', use: { ...devices['Desktop Chrome'] } }, { name: 'mobile', use: { ...devices['Pixel 7'] } }] });
