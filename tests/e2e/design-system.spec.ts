@@ -5,7 +5,7 @@ test('PACE primitives expose accessible states and fit mobile/desktop viewports'
   await page.goto('/__design-system');
   await expect(page.getByRole('heading', { name: 'سامانه طراحی PACE' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'غیرفعال' })).toBeDisabled();
-  await expect(page.getByRole('button', { name: 'در حال آماده‌سازی' })).toHaveAttribute('aria-busy', 'true');
+  await expect(page.locator('button[aria-busy="true"]')).toBeDisabled();
   await expect(page.getByLabel('تعداد تکرار')).toHaveAttribute('aria-invalid', 'true');
   await expect(page.getByRole('alert')).toBeVisible();
   await expect(page.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '3');
