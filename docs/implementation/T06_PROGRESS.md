@@ -6,8 +6,8 @@
 
 - کلاینت Supabase با session پایدار، PKCE، تشخیص callback و refresh خودکار اضافه شد.
 - ورود ایمیل/رمز و بازیابی رمز پیاده شد؛ sign-up عمومی و OTP پیامکی در رابط وجود ندارد.
-- کد کلاینت کلیدهای \`sb_secret\` و JWTهای \`service_role\` را رد می‌کند.
-- URL بازیابی به \`/login?flow=recovery\` محدود و originها به allowlist دقیق build محدود شده‌اند.
+- کد کلاینت کلیدهای `sb_secret` و JWTهای `service_role` را رد می‌کند.
+- URL بازیابی به `/login?flow=recovery` محدود و originها به allowlist دقیق build محدود شده‌اند.
 - انتخاب پروفایل از membership و profiles مجاز با RLS خوانده می‌شود؛ membership از مرورگر قابل درج نیست.
 - queryها بر اساس user/household/profile کلید می‌خورند و خروج یا تغییر کاربر cache خصوصی را پاک می‌کند.
 - داشبورد، برنامه، جلسه و اندازه‌ها دیگر مقدار نمونه نشان نمی‌دهند؛ queryهای خواندنی با پروفایل فعال scope می‌شوند.
