@@ -34,8 +34,8 @@ export function AppShell() {
       <NavLink className="pace-app-brand" to="/" aria-label="Gymrez — خانه" dir="ltr">// GYMREZ</NavLink>
       <div className="pace-app-header__actions">
         {!isEntry && <div className="pace-profile-switch" role="group" aria-label="انتخاب پروفایل نمایشی">
-          <Button type="button" variant={profileId === 'demo-a' ? 'primary' : 'secondary'} aria-pressed={profileId === 'demo-a'} onClick={() => changeProfile('demo-a')}><bdi>A</bdi><span>ورزشکار الف</span></Button>
-          <Button type="button" variant={profileId === 'demo-b' ? 'primary' : 'secondary'} aria-pressed={profileId === 'demo-b'} onClick={() => changeProfile('demo-b')}><bdi>B</bdi><span>ورزشکار ب</span></Button>
+          <Button type="button" variant={profileId === 'demo-a' ? 'primary' : 'secondary'} aria-label="انتخاب پروفایل ورزشکار الف" aria-pressed={profileId === 'demo-a'} onClick={() => changeProfile('demo-a')}><bdi>A</bdi><span>ورزشکار الف</span></Button>
+          <Button type="button" variant={profileId === 'demo-b' ? 'primary' : 'secondary'} aria-label="انتخاب پروفایل ورزشکار ب" aria-pressed={profileId === 'demo-b'} onClick={() => changeProfile('demo-b')}><bdi>B</bdi><span>ورزشکار ب</span></Button>
         </div>}
         <Button type="button" variant="secondary" className="pace-theme-toggle" aria-label={theme === 'dark' ? 'روشن کردن تم' : 'تاریک کردن تم'} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
           <span aria-hidden="true">{theme === 'dark' ? '☼' : '◐'}</span>
@@ -52,7 +52,7 @@ export function AppShell() {
     </main>
 
     {!isEntry && <nav className="pace-mobile-nav" aria-label="ناوبری اصلی">
-      {destinations.map(item => <NavLink key={item.label} end={item.label === 'خانه'} to={item.label === 'خانه' ? `/dashboard/${profileId}` : item.to}><span className="pace-mobile-nav__label">{item.short}</span></NavLink>)}
+      {destinations.map(item => <NavLink key={item.label} aria-label={item.label} end={item.label === 'خانه'} to={item.label === 'خانه' ? `/dashboard/${profileId}` : item.to}><span className="pace-mobile-nav__label">{item.short}</span></NavLink>)}
     </nav>}
   </div>;
 }

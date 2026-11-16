@@ -22,9 +22,9 @@ test('entry preview selects a profile and the app navigation works', async ({ pa
 
 test('profile switching, theme control, and navigation adapt across reference widths', async ({ page }) => {
   await page.goto('/dashboard/demo-a');
-  await page.getByRole('button', { name: /ورزشکار ب/ }).click();
+  await page.getByRole('button', { name: 'انتخاب پروفایل ورزشکار ب' }).click();
   await expect(page).toHaveURL(/\/dashboard\/demo-b$/);
-  await expect(page.getByRole('button', { name: /ورزشکار ب/ })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('button', { name: 'انتخاب پروفایل ورزشکار ب' })).toHaveAttribute('aria-pressed', 'true');
   await page.getByRole('button', { name: 'روشن کردن تم' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
 
