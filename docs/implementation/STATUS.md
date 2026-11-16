@@ -14,13 +14,15 @@
 ## اقدام بعدی
 
 T03 implementation started: semantic dark/light reference tokens and accessible base components are in progress; image, motion, and graphic polish remain deliberately deferred to the final sol6.1 pass. See [T03 progress](T03_PROGRESS.md). The task remains open pending licensed font/assets and mobile/desktop visual comparison.
-[T03/#4](https://github.com/Hamrez95/Gymrez/issues/4): assetهای پاک، font self-host، نمونه‌گیری semantic CTA/border و کامپوننت‌های دقیق PACE از روی cropهای T01؛ سپس T04/#5. رنگ‌ها و فونت workbench موقت‌اند و نباید baseline طراحی شوند.
+T03 foundation components are in [PR #27](https://github.com/Hamrez95/Gymrez/pull/27); dark/light tokens, accessible base components, and CI browser checks are complete. Final font/assets and visual comparison remain open for T19/T21. See [T03 progress](T03_PROGRESS.md).
+
+T04/#5 shell is in progress: responsive navigation, sample profile chooser, theme control, disabled login preview, and unknown route are implemented. Synthetic only, with no Supabase auth or workout saving. See [T04 progress](T04_PROGRESS.md). T03 CI passed on mobile/desktop: https://github.com/Hamrez95/Gymrez/actions/runs/43856423593.
 
 ## ردیابی
 | مرحله | وضعیت |
 | --- | --- |
 | M0 | تکمیل؛ T01/#2 و T02/#3 بسته شدند، PR #26 در main ادغام شد |
-| M1 | شروع نشده؛ T03 بعدی |
+| M1 | T03 foundation merged; T04 shell in progress; final visual work remains open |
 | M2–M6 | شروع نشده |
 
 اصل ۸ موکاپ بدون تغییر مانده است. Supabase مرجع نهایی داده، Vercel میزبان پیشنهادی، Cloudflare fallback. هیچ پروژه موجود یا زیرساخت پولی دستکاری نشده است.
