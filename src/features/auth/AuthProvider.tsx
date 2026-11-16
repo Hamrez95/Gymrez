@@ -1,21 +1,8 @@
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { QueryClient } from '@tanstack/react-query';
-import type { Session } from '@supabase/supabase-js';
 import { buildPasswordRecoveryRedirectUrl } from '../../app/config';
 import { runtimeConfig, supabaseClient } from '../../data/supabase/client';
-
-type AuthStatus = 'loading' | 'signedOut' | 'signedIn' | 'unavailable';
-type AuthSnapshot = { status: AuthStatus; session: Session | null; recoveryRequired: boolean };
-type AuthContextValue = AuthSnapshot & {
-  userId: string | null;
-  email: string | null;
-  signIn: (email: string, password: string) => Promise<void>;
-  requestPasswordReset: (email: string) => Promise<void>;
-  updatePassword: (password: string) => Promise<void>;
-  finishPasswordRecovery: () => void;
-  signOut: () => Promise<void>;
-};
-const AuthContext = createContext<AuthContextValue | null>(null);
+import { AuthContext, type AuthContextValue, type AuthSnapshot } from './authContext';
 
 export function AuthProvider({ queryClient, children }: { queryClient: QueryClient; children: ReactNode }) {
   const [snapshot, setSnapshot] = useState<AuthSnapshot>(() => ({
@@ -78,10 +65,4 @@ export function AuthProvider({ queryClient, children }: { queryClient: QueryClie
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth(): AuthContextValue {
-  const value = useContext(AuthContext);
-  if (!value) throw new Error('useAuth must be used inside AuthProvider');
-  return value;
 }

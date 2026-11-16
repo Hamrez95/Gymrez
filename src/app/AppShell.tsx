@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../shared/design/components';
-import { useAuth } from '../features/auth/AuthProvider';
+import { useAuth } from '../features/auth/useAuth';
 import { listAccessibleProfiles } from '../data/supabase/profileRepository';
 import { runtimeConfig, supabaseClient } from '../data/supabase/client';
 import type { Profile } from '../shared/contracts/profile';
