@@ -25,6 +25,7 @@ The source filenames match the Supabase migration history:
 
 ## Validation
 - All 14 pgTAP assertions passed against the connected project, covering member/non-member/anon access, UPDATE USING/WITH CHECK boundaries, storage path ownership, foreign-key ownership, idempotency, and published-version immutability.
+- GitHub Quality workflow #35 passed typecheck, lint, unit tests, build, and E2E: https://github.com/Hamrez95/Gymrez/actions/runs/43878344808.
 - Test fixtures were rolled back; no synthetic users or test households remain, and pgTAP was not left installed.
 - Security and health advisors report no lints. The performance advisor reports no unindexed foreign keys; it currently reports 18 unused-index INFO findings on the new project.
 
