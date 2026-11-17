@@ -1,35 +1,36 @@
 # T06 — راه‌اندازی ورود دعوتی
 
-این تنظیمات برای اتصال Gymrez به همان پروژه Supabase در نظر گرفته شده‌اند. حساب‌ها و عضویت workspace از مرورگر ساخته نمی‌شوند.
+این تنظیمات برای اتصال Gymrez به پروژهٔ Supabase است. ساخت حساب و عضویت workspace از مرورگر انجام نمی‌شود.
 
-## ۱. تنظیم کلاینت
+## ۱. کلاینت و میزبانی
 
-برای محیط build برنامه این متغیرها را تنظیم کن:
+پروژهٔ رایگان Cloudflare Pages با نام `gymrez` به ریپو وصل شده و این متغیرهای build برای کلاینت Supabase تنظیم شده‌اند:
 
 - `VITE_SUPABASE_URL`: نشانی API پروژه Gymrez.
-- `VITE_SUPABASE_PUBLISHABLE_KEY`: کلید publishable پروژه؛ کلید `service_role` یا `sb_secret` هرگز مناسب کلاینت نیست.
-- `VITE_AUTH_REDIRECT_ORIGINS`: فهرست originهای دقیق و جداشده با ویرگول، مانند `https://gymrez.example,http://localhost:5173`.
+- `VITE_SUPABASE_PUBLISHABLE_KEY`: کلید عمومی publishable؛ کلید `service_role` یا `sb_secret` هرگز مناسب کلاینت نیست.
+- `VITE_AUTH_REDIRECT_ORIGINS`: originهای دقیقی که کد برای بازیابی رمز می‌پذیرد.
 
-نشانی‌های preview باید جداگانه و دقیق اضافه شوند. کد فقط originهای صریح را برای لینک بازیابی می‌پذیرد و مسیر بازگشت را به `/login?flow=recovery` محدود می‌کند. فایل نمونهٔ محیط فقط تنظیمات نمونه دارد.
+آدرس هدف برنامه `https://gymrez.pages.dev` است، اما Cloudflare هنوز اولین deployment را نساخته است. ریپو در تنظیمات پروژه ثبت شده، ولی باید دسترسی نصب Cloudflare Workers & Pages GitHub App به ریپوی Gymrez تأیید شود؛ سپس یک push جدید برای شروع build لازم است.
 
 ## ۲. تنظیم Supabase Auth
 
-در تنظیمات Auth پروژه:
+پس از انتشار اولیه، در تنظیمات Auth پروژه:
 
 1. ورود ایمیل/رمز را فعال نگه دار.
-2. گزینه اجازهٔ ثبت‌نام کاربران جدید را خاموش کن؛ مسیر sign-up در کلاینت وجود ندارد.
-3. Site URL را روی origin اصلی برنامه قرار بده.
-4. برای هر origin مجاز، pattern `https://<origin>/login?flow=recovery**` را در allowlist ثبت کن؛ callback PKCE می‌تواند پارامترهای query داشته باشد. خود کلاینت فقط originهای صریح و مسیر ثابت `/login?flow=recovery` را می‌فرستد. از اضافه‌کردن همهٔ دامنه‌های ناشناس preview خودداری کن.
+2. اجازهٔ ثبت‌نام کاربران جدید را خاموش کن؛ مسیر sign-up در کلاینت وجود ندارد.
+3. Site URL را روی `https://gymrez.pages.dev` قرار بده.
+4. الگوی `https://gymrez.pages.dev/login?flow=recovery**` را در redirect allowlist ثبت کن. callback مربوط به PKCE می‌تواند پارامترهای query داشته باشد. از اضافه‌کردن دامنه‌های ناشناس preview خودداری کن.
 
-تنظیم dashboard از این ریپو قابل تغییر نیست و باید در پروژهٔ Supabase ثبت شود.
+تنظیمات Auth dashboard از این ریپو قابل تغییر نیست. تا این تنظیم انجام نشود، بازیابی رمز ممکن است کار نکند.
 
-## ۳. دعوت امن و workspace
+## ۳. حساب‌ها و workspace
 
-1. دو ایمیل موردنظر را از بخش کاربران Supabase به‌صورت دعوتی اضافه کن. ایمیل‌ها یا لینک دعوت را در ریپو یا Issue ننویس.
-2. پس از ایجاد هر دو کاربر، با شناسه‌های Auth آن‌ها در SQL Editor یک household و دو membership بساز. جدول `household_members` از کلاینت فقط خواندنی است و هیچ policy درج عمومی ندارد.
-3. در همان household دو ردیف `profiles` ایجاد کن. هر دو عضو household به هر دو پروفایل دسترسی خواهند داشت؛ RLS عضویت را برای تمام queryها بررسی می‌کند.
+- ورود فعلی Supabase با ایمیل و رمز انجام می‌شود؛ `hamrez95` و `Ryxy` نام‌های نمایشی پروفایل هستند، نه ایمیل یا رمز ورود.
+- هنوز هیچ ایمیل دعوتی ارسال نشده و هیچ حساب واقعی ساخته نشده است.
+- پس از ایجاد دو حساب Auth از مسیر مورد اعتماد، شناسه‌های Auth آن‌ها را در SQL Editor برای household و membership استفاده کن. جدول `household_members` از کلاینت فقط خواندنی است و policy درج عمومی ندارد.
+- در همان household دو پروفایل بساز. هر دو عضو به هر دو پروفایل دسترسی دارند و RLS عضویت را برای queryها بررسی می‌کند.
 
-نمونهٔ ساختار SQL را در SQL Editor با UUIDهای واقعی پر کن؛ این مقادیر را داخل فایل‌های پروژه ذخیره نکن:
+نمونه را در SQL Editor با UUIDهای Auth پر کن؛ UUIDها یا ایمیل‌ها را در ریپو و Issue ننویس:
 
 ```sql
 insert into public.households (name)
@@ -43,15 +44,15 @@ values
 
 insert into public.profiles (household_id, display_name)
 values
-  ('<household_uuid>', '<profile_one_name>'),
-  ('<household_uuid>', '<profile_two_name>');
+  ('<household_uuid>', 'hamrez95'),
+  ('<household_uuid>', 'Ryxy');
 ```
 
 ## ۴. بررسی
 
-- هر دو کاربر باید پس از ورود دقیقاً دو پروفایل household را ببینند.
-- کاربر خارج از household باید در انتخاب پروفایل هیچ ردیفی نبیند؛ query مستقیم با UUID پروفایل دیگر هم باید به‌واسطهٔ RLS خالی بماند.
-- لینک بازیابی را از هر origin مجاز امتحان کن و مطمئن شو callback به origin دیگری نمی‌رود.
+- هر دو کاربر پس از ورود دقیقاً دو پروفایل household را ببینند.
+- کاربر خارج از household در انتخاب پروفایل هیچ ردیفی نبیند؛ query مستقیم با UUID پروفایل دیگر هم باید به‌واسطهٔ RLS خالی بماند.
+- لینک بازیابی را از origin مجاز امتحان کن و مطمئن شو callback به origin دیگری نمی‌رود.
 - در کلاینت گزینهٔ ساخت حساب یا ورود پیامکی وجود ندارد.
 
-تا وقتی URL/key در hosting تنظیم و Auth پروژه به شکل بالا پیکربندی نشود، صفحه ورود عمداً غیرفعال می‌ماند.
+پس از دسترسی GitHub App و انتشار اولیه، تنظیم Site URL/redirect allowlist و آزمون Auth واقعی باقی می‌مانند.
