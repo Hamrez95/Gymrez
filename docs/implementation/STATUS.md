@@ -6,14 +6,16 @@
 - T01/#2 و T02/#3 تکمیل شدند؛ اسکلت React/TypeScript/Vite و CI در main است.
 - T03/#4 و T04/#5 ادغام شده‌اند؛ ساختار و پوسته آماده است، اما تطبیق تصویری دقیق و پولیش نهایی طبق برنامه در T19/T21 باز می‌ماند.
 - T05/#6 در پروژهٔ مستقل Supabase اجرا شده: ۹ migration، ۱۴ جدول با RLS، bucket خصوصی `profile-media`، seed هشت حرکت و ۱۴ assertion موفق pgTAP. PR #29 هنوز draft است تا شواهد تصویری نهایی ثبت شوند.
-- T06/#7: ورود دعوتی، بازیابی رمز با allowlist، queryهای scopeشده و پاک‌سازی cache در PR #30 روی شاخهٔ `feat/t06-invite-auth` آماده است. Quality CI run 41 سبز است: [جزئیات](https://github.com/Hamrez95/Gymrez/actions/runs/43963370727).
+- T06/#7: ورود دعوتی، بازیابی رمز با allowlist، queryهای scopeشده و پاک‌سازی cache در PR #30 روی شاخهٔ `feat/t06-invite-auth` آماده است. Quality CI run 42 سبز است: [جزئیات](https://github.com/Hamrez95/Gymrez/actions/runs/44050250705).
 - پروژهٔ Supabase در آخرین بررسی `ACTIVE_HEALTHY` بود. شمارش read-only: ۰ کاربر Auth، ۰ household، ۰ عضویت و ۰ پروفایل.
 - مشاورهای امنیت و سلامت Supabase lintی نداشتند. مشاور عملکرد ۱۸ مورد INFO برای index استفاده‌نشده نشان می‌دهد؛ با توجه به خالی بودن جدول‌های کاربری، فعلاً شواهدی برای حذف آن‌ها نیست.
+- میزبانی رایگان Cloudflare Pages ساخته و به GitHub وصل شده است: [gymrez.pages.dev](https://gymrez.pages.dev). شاخهٔ انتشار فعلی `feat/t06-invite-auth`، build برابر `npm run build` و خروجی `dist` است. متغیرهای عمومی کلاینت Supabase برای build تنظیم شده‌اند. اولین deployment با commit بعدی شروع می‌شود.
+- پس از deployment باید Site URL و redirect allowlist بازیابی رمز در Supabase روی origin برابر `https://gymrez.pages.dev` تنظیم شوند.
 
 ## موارد باقی‌ماندهٔ T06
 
-- تنظیم Auth dashboard و متغیرهای build/hosting هنوز انجام نشده‌اند.
-- برای دعوت واقعی، دو ایمیل لازم است؛ سپس باید دو حساب دعوتی، household و دو پروفایل ساخته شوند.
+- تنظیم Auth dashboard هنوز انجام نشده است؛ فعلاً هیچ Auth user، household، membership یا profile واقعی وجود ندارد.
+- دو حساب باید در Supabase ایجاد شوند و بعد household خصوصی و پروفایل‌های `hamrez95` و `Ryxy` provision شوند. شناسه‌های پروفایل نام نمایشی‌اند؛ Auth فعلی از ایمیل/رمز استفاده می‌کند.
 - آزمون ورود دو حساب، بازیابی رمز و رد دسترسی حساب سوم هنوز انجام نشده است.
 - صف آفلاین/outbox هنوز ساخته نشده و معیار حذف/بازیابی تغییرات صف‌شده هنگام logout به T17 وابسته است.
 - شواهد screenshot موبایل/دسکتاپ و مقایسه با موکاپ همچنان باز هستند.
@@ -26,9 +28,9 @@
 | --- | --- |
 | M0 | T01/#2 و T02/#3 تکمیل |
 | M1 | پایهٔ T03/#4 و T04/#5 ادغام؛ تطبیق تصویری نهایی باز |
-| M2 | اسکیمای T05 آماده؛ اجرای واقعی T06 در انتظار Auth، hosting و دو حساب |
+| M2 | اسکیمای T05 آماده؛ hosting رایگان تنظیم؛ اجرای واقعی T06 در انتظار تنظیم Auth و دو حساب |
 | M3–M6 | شروع نشده؛ گرافیک و موشن نهایی طبق برنامه در T19 |
 
 ## اقدام بعدی
 
-تنظیم Auth و hosting، دریافت دو ایمیل دعوت و provision امن دو حساب/workspace؛ پس از آزمون ورود واقعی، ادامه به T07. راهنمای تنظیمات در [T06_SETUP.md](T06_SETUP.md) است.
+پس از commit فعلی، منتظر build اولیهٔ Cloudflare می‌مانیم؛ سپس Site URL/redirect allowlist در Supabase و دو حساب را تنظیم و آزمون می‌کنیم. راهنمای پایه در [T06_SETUP.md](T06_SETUP.md) است.
