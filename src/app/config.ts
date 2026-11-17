@@ -85,8 +85,11 @@ export function buildPasswordRecoveryRedirectUrl(origin: string, mode: DataMode,
   try {
     const parsed = new URL(origin);
     if (parsed.origin !== origin || !mode.authRedirectOrigins.includes(parsed.origin)) return null;
-    const normalizedBasePath = `/${basePath.split('/').filter(Boolean).join('/')}/`;
-    return new URL(`${normalizedBasePath}login?flow=recovery`, parsed.origin).toString();
+    const basePathSegments = basePath.split('/').filter(Boolean);
+    const recoveryPath = basePathSegments.length === 0
+      ? '/login?flow=recovery'
+      : `/${basePathSegments.join('/')}/login?flow=recovery`;
+    return new URL(recoveryPath, parsed.origin).toString();
   } catch {
     return null;
   }
