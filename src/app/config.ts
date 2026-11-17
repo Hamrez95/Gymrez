@@ -80,13 +80,13 @@ export function resolveDataMode(env: RuntimeEnvironment = import.meta.env): Data
   };
 }
 
-export function buildPasswordRecoveryRedirectUrl(origin: string, mode: DataMode): string | null {
+export function buildPasswordRecoveryRedirectUrl(origin: string, mode: DataMode, basePath = '/'): string | null {
   if (mode.mode !== 'supabase') return null;
   try {
     const parsed = new URL(origin);
     if (parsed.origin !== origin || !mode.authRedirectOrigins.includes(parsed.origin)) return null;
-    const recoveryUrl = new URL('/login?flow=recovery', parsed.origin);
-    return recoveryUrl.toString();
+    const normalizedBasePath = `/${basePath.split('/').filter(Boolean).join('/')}/`;
+    return new URL(`${normalizedBasePath}login?flow=recovery`, parsed.origin).toString();
   } catch {
     return null;
   }

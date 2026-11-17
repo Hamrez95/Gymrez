@@ -45,7 +45,7 @@ export function AuthProvider({ queryClient, children }: { queryClient: QueryClie
       if (error) throw new Error('ورود انجام نشد. ایمیل و رمز عبور را بررسی کن.');
     },
     async requestPasswordReset(email) {
-      const redirectTo = buildPasswordRecoveryRedirectUrl(window.location.origin, runtimeConfig);
+      const redirectTo = buildPasswordRecoveryRedirectUrl(window.location.origin, runtimeConfig, import.meta.env.BASE_URL);
       if (!redirectTo) throw new Error('بازیابی رمز برای این نشانی فعال نشده است. نشانی محیط را در فهرست مجاز Supabase ثبت کن.');
       const { error } = await requireClient().auth.resetPasswordForEmail(email.trim(), { redirectTo });
       if (error) throw new Error('درخواست بازیابی ارسال نشد. کمی بعد دوباره تلاش کن.');

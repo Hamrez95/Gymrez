@@ -4,22 +4,25 @@
 
 ## ۱. کلاینت و میزبانی
 
-پروژهٔ رایگان Cloudflare Pages با نام `gymrez` به ریپو وصل شده و این متغیرهای build برای کلاینت Supabase تنظیم شده‌اند:
+مخزن GitHub Pages رایگان را با این workflow منتشر می‌کند:
 
-- `VITE_SUPABASE_URL`: نشانی API پروژه Gymrez.
-- `VITE_SUPABASE_PUBLISHABLE_KEY`: کلید عمومی publishable؛ کلید `service_role` یا `sb_secret` هرگز مناسب کلاینت نیست.
-- `VITE_AUTH_REDIRECT_ORIGINS`: originهای دقیقی که کد برای بازیابی رمز می‌پذیرد.
+- نشانی برنامه: `https://hamrez95.github.io/Gymrez/`
+- workflow: `.github/workflows/deploy-pages.yml`
+- متغیرهای عمومی Supabase هنگام build از workflow خوانده می‌شوند؛ کلید `service_role` یا `sb_secret` هرگز برای کلاینت نیست.
+- مسیرهای SPA و لینک بازیابی رمز با زیرمسیر `/Gymrez/` هماهنگ شده‌اند.
 
-آدرس هدف برنامه `https://gymrez.pages.dev` است، اما Cloudflare هنوز اولین deployment را نساخته است. ریپو در تنظیمات پروژه ثبت شده، ولی باید دسترسی نصب Cloudflare Workers & Pages GitHub App به ریپوی Gymrez تأیید شود؛ سپس یک push جدید برای شروع build لازم است.
+برای فعال‌سازی یک‌باره، در مخزن GitHub برو به **Settings → Pages → Build and deployment** و **Source** را روی **GitHub Actions** بگذار. بعد از آن هر push روی `main` یا `feat/t06-invite-auth` deployment را اجرا می‌کند. تا انجام این تنظیم، آدرس Pages منتشر نمی‌شود.
+
+پروژهٔ Cloudflare Pages هم قبلاً ساخته شده، اما هنوز deployment ندارد؛ می‌تواند گزینهٔ جایگزین میزبانی باشد.
 
 ## ۲. تنظیم Supabase Auth
 
-پس از انتشار اولیه، در تنظیمات Auth پروژه:
+پس از اولین انتشار، در تنظیمات Auth پروژه:
 
 1. ورود ایمیل/رمز را فعال نگه دار.
 2. اجازهٔ ثبت‌نام کاربران جدید را خاموش کن؛ مسیر sign-up در کلاینت وجود ندارد.
-3. Site URL را روی `https://gymrez.pages.dev` قرار بده.
-4. الگوی `https://gymrez.pages.dev/login?flow=recovery**` را در redirect allowlist ثبت کن. callback مربوط به PKCE می‌تواند پارامترهای query داشته باشد. از اضافه‌کردن دامنه‌های ناشناس preview خودداری کن.
+3. Site URL را روی `https://hamrez95.github.io/Gymrez/` قرار بده.
+4. الگوی `https://hamrez95.github.io/Gymrez/login?flow=recovery**` را در redirect allowlist ثبت کن. callback مربوط به PKCE می‌تواند پارامترهای query داشته باشد.
 
 تنظیمات Auth dashboard از این ریپو قابل تغییر نیست. تا این تنظیم انجام نشود، بازیابی رمز ممکن است کار نکند.
 
@@ -52,7 +55,7 @@ values
 
 - هر دو کاربر پس از ورود دقیقاً دو پروفایل household را ببینند.
 - کاربر خارج از household در انتخاب پروفایل هیچ ردیفی نبیند؛ query مستقیم با UUID پروفایل دیگر هم باید به‌واسطهٔ RLS خالی بماند.
-- لینک بازیابی را از origin مجاز امتحان کن و مطمئن شو callback به origin دیگری نمی‌رود.
+- لینک بازیابی را از نشانی Pages امتحان کن و مطمئن شو callback به مسیر `/Gymrez/login` برمی‌گردد.
 - در کلاینت گزینهٔ ساخت حساب یا ورود پیامکی وجود ندارد.
 
-پس از دسترسی GitHub App و انتشار اولیه، تنظیم Site URL/redirect allowlist و آزمون Auth واقعی باقی می‌مانند.
+پس از فعال‌کردن Pages و انتشار اولیه، تنظیم Site URL/redirect allowlist و آزمون Auth واقعی باقی می‌مانند.

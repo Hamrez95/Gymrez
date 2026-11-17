@@ -9,13 +9,13 @@
 - T06/#7: ورود دعوتی، بازیابی رمز با allowlist، queryهای scopeشده و پاک‌سازی cache در PR #30 روی شاخهٔ `feat/t06-invite-auth` آماده است. Quality CI run 42 سبز است: [جزئیات](https://github.com/Hamrez95/Gymrez/actions/runs/44050250705).
 - پروژهٔ Supabase در آخرین بررسی `ACTIVE_HEALTHY` بود. شمارش read-only: ۰ کاربر Auth، ۰ household، ۰ عضویت و ۰ پروفایل.
 - مشاورهای امنیت و سلامت Supabase lintی نداشتند. مشاور عملکرد ۱۸ مورد INFO برای index استفاده‌نشده نشان می‌دهد؛ با توجه به خالی بودن جدول‌های کاربری، فعلاً شواهدی برای حذف آن‌ها نیست.
-- پروژهٔ رایگان Cloudflare Pages با نام `gymrez` ساخته شده و متغیرهای عمومی build برای Supabase تنظیم شده‌اند. پیکربندی ریپو و شاخهٔ `feat/t06-invite-auth` در Cloudflare ثبت است، اما هنوز هیچ deploymentای ایجاد نشده؛ آدرس `https://gymrez.pages.dev` تا انتشار موفق در دسترس نیست.
-- یک push بعد از ساخت پروژه build را شروع نکرد. اتصال GitHub به‌صورت metadata ثبت شده، اما به احتمال زیاد Cloudflare Workers & Pages GitHub App هنوز دسترسی لازم به ریپوی Gymrez را ندارد. طبق مستندات Cloudflare، نصب و مجوزدهی GitHub App برای دسترسی به ریپو دو مرحلهٔ جداست.
+- workflow انتشار رایگان GitHub Pages آماده شده و آدرس هدف `https://hamrez95.github.io/Gymrez/` است. Vite، BrowserRouter، fallback مسیرهای SPA و بازیابی رمز برای زیرمسیر `/Gymrez/` پشتیبانی می‌شوند. فعال‌سازی Source روی GitHub Actions در Settings → Pages هنوز لازم است؛ بنابراین هنوز deployment تأییدشده‌ای نداریم.
+- پروژهٔ رایگان Cloudflare Pages با نام `gymrez` هم ساخته شده، اما هنوز deployment ندارد.
 
 ## موارد باقی‌ماندهٔ T06
 
-- دسترسی GitHub App به ریپوی Gymrez را در GitHub Settings > Applications > Installed GitHub Apps بررسی/تکمیل کن؛ پس از آن یک push جدید لازم است تا deployment آغاز شود.
-- پس از deployment، Site URL و redirect allowlist بازیابی رمز در Supabase باید روی origin برابر `https://gymrez.pages.dev` تنظیم شوند.
+- در GitHub مخزن Gymrez، Settings → Pages → Build and deployment، Source را روی GitHub Actions قرار بده؛ سپس workflow به‌صورت خودکار منتشر می‌کند.
+- پس از deployment، Site URL و redirect allowlist بازیابی رمز در Supabase باید روی `https://hamrez95.github.io/Gymrez/` تنظیم شوند.
 - تنظیم Auth dashboard هنوز انجام نشده است؛ فعلاً هیچ Auth user، household، membership یا profile واقعی وجود ندارد.
 - دو حساب باید در Supabase ایجاد شوند و بعد household خصوصی و پروفایل‌های `hamrez95` و `Ryxy` provision شوند. این دو شناسه نام نمایشی پروفایل‌اند؛ Auth فعلی از ایمیل/رمز استفاده می‌کند.
 - آزمون ورود دو حساب، بازیابی رمز و رد دسترسی حساب سوم هنوز انجام نشده است.
@@ -30,9 +30,9 @@
 | --- | --- |
 | M0 | T01/#2 و T02/#3 تکمیل |
 | M1 | پایهٔ T03/#4 و T04/#5 ادغام؛ تطبیق تصویری نهایی باز |
-| M2 | اسکیمای T05 آماده؛ Cloudflare Pages تنظیم شده اما deployment ندارد؛ اجرای واقعی T06 در انتظار مجوز GitHub App و تنظیم Auth/دو حساب |
+| M2 | اسکیمای T05 آماده؛ workflow GitHub Pages آماده اما نیازمند فعال‌سازی Source؛ اجرای واقعی T06 در انتظار تنظیم Auth/دو حساب |
 | M3–M6 | شروع نشده؛ گرافیک و موشن نهایی طبق برنامه در T19 |
 
 ## اقدام بعدی
 
-دسترسی Cloudflare Workers & Pages GitHub App به ریپوی Gymrez را در GitHub تأیید کن. پس از آن push جدید deployment را شروع می‌کند؛ سپس Site URL/redirect allowlist در Supabase، دو حساب و آزمون واقعی را کامل می‌کنیم. راهنمای Auth در [T06_SETUP.md](T06_SETUP.md) است.
+در GitHub Settings → Pages، Source را روی GitHub Actions قرار بده. پس از اولین انتشار، Site URL/redirect allowlist در Supabase، دو حساب و آزمون واقعی را کامل می‌کنیم. راهنمای Auth در [T06_SETUP.md](T06_SETUP.md) است.
