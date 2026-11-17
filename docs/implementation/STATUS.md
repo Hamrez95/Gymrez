@@ -1,25 +1,34 @@
 # Gymrez — وضعیت اجرا
-آخرین به‌روزرسانی: 2026-11-17
+آخرین بررسی: 2026-11-17
 
 ## پیشرفت
+
 - T01/#2 و T02/#3 تکمیل شدند؛ اسکلت React/TypeScript/Vite و CI در main است.
-- T03/#4: پایهٔ component و semantic tokens در [PR #27](https://github.com/Hamrez95/Gymrez/pull/27) ادغام شد. تطبیق دقیق تصاویر، فونت و assetهای نهایی هنوز باز است و در T19/T21 پیگیری می‌شود.
-- T04/#5: پوستهٔ responsive، مسیرهای نمایشی، انتخاب پروفایل synthetic، تم و حالت ورود نمایشی در [PR #28](https://github.com/Hamrez95/Gymrez/pull/28) ادغام شد. CI سبز: typecheck، lint، unit، build و E2E موبایل/دسکتاپ. [شواهد CI](https://github.com/Hamrez95/Gymrez/actions/runs/43859115714)؛ screenshot artifact تا 2026-11-23.
-- T05/#6: پروژهٔ مستقل Gymrez در سازمان Free متصل است. ۹ migration ثبت‌شده/اعمال‌شده، ۱۴ جدول با RLS، bucket خصوصی `profile-media`، ۸ حرکت seed، generated types و ۱۴ assertion موفق pgTAP. [Quality CI سبز](https://github.com/Hamrez95/Gymrez/actions/runs/43878723290). [PR #29](https://github.com/Hamrez95/Gymrez/pull/29) draft می‌ماند تا screenshotهای تطبیق موکاپ در پاس نهایی ثبت شوند.
-- advisor امنیت و سلامت بدون lint است؛ advisor عملکرد FK بدون ایندکس ندارد و در حال حاضر ۱۸ ایندکس استفاده‌نشدهٔ INFO گزارش می‌کند.
-- T06/#7 در [PR #30](https://github.com/Hamrez95/Gymrez/pull/30) پیاده‌سازی اولیه دارد: Auth دعوتی، بازیابی رمز با redirect allowlist، queryهای scopeشده و پاک‌سازی cache. [Quality CI run 40 سبز](https://github.com/Hamrez95/Gymrez/actions/runs/43962999328).
-- راهنمای تنظیم Auth و ساخت workspace در [T06_SETUP.md](T06_SETUP.md) و وضعیت/محدودیت‌ها در [T06_PROGRESS.md](T06_PROGRESS.md) ثبت شده است.
+- T03/#4 و T04/#5 ادغام شده‌اند؛ ساختار و پوسته آماده است، اما تطبیق تصویری دقیق و پولیش نهایی طبق برنامه در T19/T21 باز می‌ماند.
+- T05/#6 در پروژهٔ مستقل Supabase اجرا شده: ۹ migration، ۱۴ جدول با RLS، bucket خصوصی `profile-media`، seed هشت حرکت و ۱۴ assertion موفق pgTAP. PR #29 هنوز draft است تا شواهد تصویری نهایی ثبت شوند.
+- T06/#7: ورود دعوتی، بازیابی رمز با allowlist، queryهای scopeشده و پاک‌سازی cache در PR #30 روی شاخهٔ `feat/t06-invite-auth` آماده است. Quality CI run 41 سبز است: [جزئیات](https://github.com/Hamrez95/Gymrez/actions/runs/43963370727).
+- پروژهٔ Supabase در آخرین بررسی `ACTIVE_HEALTHY` بود. شمارش read-only: ۰ کاربر Auth، ۰ household، ۰ عضویت و ۰ پروفایل.
+- مشاورهای امنیت و سلامت Supabase lintی نداشتند. مشاور عملکرد ۱۸ مورد INFO برای index استفاده‌نشده نشان می‌دهد؛ با توجه به خالی بودن جدول‌های کاربری، فعلاً شواهدی برای حذف آن‌ها نیست.
 
-## محدودیت‌ها
-تست pgTAP با داده‌های مصنوعی در تراکنش اجرا و rollback شد؛ کاربر، پروفایل، اندازه یا تمرین واقعی ثبت نشده و افزونهٔ pgTAP پس از تست نصب نمانده است. پروژه فعلاً Auth user، household و profile ندارد. تنظیم Auth dashboard و متغیرهای hosting نیازمند تنظیم پروژه‌اند؛ تا آن زمان ورود در UI غیرفعال می‌ماند. آزمون واقعی invite/recovery و آزمون دو کاربر باقی است.
-تصویرسازی سفارشی، فونت نهایی و motion بنا بر درخواست کاربر به مرحلهٔ آخر با sol6.1 موکول شده‌اند. صفحه‌ها همچنان به تطبیق دقیق موکاپ PACE نیاز دارند.
+## موارد باقی‌ماندهٔ T06
 
-## ردیابی
+- تنظیم Auth dashboard و متغیرهای build/hosting هنوز انجام نشده‌اند.
+- برای دعوت واقعی، دو ایمیل لازم است؛ سپس باید دو حساب دعوتی، household و دو پروفایل ساخته شوند.
+- آزمون ورود دو حساب، بازیابی رمز و رد دسترسی حساب سوم هنوز انجام نشده است.
+- صف آفلاین/outbox هنوز ساخته نشده و معیار حذف/بازیابی تغییرات صف‌شده هنگام logout به T17 وابسته است.
+- شواهد screenshot موبایل/دسکتاپ و مقایسه با موکاپ همچنان باز هستند.
+
+تا برقراری جریان واقعی ورود و provision کردن workspace، T06 باز و draft می‌ماند؛ Issue بعدیِ وابسته یعنی T07 هنوز شروع نشده است.
+
+## وضعیت مرحله‌ها
+
 | مرحله | وضعیت |
 | --- | --- |
 | M0 | T01/#2 و T02/#3 تکمیل |
-| M1 | T03/#4 و T04/#5 foundation ادغام؛ تطبیق بصری باز |
-| M2 | T05/#6 backend و RLS اجرا و تست شد؛ screenshot تطبیق مرجع باقی؛ T06/#7 کدنویسی در جریان، اتصال production و آزمون حساب واقعی باقی |
-| M3–M6 | شروع نشده؛ motion و گرافیک نهایی طبق برنامه در T19 |
+| M1 | پایهٔ T03/#4 و T04/#5 ادغام؛ تطبیق تصویری نهایی باز |
+| M2 | اسکیمای T05 آماده؛ اجرای واقعی T06 در انتظار Auth، hosting و دو حساب |
+| M3–M6 | شروع نشده؛ گرافیک و موشن نهایی طبق برنامه در T19 |
 
-اقدام بعدی: اجرای CI شاخهٔ T06، سپس تنظیم hosting/Auth و provision امن دو حساب؛ بعد از آن مرور نهایی تصاویر طبق ترتیب قبلی.
+## اقدام بعدی
+
+تنظیم Auth و hosting، دریافت دو ایمیل دعوت و provision امن دو حساب/workspace؛ پس از آزمون ورود واقعی، ادامه به T07. راهنمای تنظیمات در [T06_SETUP.md](T06_SETUP.md) است.
