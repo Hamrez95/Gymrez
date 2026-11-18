@@ -7,6 +7,7 @@
 - T03/#4 و T04/#5 ادغام شده‌اند؛ ساختار و پوسته آماده است، اما تطبیق تصویری دقیق و پولیش نهایی طبق برنامه در T19/T21 باز می‌ماند.
 - T05/#6 در پروژهٔ مستقل Supabase اجرا شده: ۹ migration، ۱۴ جدول با RLS، bucket خصوصی `profile-media`، seed هشت حرکت و ۱۴ assertion موفق pgTAP. PR #29 هنوز draft است تا شواهد تصویری نهایی ثبت شوند.
 - T06/#7: ورود دعوتی، بازیابی رمز با allowlist، queryهای scopeشده و پاک‌سازی cache در PR #30 روی شاخهٔ `feat/t06-invite-auth` آماده است. تنظیم Auth و آزمون دو حساب واقعی هنوز باز است.
+- T07/#8: PR #31 draft است. Vazirmatn و رابط اولیهٔ برنامه‌ها به شاخه اضافه شدند؛ Quality CI run 52 شامل typecheck/lint/unit/build/e2e موفق شد. migration SQL روی Supabase هنوز اعمال نشده چون تأیید ابزار دوبار منقضی شد؛ screenshot تطبیقی و انتخاب حرکت/ست هم باز هستند.
 - پروژهٔ Supabase در آخرین بررسی `ACTIVE_HEALTHY` بود. شمارش read-only: ۰ کاربر Auth، ۰ household، ۰ عضویت و ۰ پروفایل.
 - مشاورهای امنیت و سلامت Supabase lintی نداشتند. مشاور عملکرد ۱۸ مورد INFO برای index استفاده‌نشده نشان می‌دهد؛ با توجه به خالی بودن جدول‌های کاربری، فعلاً شواهدی برای حذف آن‌ها نیست.
 - Gymrez روی GitHub Pages در `https://hamrez95.github.io/Gymrez/` منتشر شده است. Vite، BrowserRouter، fallback مسیرهای SPA و بازیابی رمز برای زیرمسیر `/Gymrez/` پشتیبانی می‌شوند. Source روی GitHub Actions تنظیم شده و Environment اجازهٔ انتشار از شاخه‌های `main` و `feat/t06-invite-auth` را دارد. آخرین build و deploy موفق‌اند: [workflow](https://github.com/Hamrez95/Gymrez/actions/runs/44155382887).
