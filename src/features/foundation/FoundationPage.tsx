@@ -33,19 +33,19 @@ export function FoundationPage({ section = 'در حال ساخت' }: { section?:
     {section === 'برنامه‌ها' && <>
       {!guestPreview && programs.isPending && <p role="status">در حال دریافت برنامه‌ها…</p>}
       {programs.isError && <p role="alert">دریافت برنامه‌ها انجام نشد.</p>}
-      {(guestPreview || (!programs.isPending && !programs.isError && programs.data?.length === 0)) && <p>برای این پروفایل برنامه‌ای ثبت نشده است.</p>}
+      {(guestPreview || (!programs.isPending && !programs.isError && programs.data?.length === 0)) && <p>{guestPreview ? 'دادهٔ برنامه در حالت بدون ورود نمایش داده نمی‌شود.' : 'برای این پروفایل برنامه‌ای ثبت نشده است.'}</p>}
       {programs.data?.map(program => <Card key={program.id} title={program.title}><p>{formatStatus(program.status)}</p><p>{program.starts_on ?? 'بدون تاریخ شروع'} تا {program.ends_on ?? 'بدون تاریخ پایان'}</p></Card>)}
     </>}
     {section === 'تمرین' && <>
       {!guestPreview && workouts.isPending && <p role="status">در حال دریافت جلسه‌ها…</p>}
       {workouts.isError && <p role="alert">دریافت جلسه‌های تمرین انجام نشد.</p>}
-      {(guestPreview || (!workouts.isPending && !workouts.isError && workouts.data?.length === 0)) && <p>برای این پروفایل جلسه‌ای ثبت نشده است.</p>}
+      {(guestPreview || (!workouts.isPending && !workouts.isError && workouts.data?.length === 0)) && <p>{guestPreview ? 'سابقهٔ تمرین در حالت بدون ورود نمایش داده نمی‌شود.' : 'برای این پروفایل جلسه‌ای ثبت نشده است.'}</p>}
       {workouts.data?.map(workout => <Card key={workout.id} title={workout.title_snapshot}><p>{formatStatus(workout.status)} · {workout.started_at}</p><p>زمان ثبت‌شده: {workout.elapsed_seconds} ثانیه</p></Card>)}
     </>}
     {section === 'پیشرفت و سابقه' && <>
       {!guestPreview && measurements.isPending && <p role="status">در حال دریافت اندازه‌ها…</p>}
       {measurements.isError && <p role="alert">دریافت اندازه‌های بدن انجام نشد.</p>}
-      {(guestPreview || (!measurements.isPending && !measurements.isError && measurements.data?.length === 0)) && <p>اندازه‌ای برای این پروفایل ثبت نشده است.</p>}
+      {(guestPreview || (!measurements.isPending && !measurements.isError && measurements.data?.length === 0)) && <p>{guestPreview ? 'اندازه‌های بدن در حالت بدون ورود نمایش داده نمی‌شوند.' : 'اندازه‌ای برای این پروفایل ثبت نشده است.'}</p>}
       {measurements.data?.map(measurement => <Card key={measurement.id} title={measurement.measurement_date}>
         <p>وزن: {measurement.weight_kg == null ? 'ثبت نشده' : measurement.weight_kg + ' کیلوگرم'}</p>
         <p>قد: {measurement.height_cm == null ? 'ثبت نشده' : measurement.height_cm + ' سانتی‌متر'}</p>
@@ -53,7 +53,7 @@ export function FoundationPage({ section = 'در حال ساخت' }: { section?:
       </Card>)}
     </>}
     {section === 'پروفایل' && <Card title={activeProfile?.displayName ?? 'پروفایل'}>
-      <p>شناسه این پروفایل در workspace با RLS بررسی می‌شود.</p>
+      <p>{guestPreview ? 'این یک پروفایل نمایشی برای انتخاب سریع است.' : 'شناسه این پروفایل در workspace با RLS بررسی می‌شود.'}</p>
       <p className="pace-demo-note">فرم ویرایش در مرحلهٔ پروفایل بدن اضافه می‌شود؛ این صفحه هنوز هیچ تغییری ذخیره نمی‌کند.</p>
     </Card>}
   </section>;
