@@ -1,7 +1,7 @@
 # Gymrez
 PWA شخصی تمرین حمیدرضا و ریحانه، با طراحی Gymrez PACE.
 
-**وضعیت فعلی: ممیزی طراحی و اسکلت فنی قابل اجرا آماده است؛ رابط نهایی و قابلیت‌های واقعی هنوز ساخته یا منتشر نشده‌اند.**
+**وضعیت فعلی: پیش‌نمایش مستقیم Gymrez روی GitHub Pages؛ انتخاب پروفایل بدون ورود فعال است. داده‌های اصلی هنوز به این پیش‌نمایش متصل نیستند.**
 
 ## شروع و پیگیری
 - [نقشه راه و tracker مادر #1](https://github.com/Hamrez95/Gymrez/issues/1)
@@ -30,8 +30,8 @@ npm run dev
 
 `npm run audit:design` تمام ۸ مرجع را اندازه‌گیری و ۲۵ crop را تولید می‌کند؛ PNGهای تکراری در git نرفته‌اند. [ممیزی T01](docs/implementation/T01_REFERENCE_AUDIT.md) و [نتایج T02](docs/implementation/evidence/T02/VERIFICATION.md).
 
-حالت فعلی فقط demo مصنوعی و خواندنی است. تنظیم حالت supabase بدون adapter، به خطای روشن ختم می‌شود؛ هیچ ذخیره واقعی یا ورود هنوز فعال نیست. `.env.example` فقط نمونه تنظیمات است.
+حالت پیش‌فرض `VITE_GUEST_MODE=true` است: برنامه مستقیم باز می‌شود، پروفایل‌های نمایشی `hamrez95` و `Ryxy` را نشان می‌دهد و هیچ داده‌ای از Supabase نمی‌خواند یا ذخیره نمی‌کند. RLS تغییری نکرده است. برای بازگرداندن ورود دعوتی، `VITE_GUEST_MODE=false` را تنظیم کنید.
 
 
 ## Current preview
-The root route shows a synthetic profile chooser. Dashboard, mobile/desktop navigation, and sign-in remain previews; they do not save training data or authenticate. T04 stays open pending exact-reference screenshot review. See [T04 progress](docs/implementation/T04_PROGRESS.md) and [STATUS](docs/implementation/STATUS.md).
+The root route opens the profile chooser. Select either profile to reach its dashboard; the header lets you switch profiles. `/login` redirects home while guest preview is enabled. These demo profiles do not authenticate or save training data. T04 stays open pending exact-reference screenshot review. See [T04 progress](docs/implementation/T04_PROGRESS.md) and [STATUS](docs/implementation/STATUS.md).

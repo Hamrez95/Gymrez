@@ -2,7 +2,6 @@
  * Measured from the dark PACE panels in docs/mockups/pace/00..02.
  * The mockups contain gradients, texture and compression; values below are
  * stable representative samples, not a claim that every rendered pixel is flat.
- * Font family and light-surface tokens remain provisional pending source assets.
  */
 :root {
   color-scheme: dark;
@@ -21,7 +20,7 @@
   --pace-danger: #ff7474;
   --pace-focus: #a4bcff;
 
-  --pace-font-family: Tahoma, Arial, sans-serif;
+  --pace-font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
   --pace-text-xs: 0.75rem;
   --pace-text-sm: 0.875rem;
   --pace-text-md: 1rem;
