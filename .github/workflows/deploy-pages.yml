@@ -36,6 +36,7 @@ jobs:
         run: npm run build
         env:
           VITE_BASE_PATH: ${{ steps.pages.outputs.base_path }}/
+          VITE_GUEST_MODE: true
           VITE_SUPABASE_URL: https://utpoylgymefrvcsxkjeh.supabase.co
           VITE_SUPABASE_PUBLISHABLE_KEY: sb_publishable_tEumhMNcL4AJjFmxQTyF7w_R2-pjTXw
           VITE_AUTH_REDIRECT_ORIGINS: https://hamrez95.github.io
