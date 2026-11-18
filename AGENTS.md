@@ -17,7 +17,7 @@ UI completion نیازمند screenshot موبایل/دسکتاپ و مقایس�
 Finish structural, data, navigation, and functional work first. Defer generated/extracted imagery, custom logo/icon art, decorative graphics, and final motion polish until the final pass with sol6.1. Keep those items explicitly open; do not substitute placeholders and call them complete. T19 is the last visual-polish task before T21 screenshot comparison.
 
 ## فنی و داده
-React/TypeScript strict/Vite، Tailwind، Motion، Supabase Auth/PostgreSQL/RLS؛ Dexie برای دوام محلی و outbox، نه جایگزین Supabase.
+React/TypeScript strict/Vite، Tailwind، Motion، Supabase/PostgreSQL/RLS؛ Dexie برای دوام محلی و outbox، نه جایگزین Supabase. فعلاً guest preview بدون ورود روشن است؛ پروفایل‌های نمایشی فقط برای انتخاب UI هستند و در guest mode هیچ داده‌ای از Supabase خوانده یا نوشته نمی‌شود. RLS را عمومی نکن. برای دادهٔ واقعی، احراز هویت و عضویت معتبر باید دوباره فعال و بررسی شود.
 کد feature-based و منطق محاسبه/timer/sync از JSX جدا. abstraction اضافی و چند backend نساز. dependencyها و lockfile ثبت شوند.
 داده واقعی/اندازه/جلسه/credential یا service_role در ریپوی عمومی ممنوع. fixtures مصنوعی. دو حساب دعوتی و workspace خصوصی؛ انتخاب H/R امنیت ورود نیست.
 project مستقلی برای Gymrez و فقط پس از بررسی پلن رایگان بساز؛ به LifeMate یا پروژه دیگر دست نزن و منبع پولی فعال نکن.
