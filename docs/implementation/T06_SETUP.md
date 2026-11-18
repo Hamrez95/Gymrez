@@ -4,16 +4,15 @@
 
 ## ۱. کلاینت و میزبانی
 
-مخزن GitHub Pages رایگان را با این workflow منتشر می‌کند:
+برنامه با GitHub Pages رایگان منتشر شده است:
 
-- نشانی برنامه: `https://hamrez95.github.io/Gymrez/`
-- workflow: `.github/workflows/deploy-pages.yml`
-- متغیرهای عمومی Supabase هنگام build از workflow خوانده می‌شوند؛ کلید `service_role` یا `sb_secret` هرگز برای کلاینت نیست.
-- مسیرهای SPA و لینک بازیابی رمز با زیرمسیر `/Gymrez/` هماهنگ شده‌اند.
+- نشانی فعال: `https://hamrez95.github.io/Gymrez/`
+- workflow انتشار: `.github/workflows/deploy-pages.yml`
+- آخرین اجرای Pages، build و deploy را با موفقیت انجام داد.
+- Vite، BrowserRouter، مسیرهای SPA و بازیابی رمز برای زیرمسیر `/Gymrez/` تنظیم شده‌اند.
+- Source مخزن روی GitHub Actions است و Environment `github-pages` انتشار از شاخه‌های `main` و `feat/t06-invite-auth` را می‌پذیرد.
 
-برای فعال‌سازی یک‌باره، در مخزن GitHub برو به **Settings → Pages → Build and deployment** و **Source** را روی **GitHub Actions** بگذار. بعد از آن هر push روی `main` یا `feat/t06-invite-auth` deployment را اجرا می‌کند. تا انجام این تنظیم، آدرس Pages منتشر نمی‌شود.
-
-پروژهٔ Cloudflare Pages هم قبلاً ساخته شده، اما هنوز deployment ندارد؛ می‌تواند گزینهٔ جایگزین میزبانی باشد.
+پروژهٔ Cloudflare Pages هم قبلاً ساخته شده، اما هنوز deployment ندارد و صرفاً گزینهٔ جایگزین است.
 
 ## ۲. تنظیم Supabase Auth
 
@@ -58,4 +57,4 @@ values
 - لینک بازیابی را از نشانی Pages امتحان کن و مطمئن شو callback به مسیر `/Gymrez/login` برمی‌گردد.
 - در کلاینت گزینهٔ ساخت حساب یا ورود پیامکی وجود ندارد.
 
-پس از فعال‌کردن Pages و انتشار اولیه، تنظیم Site URL/redirect allowlist و آزمون Auth واقعی باقی می‌مانند.
+Pages منتشر شده است؛ تنظیم Site URL/redirect allowlist در Supabase و آزمون Auth واقعی باقی می‌مانند.

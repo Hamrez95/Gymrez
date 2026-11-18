@@ -9,12 +9,12 @@
 - T06/#7: ورود دعوتی، بازیابی رمز با allowlist، queryهای scopeشده و پاک‌سازی cache در PR #30 روی شاخهٔ `feat/t06-invite-auth` آماده است. Quality CI run 42 سبز است: [جزئیات](https://github.com/Hamrez95/Gymrez/actions/runs/44050250705).
 - پروژهٔ Supabase در آخرین بررسی `ACTIVE_HEALTHY` بود. شمارش read-only: ۰ کاربر Auth، ۰ household، ۰ عضویت و ۰ پروفایل.
 - مشاورهای امنیت و سلامت Supabase lintی نداشتند. مشاور عملکرد ۱۸ مورد INFO برای index استفاده‌نشده نشان می‌دهد؛ با توجه به خالی بودن جدول‌های کاربری، فعلاً شواهدی برای حذف آن‌ها نیست.
-- workflow انتشار رایگان GitHub Pages آماده شده و آدرس هدف `https://hamrez95.github.io/Gymrez/` است. Vite، BrowserRouter، fallback مسیرهای SPA و بازیابی رمز برای زیرمسیر `/Gymrez/` پشتیبانی می‌شوند. فعال‌سازی Source روی GitHub Actions در Settings → Pages هنوز لازم است؛ بنابراین هنوز deployment تأییدشده‌ای نداریم.
+- Gymrez روی GitHub Pages در `https://hamrez95.github.io/Gymrez/` منتشر شده است. Vite، BrowserRouter، fallback مسیرهای SPA و بازیابی رمز برای زیرمسیر `/Gymrez/` پشتیبانی می‌شوند. Source روی GitHub Actions تنظیم شده و Environment اجازهٔ انتشار از شاخه‌های `main` و `feat/t06-invite-auth` را دارد. آخرین build و deploy موفق‌اند: [workflow](https://github.com/Hamrez95/Gymrez/actions/runs/44155382887).
 - پروژهٔ رایگان Cloudflare Pages با نام `gymrez` هم ساخته شده، اما هنوز deployment ندارد.
 
 ## موارد باقی‌ماندهٔ T06
 
-- در GitHub مخزن Gymrez، Settings → Pages → Build and deployment، Source را روی GitHub Actions قرار بده؛ سپس workflow به‌صورت خودکار منتشر می‌کند.
+- انتشار GitHub Pages انجام شد؛ workflow در pushهای بعدی روی شاخه‌های `main` و `feat/t06-invite-auth` به‌صورت خودکار اجرا می‌شود.
 - پس از deployment، Site URL و redirect allowlist بازیابی رمز در Supabase باید روی `https://hamrez95.github.io/Gymrez/` تنظیم شوند.
 - تنظیم Auth dashboard هنوز انجام نشده است؛ فعلاً هیچ Auth user، household، membership یا profile واقعی وجود ندارد.
 - دو حساب باید در Supabase ایجاد شوند و بعد household خصوصی و پروفایل‌های `hamrez95` و `Ryxy` provision شوند. این دو شناسه نام نمایشی پروفایل‌اند؛ Auth فعلی از ایمیل/رمز استفاده می‌کند.
@@ -30,9 +30,9 @@
 | --- | --- |
 | M0 | T01/#2 و T02/#3 تکمیل |
 | M1 | پایهٔ T03/#4 و T04/#5 ادغام؛ تطبیق تصویری نهایی باز |
-| M2 | اسکیمای T05 آماده؛ workflow GitHub Pages آماده اما نیازمند فعال‌سازی Source؛ اجرای واقعی T06 در انتظار تنظیم Auth/دو حساب |
+| M2 | اسکیمای T05 آماده و GitHub Pages منتشر شده؛ اجرای واقعی T06 در انتظار تنظیم Auth/دو حساب |
 | M3–M6 | شروع نشده؛ گرافیک و موشن نهایی طبق برنامه در T19 |
 
 ## اقدام بعدی
 
-در GitHub Settings → Pages، Source را روی GitHub Actions قرار بده. پس از اولین انتشار، Site URL/redirect allowlist در Supabase، دو حساب و آزمون واقعی را کامل می‌کنیم. راهنمای Auth در [T06_SETUP.md](T06_SETUP.md) است.
+Pages منتشر شده است. قدم بعدی تنظیم Site URL/redirect allowlist در Supabase، ساخت دو حساب و آزمون واقعی دسترسی‌هاست. راهنمای Auth در [T06_SETUP.md](T06_SETUP.md) است.
