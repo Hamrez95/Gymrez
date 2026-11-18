@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../auth/useAuth';
 import { useShellProfile } from '../../app/shellContext';
@@ -111,18 +111,14 @@ export function ProgramsPage() {
   const [selectedDays, setSelectedDays] = useState<number[]>([6, 1, 3]);
   const [notice, setNotice] = useState<{ message: string; error: boolean } | null>(null);
 
-  const selectedProgram = programs.data?.find(program => program.id === selectedId) ?? null;
+  const defaultSelectedId = programs.data?.find(program => program.status === 'active')?.id ?? programs.data?.[0]?.id ?? null;
+  const activeSelectedId = selectedId && programs.data?.some(program => program.id === selectedId) ? selectedId : defaultSelectedId;
+  const selectedProgram = programs.data?.find(program => program.id === activeSelectedId) ?? null;
   const detail = useQuery({
-    queryKey: [...baseKey, 'program-detail', selectedId],
-    queryFn: () => getProgramDetail(supabaseClient!, scope!, selectedId!),
-    enabled: Boolean(canQuery && selectedId),
+    queryKey: [...baseKey, 'program-detail', activeSelectedId],
+    queryFn: () => getProgramDetail(supabaseClient!, scope!, activeSelectedId!),
+    enabled: Boolean(canQuery && activeSelectedId),
   });
-
-  useEffect(() => {
-    if (!selectedId && programs.data?.length) {
-      setSelectedId(programs.data.find(program => program.status === 'active')?.id ?? programs.data[0].id);
-    }
-  }, [programs.data, selectedId]);
 
   const visiblePrograms = useMemo(() => {
     const all = programs.data ?? [];
@@ -244,7 +240,7 @@ export function ProgramsPage() {
       <aside className="pace-programs__details" aria-label="جزئیات برنامه">
         {detail.isPending && selectedId && <Card title="جزئیات برنامه"><Skeleton label="در حال دریافت جزئیات برنامه" /></Card>}
         {detail.isError && <Card title="جزئیات برنامه"><p role="alert">جزئیات دریافت نشد. اتصال را بررسی کن.</p><Button type="button" variant="secondary" onClick={() => void detail.refetch()}>تلاش دوباره</Button></Card>}
-        {!selectedId && <Card title="جزئیات برنامه"><p>برای دیدن جلسه‌ها، یک برنامه را انتخاب کن.</p></Card>}
+        {!activeSelectedId && <Card title="جزئیات برنامه"><p>برای دیدن جلسه‌ها، یک برنامه را انتخاب کن.</p></Card>}
         {selectedProgram && detail.data && <Card className="pace-program-detail">
           <div className="pace-program-detail__heading">
             <div><p className="eyebrow">جزئیات برنامه<span aria-hidden="true"> //</span></p><h2>{selectedProgram.title}</h2></div>
@@ -285,7 +281,7 @@ export function ProgramsPage() {
         </Card>}
         <div className="pace-program-cards">
           {visiblePrograms.map(program => {
-            const detailForSelected = selectedId === program.id ? detail.data : undefined;
+            const detailForSelected = activeSelectedId === program.id ? detail.data : undefined;
             const weekdays = detailForSelected?.sessions.flatMap(session => session.weekday === null ? [] : [session.weekday]) ?? [];
             const range = program.starts_on && program.ends_on ? { startsOn: program.starts_on, endsOn: program.ends_on } : null;
             const expected = range ? daysInRange(range.startsOn, range.endsOn, weekdays) : 0;
