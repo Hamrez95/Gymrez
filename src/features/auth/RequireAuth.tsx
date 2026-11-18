@@ -3,11 +3,12 @@ import { useAuth } from './useAuth';
 import type { ShellContext } from '../../app/shellContext';
 
 export function RequireAuth() {
+  const shellContext = useOutletContext<ShellContext>();
   const { status } = useAuth();
   const location = useLocation();
   if (status === 'loading') return <p role="status">در حال بررسی نشست کاربری…</p>;
   if (status !== 'signedIn') return <Navigate to="/login" replace state={{ next: location.pathname + location.search }} />;
-  return <Outlet />;
+  return <Outlet context={shellContext} />;
 }
 
 export function RequireProfile() {
