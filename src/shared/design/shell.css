@@ -335,3 +335,35 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.pace-guest-banner,
+.pace-guest-note,
+.pace-guest-notice {
+  border: 1px solid var(--pace-accent-soft);
+  border-radius: var(--pace-radius-sm);
+  background: color-mix(in srgb, var(--pace-accent) 12%, var(--pace-surface));
+  color: var(--pace-text);
+}
+
+.pace-guest-banner {
+  width: min(100% - 2rem, 90rem);
+  margin: 0.75rem auto;
+  padding: 0.65rem 1rem;
+  font-size: var(--pace-text-sm);
+}
+
+.pace-guest-note {
+  display: block;
+  margin-block: 0.75rem 0;
+  padding: 0.55rem 0.75rem;
+  font-size: var(--pace-text-sm);
+}
+
+.pace-guest-notice p {
+  margin: 0;
+}
+
+.pace-program-builder input:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}

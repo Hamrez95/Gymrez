@@ -1,13 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { Button, Card } from '../../shared/design/components';
 import { useShellProfile } from '../../app/shellContext';
+import { runtimeConfig } from '../../data/supabase/client';
 
 export function ProfileChooser() {
   const navigate = useNavigate();
   const { profiles, profilesPending, profilesError, setActiveProfile } = useShellProfile();
 
   return <section className="pace-entry" aria-labelledby="entry-title">
-    <div className="pace-entry__intro"><p className="eyebrow">GYMREZ / PACE</p><h1 id="entry-title">امروز کی تمرین می‌کنه؟</h1><p>برای ادامه، پروفایل خودت را انتخاب کن.</p></div>
+    <div className="pace-entry__intro"><p className="eyebrow">GYMREZ / PACE</p><h1 id="entry-title">امروز کی تمرین می‌کنه؟</h1><p>برای ادامه، پروفایل خودت را انتخاب کن.</p>{runtimeConfig.guestMode && <p className="pace-guest-note">پیش‌نمایش بدون ورود · تغییرات ذخیره نمی‌شوند.</p>}</div>
     <div className="pace-entry__profiles" aria-label="پروفایل‌های workspace">
       {profilesPending && <p role="status">در حال دریافت پروفایل‌های مجاز…</p>}
       {profilesError && <p role="alert">پروفایل‌های مجاز بارگذاری نشدند. دوباره تلاش کن.</p>}

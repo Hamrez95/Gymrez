@@ -19,11 +19,13 @@ export function DashboardPreview() {
   const activeProgram = programs.data?.find(item => item.status === 'active');
   const recentWorkout = workouts.data?.[0];
   const recentMeasurement = measurements.data?.[0];
+  const guestPreview = !userId;
 
   return <section className="pace-dashboard" aria-labelledby="dashboard-title">
     <div className="pace-dashboard__intro"><p className="eyebrow">GYMREZ / PACE</p><h1 id="dashboard-title">سلام، {activeProfile?.displayName}<span aria-hidden="true"> //</span></h1><p>اطلاعات این صفحه از workspace مجاز همین پروفایل خوانده می‌شود.</p></div>
-    {[programs, workouts, measurements].some(query => query.isPending) && <p role="status">در حال دریافت اطلاعات پروفایل…</p>}
-    {[programs, workouts, measurements].some(query => query.isError) && <p role="alert">بخشی از اطلاعات این پروفایل بارگذاری نشد.</p>}
+    {guestPreview && <p className="pace-demo-note" role="status">پیش‌نمایش پروفایل «{activeProfile?.displayName}» فعال است؛ داده‌ای از Supabase خوانده نمی‌شود.</p>}
+    {!guestPreview && [programs, workouts, measurements].some(query => query.isPending) && <p role="status">در حال دریافت اطلاعات پروفایل…</p>}
+    {!guestPreview && [programs, workouts, measurements].some(query => query.isError) && <p role="alert">بخشی از اطلاعات این پروفایل بارگذاری نشد.</p>}
     <Card className="pace-dashboard__progress" title="برنامه فعال">
       {activeProgram ? <><p>{activeProgram.title}</p><p>{activeProgram.starts_on ?? 'بدون تاریخ شروع'} تا {activeProgram.ends_on ?? 'بدون تاریخ پایان'}</p></> : <p>برای این پروفایل برنامه فعالی ثبت نشده است.</p>}
       <Link to="/programs">دیدن برنامه‌ها</Link>

@@ -2,6 +2,7 @@ export type RuntimeEnvironment = {
   VITE_SUPABASE_URL?: string;
   VITE_SUPABASE_PUBLISHABLE_KEY?: string;
   VITE_AUTH_REDIRECT_ORIGINS?: string;
+  VITE_GUEST_MODE?: string;
   DEV?: boolean;
 };
 
@@ -11,8 +12,9 @@ export type DataMode =
       url: string;
       publishableKey: string;
       authRedirectOrigins: readonly string[];
+      guestMode: boolean;
     }
-  | { mode: 'unavailable'; reason: string };
+  | { mode: 'unavailable'; reason: string; guestMode: boolean };
 
 const DEVELOPMENT_REDIRECT_ORIGINS = [
   'http://localhost:5173',
@@ -63,20 +65,22 @@ function parseRedirectOrigins(value: string | undefined, isDevelopment: boolean)
 }
 
 export function resolveDataMode(env: RuntimeEnvironment = import.meta.env): DataMode {
+  const guestMode = env.VITE_GUEST_MODE?.trim().toLowerCase() !== 'false';
   const urlValue = env.VITE_SUPABASE_URL?.trim() ?? '';
   const key = env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim() ?? '';
   if (!urlValue || !key) {
-    return { mode: 'unavailable', reason: 'برای فعال شدن ورود، نشانی Supabase و کلید publishable باید در تنظیمات محیط برنامه قرار بگیرند.' };
+    return { mode: 'unavailable', reason: 'اتصال Supabase در این پیش‌نمایش فعال نیست.', guestMode };
   }
   const url = safeSupabaseUrl(urlValue);
   if (!url || !isPublishableOrAnonKey(key)) {
-    return { mode: 'unavailable', reason: 'تنظیمات Supabase معتبر نیست. فقط URL پروژه و کلید publishable یا anon مجاز است.' };
+    return { mode: 'unavailable', reason: 'تنظیمات Supabase معتبر نیست. فقط URL پروژه و کلید publishable یا anon مجاز است.', guestMode };
   }
   return {
     mode: 'supabase',
     url,
     publishableKey: key,
     authRedirectOrigins: parseRedirectOrigins(env.VITE_AUTH_REDIRECT_ORIGINS, env.DEV === true),
+    guestMode,
   };
 }
 

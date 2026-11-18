@@ -93,6 +93,7 @@ export function ProgramsPage() {
     : ['gymrez', 'no-profile'];
   const programsKey = [...baseKey, 'programs'];
   const canQuery = Boolean(supabaseClient && scope);
+  const guestPreview = !userId;
   const programs = useQuery({
     queryKey: programsKey,
     queryFn: () => listPrograms(supabaseClient!, scope!),
@@ -234,11 +235,12 @@ export function ProgramsPage() {
       <Button type="button" variant="secondary" onClick={startNew}>＋ <span>برنامهٔ جدید</span></Button>
     </header>
 
+    {guestPreview && <Card className="pace-guest-notice"><p>پیش‌نمایش بدون ورود؛ برنامه‌ها و تغییرات در این حالت از Supabase خوانده یا ذخیره نمی‌شوند.</p></Card>}
     {notice && <Toast message={notice.message} kind={notice.error ? 'error' : 'success'} onDismiss={() => setNotice(null)} />}
 
     <div className="pace-programs__grid">
       <aside className="pace-programs__details" aria-label="جزئیات برنامه">
-        {detail.isPending && selectedId && <Card title="جزئیات برنامه"><Skeleton label="در حال دریافت جزئیات برنامه" /></Card>}
+        {!guestPreview && detail.isPending && selectedId && <Card title="جزئیات برنامه"><Skeleton label="در حال دریافت جزئیات برنامه" /></Card>}
         {detail.isError && <Card title="جزئیات برنامه"><p role="alert">جزئیات دریافت نشد. اتصال را بررسی کن.</p><Button type="button" variant="secondary" onClick={() => void detail.refetch()}>تلاش دوباره</Button></Card>}
         {!activeSelectedId && <Card title="جزئیات برنامه"><p>برای دیدن جلسه‌ها، یک برنامه را انتخاب کن.</p></Card>}
         {selectedProgram && detail.data && <Card className="pace-program-detail">
@@ -259,10 +261,10 @@ export function ProgramsPage() {
           {detail.data.sessions.length === 0 && <p className="pace-demo-note">برای این نسخه هنوز جلسه‌ای تعریف نشده است.</p>}
           <p className="pace-demo-note">انتخاب حرکات، ست و تکرار در ویرایشگر مرحلهٔ بعد اضافه می‌شود.</p>
           <div className="pace-program-detail__actions">
-            {(selectedProgram.status !== 'active' || detail.data.publishedAt === null) && <Button type="button" onClick={() => activateMutation.mutate(selectedProgram.id)} loading={activateMutation.isPending}>{selectedProgram.status === 'active' ? 'انتشار نسخهٔ جدید' : 'فعال‌سازی'}</Button>}
-            <Button type="button" variant="secondary" onClick={() => void startEdit()} disabled={selectedProgram.status === 'archived' || detail.isPending}>ویرایش</Button>
-            <Button type="button" variant="secondary" onClick={makeCopy} disabled={detail.isPending}>کپی برای ماه بعد</Button>
-            {selectedProgram.status !== 'archived' && <Button type="button" variant="quiet" onClick={() => archiveMutation.mutate(selectedProgram)} loading={archiveMutation.isPending}>آرشیو</Button>}
+            {(selectedProgram.status !== 'active' || detail.data.publishedAt === null) && <Button type="button" onClick={() => activateMutation.mutate(selectedProgram.id)} loading={activateMutation.isPending} disabled={guestPreview}>{selectedProgram.status === 'active' ? 'انتشار نسخهٔ جدید' : 'فعال‌سازی'}</Button>}
+            <Button type="button" variant="secondary" onClick={() => void startEdit()} disabled={guestPreview || selectedProgram.status === 'archived' || detail.isPending}>ویرایش</Button>
+            <Button type="button" variant="secondary" onClick={makeCopy} disabled={guestPreview || detail.isPending}>کپی برای ماه بعد</Button>
+            {selectedProgram.status !== 'archived' && <Button type="button" variant="quiet" onClick={() => archiveMutation.mutate(selectedProgram)} loading={archiveMutation.isPending} disabled={guestPreview}>آرشیو</Button>}
           </div>
         </Card>}
       </aside>
@@ -271,13 +273,13 @@ export function ProgramsPage() {
         <div className="pace-programs__tabs">
           <Tabs label="فیلتر برنامه‌ها" value={filter} items={[...TABS]} onChange={setFilter} />
         </div>
-        {programs.isPending && <div className="pace-programs__loading"><Skeleton label="در حال دریافت برنامه‌ها" /><Skeleton label="در حال دریافت برنامه‌ها" /></div>}
+        {!guestPreview && programs.isPending && <div className="pace-programs__loading"><Skeleton label="در حال دریافت برنامه‌ها" /><Skeleton label="در حال دریافت برنامه‌ها" /></div>}
         {programs.isError && <Card title="دریافت برنامه‌ها ناموفق بود"><p role="alert">برنامه‌ها از workspace دریافت نشدند.</p><Button type="button" variant="secondary" onClick={() => void programs.refetch()}>تلاش دوباره</Button></Card>}
-        {!programs.isPending && !programs.isError && visiblePrograms.length === 0 && <Card className="pace-program-empty">
+        {(guestPreview || (!programs.isPending && !programs.isError && visiblePrograms.length === 0)) && <Card className="pace-program-empty">
           <span className="pace-program-empty__mark" aria-hidden="true">＋</span>
-          <h2>{filter === 'active' ? 'هنوز برنامهٔ فعالی نداری' : filter === 'upcoming' ? 'برنامهٔ آینده‌ای نیست' : 'آرشیو خالی است'}</h2>
-          <p>{filter === 'active' ? 'یک پیش‌نویس بساز و پس از بازبینی آن را فعال کن.' : 'برنامه‌های این بخش پس از ثبت یا آرشیو نمایش داده می‌شوند.'}</p>
-          {filter === 'active' && <Button type="button" onClick={startNew}>ساخت برنامهٔ جدید</Button>}
+          <h2>{guestPreview ? 'پیش‌نمایش برنامه‌ها' : filter === 'active' ? 'هنوز برنامهٔ فعالی نداری' : filter === 'upcoming' ? 'برنامهٔ آینده‌ای نیست' : 'آرشیو خالی است'}</h2>
+          <p>{guestPreview ? 'برای حفظ حریم خصوصی، برنامه‌های Supabase در حالت بدون ورود نمایش داده نمی‌شوند.' : filter === 'active' ? 'یک پیش‌نویس بساز و پس از بازبینی آن را فعال کن.' : 'برنامه‌های این بخش پس از ثبت یا آرشیو نمایش داده می‌شوند.'}</p>
+          {filter === 'active' && !guestPreview && <Button type="button" onClick={startNew}>ساخت برنامهٔ جدید</Button>}
         </Card>}
         <div className="pace-program-cards">
           {visiblePrograms.map(program => {
@@ -320,15 +322,15 @@ export function ProgramsPage() {
           <h2>{formMode === 'edit' ? 'ویرایش برنامه' : 'یک برنامهٔ تمرینی جدید بساز'}</h2>
           <p className="pace-demo-note">جلسه‌های هفتگی در تمام هفته‌های ماه تکرار می‌شوند.</p>
           <form onSubmit={event => { event.preventDefault(); saveMutation.mutate(); }}>
-            <TextInput label="عنوان برنامه" name="program-title" value={title} onChange={event => setTitle(event.target.value)} required maxLength={120} placeholder="مثلاً برنامهٔ قدرت پایه" />
+            <TextInput label="عنوان برنامه" name="program-title" value={title} onChange={event => setTitle(event.target.value)} disabled={guestPreview} required maxLength={120} placeholder="مثلاً برنامهٔ قدرت پایه" />
             <div className="pace-field">
               <label htmlFor="program-month">ماه برنامه</label>
-              <input id="program-month" className="pace-input" type="month" value={month} onChange={event => setMonth(event.target.value)} required />
+              <input id="program-month" className="pace-input" type="month" value={month} onChange={event => setMonth(event.target.value)} disabled={guestPreview} required />
             </div>
             <fieldset className="pace-program-days">
               <legend>روزهای تمرین در هفته</legend>
               <div>{DAYS.map(day => <label key={day.weekday} className="pace-program-day">
-                <input type="checkbox" checked={selectedDays.includes(day.weekday)} onChange={() => toggleDay(day.weekday)} />
+                <input type="checkbox" checked={selectedDays.includes(day.weekday)} onChange={() => toggleDay(day.weekday)} disabled={guestPreview} />
                 <span>{day.label}</span>
               </label>)}</div>
               {selectedDays.length === 0 && <small role="alert">یک روز تمرین انتخاب کن.</small>}
@@ -337,7 +339,7 @@ export function ProgramsPage() {
               <span>تعداد جلسه در هفته</span><strong>{selectedDays.length} جلسه</strong>
             </div>
             <div className="pace-program-builder__actions">
-              <Button type="submit" loading={saveMutation.isPending} disabled={selectedDays.length === 0 || !title.trim() || !month}>
+              <Button type="submit" loading={saveMutation.isPending} disabled={guestPreview || selectedDays.length === 0 || !title.trim() || !month}>
                 {formMode === 'edit' ? 'ذخیرهٔ نسخهٔ جدید' : 'ذخیره به‌صورت پیش‌نویس'}
               </Button>
               {formMode === 'edit' && <Button type="button" variant="quiet" onClick={startNew}>انصراف از ویرایش</Button>}
