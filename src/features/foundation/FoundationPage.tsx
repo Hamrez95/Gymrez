@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '../auth/useAuth';
 import { useShellProfile } from '../../app/shellContext';
 import { listMeasurements, listPrograms, listWorkoutSessions } from '../../data/supabase/profileDataRepository';
 import { profileKey } from '../../data/queryKeys';
@@ -16,8 +15,7 @@ function formatStatus(value: string): string {
 }
 
 export function FoundationPage({ section = 'در حال ساخت' }: { section?: string }) {
-  const { userId } = useAuth();
-  const { activeProfile } = useShellProfile();
+  const { userId, activeProfile } = useShellProfile();
   const guestPreview = !userId;
   const scope = activeProfile && userId ? { userId, householdId: activeProfile.householdId, profileId: activeProfile.id } : null;
   const baseKey = scope ? profileKey(scope.userId, scope.householdId, scope.profileId) : ['gymrez', 'no-profile'];
