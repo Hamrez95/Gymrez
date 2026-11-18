@@ -762,7 +762,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      activate_program: {
+        Args: { p_household_id: string; p_profile_id: string; p_program_id: string }
+        Returns: string
+      }
+      save_program_draft: {
+        Args: {
+          p_expected_revision?: number
+          p_ends_on: string | null
+          p_household_id: string
+          p_profile_id: string
+          p_program_id?: string
+          p_sessions: Json
+          p_starts_on: string | null
+          p_title: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
