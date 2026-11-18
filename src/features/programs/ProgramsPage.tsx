@@ -33,7 +33,8 @@ const TABS = [
 ] as const;
 
 function currentMonth(): string {
-  return new Date().toISOString().slice(0, 7);
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 }
 
 function monthRange(month: string): { startsOn: string; endsOn: string } {
@@ -62,9 +63,12 @@ function formatDate(value: string | null): string {
 }
 
 function monthAfter(value: string | null): string {
-  const date = value ? new Date(value + 'T00:00:00Z') : new Date();
-  date.setUTCMonth(date.getUTCMonth() + 1);
-  return date.toISOString().slice(0, 7);
+  const now = new Date();
+  const [year, month] = value
+    ? value.slice(0, 7).split('-').map(Number)
+    : [now.getFullYear(), now.getMonth() + 1];
+  const next = new Date(Date.UTC(year, month, 1));
+  return `${next.getUTCFullYear()}-${String(next.getUTCMonth() + 1).padStart(2, '0')}`;
 }
 
 function statusLabel(status: string): string {
@@ -122,8 +126,13 @@ export function ProgramsPage() {
 
   const visiblePrograms = useMemo(() => {
     const all = programs.data ?? [];
-    if (filter === 'upcoming') return all.filter(program => program.status === 'draft' && program.starts_on && program.starts_on > new Date().toISOString().slice(0, 10));
-    return all.filter(program => program.status === filter);
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    if (filter === 'upcoming') {
+      return all.filter(program => program.status === 'draft' && program.starts_on && program.starts_on > today);
+    }
+    if (filter === 'archived') return all.filter(program => program.status === 'archived');
+    return all.filter(program => program.status === 'active' || (program.status === 'draft' && (!program.starts_on || program.starts_on <= today)));
   }, [filter, programs.data]);
 
   const saveMutation = useMutation({
