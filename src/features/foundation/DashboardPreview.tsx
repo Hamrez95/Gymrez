@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../auth/useAuth';
 import { useShellProfile } from '../../app/shellContext';
 import { listMeasurements, listPrograms, listWorkoutSessions } from '../../data/supabase/profileDataRepository';
 import { profileKey } from '../../data/queryKeys';
@@ -8,8 +7,7 @@ import { supabaseClient } from '../../data/supabase/client';
 import { Button, Card } from '../../shared/design/components';
 
 export function DashboardPreview() {
-  const { userId } = useAuth();
-  const { activeProfile } = useShellProfile();
+  const { userId, activeProfile } = useShellProfile();
   const scope = activeProfile && userId ? { userId, householdId: activeProfile.householdId, profileId: activeProfile.id } : null;
   const baseKey = scope ? profileKey(scope.userId, scope.householdId, scope.profileId) : ['gymrez', 'no-profile'];
   const enabled = Boolean(scope && supabaseClient);
