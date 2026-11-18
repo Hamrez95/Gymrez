@@ -250,7 +250,7 @@ export function ProgramsPage() {
             <div><p className="eyebrow">جزئیات برنامه<span aria-hidden="true"> //</span></p><h2>{selectedProgram.title}</h2></div>
             <span className={'pace-program-pill pace-program-pill--' + selectedProgram.status}>{statusLabel(selectedProgram.status)}</span>
           </div>
-          <p className="pace-program-detail__meta">نسخهٔ v{detail.data.versionNo} · مالک: {activeProfile?.displayName}</p>
+          <p className="pace-program-detail__meta">نسخهٔ v{detail.data.versionNo} · {detail.data.publishedAt ? 'منتشرشده' : 'پیش‌نویس نسخه'} · مالک: {activeProfile?.displayName}</p>
           <p className="pace-program-detail__dates">{formatDate(selectedProgram.starts_on)} تا {formatDate(selectedProgram.ends_on)}</p>
           <Tabs label="نمایش برنامه" value="sessions" items={[{ value: 'sessions', label: 'جلسه‌ها' }]} onChange={() => undefined} />
           <ol className="pace-program-sessions">
@@ -263,7 +263,7 @@ export function ProgramsPage() {
           {detail.data.sessions.length === 0 && <p className="pace-demo-note">برای این نسخه هنوز جلسه‌ای تعریف نشده است.</p>}
           <p className="pace-demo-note">انتخاب حرکات، ست و تکرار در ویرایشگر مرحلهٔ بعد اضافه می‌شود.</p>
           <div className="pace-program-detail__actions">
-            {selectedProgram.status !== 'active' && <Button type="button" onClick={() => activateMutation.mutate(selectedProgram.id)} loading={activateMutation.isPending}>فعال‌سازی</Button>}
+            {(selectedProgram.status !== 'active' || detail.data.publishedAt === null) && <Button type="button" onClick={() => activateMutation.mutate(selectedProgram.id)} loading={activateMutation.isPending}>{selectedProgram.status === 'active' ? 'انتشار نسخهٔ جدید' : 'فعال‌سازی'}</Button>}
             <Button type="button" variant="secondary" onClick={() => void startEdit()} disabled={selectedProgram.status === 'archived' || detail.isPending}>ویرایش</Button>
             <Button type="button" variant="secondary" onClick={makeCopy} disabled={detail.isPending}>کپی برای ماه بعد</Button>
             {selectedProgram.status !== 'archived' && <Button type="button" variant="quiet" onClick={() => archiveMutation.mutate(selectedProgram)} loading={archiveMutation.isPending}>آرشیو</Button>}
