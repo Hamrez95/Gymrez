@@ -8,3 +8,6 @@ test-results/
 *-result.tmp
 .cache/
 docs/implementation/evidence/T01/*-panel-*.png
+
+# Supabase CLI local state
+supabase/.temp/

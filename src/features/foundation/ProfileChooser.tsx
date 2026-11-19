@@ -1,26 +1,29 @@
-import { useQuery } from '@tanstack/react-query';
-import { Link, useNavigate } from 'react-router-dom';
-import { demoProfileRepository } from '../../data/demo/profileRepository';
-import { Button, Card, Skeleton } from '../../shared/design/components';
+import { useNavigate } from 'react-router-dom';
+import { Button, Card } from '../../shared/design/components';
 import { useShellProfile } from '../../app/shellContext';
+import { ProfileAvatar } from '../../shared/design/ProfileAvatar';
+import { useAuth } from '../auth/useAuth';
+import { runtimeConfig } from '../../data/supabase/client';
 
 export function ProfileChooser() {
   const navigate = useNavigate();
-  const { setProfileId } = useShellProfile();
-  const { data, isPending, isError } = useQuery({ queryKey: ['demo', 'profile-chooser'], queryFn: () => demoProfileRepository.listProfiles() });
+  const { userId } = useAuth();
+  const { profiles, profilesPending, profilesError, setActiveProfile } = useShellProfile();
 
   return <section className="pace-entry" aria-labelledby="entry-title">
-    <div className="pace-entry__intro"><p className="eyebrow">GYMREZ / PACE</p><h1 id="entry-title">امروز کی تمرین می‌کنه؟</h1><p>برای دیدن پیش‌نمایش، یک پروفایل نمونه را انتخاب کن.</p></div>
-    <div className="pace-entry__profiles" aria-label="پروفایل‌های نمونه">
-      {isPending && <Skeleton label="در حال بارگذاری پروفایل‌های نمونه" />}
-      {isError && <p role="alert">پروفایل‌های نمونه بارگذاری نشدند. دوباره صفحه را بارگیری کن.</p>}
-      {data?.map(profile => <Card key={profile.id} className="pace-profile-card">
-        <span className="pace-profile-card__initial" aria-hidden="true">{profile.initial}</span>
+    <div className="pace-entry__intro"><h1 id="entry-title">امروز کی تمرین می‌کنه؟</h1><p>برای ادامه، پروفایل خودت را انتخاب کن.</p>{runtimeConfig.guestMode && !userId && <p className="pace-guest-note">پیش‌نمایش بدون ورود · بایگانی برنامه‌ها در همین مرورگر ذخیره می‌شود.</p>}</div>
+    <div className="pace-entry__profiles" aria-label="پروفایل‌های workspace">
+      {profilesPending && <p role="status">در حال دریافت پروفایل‌های مجاز…</p>}
+      {profilesError && <p role="alert">پروفایل‌های مجاز بارگذاری نشدند. دوباره تلاش کن.</p>}
+      {!profilesPending && !profilesError && profiles.length === 0 && <Card>
+        <p>برای این حساب workspace فعالی پیدا نشد.</p>
+        <p className="pace-demo-note">عضویت فقط از مسیر دعوت و راه‌اندازی امن انجام می‌شود؛ از این صفحه نمی‌توان حساب یا workspace ساخت.</p>
+      </Card>}
+      {profiles.map(profile => <Card key={profile.id} className="pace-profile-card">
+        <ProfileAvatar profile={profile} hero />
         <span className="pace-profile-card__name">{profile.displayName}</span>
-        <Button type="button" aria-label={`ورود به پیش‌نمایش ${profile.displayName}`} onClick={() => { setProfileId(profile.id); navigate(`/dashboard/${profile.id}`); }}>←</Button>
+        <Button type="button" aria-label={'ورود به پروفایل ' + profile.displayName} onClick={() => { setActiveProfile(profile); navigate('/dashboard/' + profile.id); }}>←</Button>
       </Card>)}
     </div>
-    <p className="pace-demo-note" role="note">این‌ها پروفایل‌های مصنوعی‌اند. ورود و اطلاعات واقعی بعد از راه‌اندازی Supabase فعال می‌شود.</p>
-    <Link className="pace-entry__login" to="/login">ورود به حساب کاربری</Link>
   </section>;
 }

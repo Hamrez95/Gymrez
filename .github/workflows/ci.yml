@@ -30,5 +30,6 @@ jobs:
           path: |
             docs/implementation/evidence/T03/*.png
             docs/implementation/evidence/T04/*.png
+            docs/implementation/evidence/T19/*.png
           if-no-files-found: ignore
           retention-days: 7

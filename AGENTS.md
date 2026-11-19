@@ -4,7 +4,7 @@
 - ابتدا docs/implementation/STATUS.md و docs/planning/PLAN.md را بخوان.
 - tracker اصلی: https://github.com/Hamrez95/Gymrez/issues/1 ؛ ۲۴ task با شناسه T01–T24.
 - docs/planning/ARCHITECTURE.md، DESIGN_SPEC.md و MOTION_SPEC.md و معیارهای Issue فعال الزام‌آورند.
-- Current work: T04/#5 app shell. T03 foundation PR #27 is merged; continue from current source rather than rebuilding it.
+- Current work: T05/#6 Supabase schema and RLS. T03 PR #27 and T04 PR #28 are merged; continue from current source rather than rebuilding them. T05 PR #29 is a draft; validate its migration before merge.
 
 ## دستور صریح طراحی
 کاربر **دقیقاً همان طراحی موکاپ‌های docs/mockups/pace/00 تا 07** را می‌خواهد؛ نه «مشابه» و نه بازطراحی سلیقه‌ای.
@@ -17,7 +17,7 @@ UI completion نیازمند screenshot موبایل/دسکتاپ و مقایس�
 Finish structural, data, navigation, and functional work first. Defer generated/extracted imagery, custom logo/icon art, decorative graphics, and final motion polish until the final pass with sol6.1. Keep those items explicitly open; do not substitute placeholders and call them complete. T19 is the last visual-polish task before T21 screenshot comparison.
 
 ## فنی و داده
-React/TypeScript strict/Vite، Tailwind، Motion، Supabase Auth/PostgreSQL/RLS؛ Dexie برای دوام محلی و outbox، نه جایگزین Supabase.
+React/TypeScript strict/Vite، Tailwind، Motion، Supabase/PostgreSQL/RLS؛ Dexie برای دوام محلی و outbox، نه جایگزین Supabase. فعلاً guest preview بدون ورود روشن است؛ پروفایل‌های نمایشی فقط برای انتخاب UI هستند و در guest mode هیچ داده‌ای از Supabase خوانده یا نوشته نمی‌شود. RLS را عمومی نکن. برای دادهٔ واقعی، احراز هویت و عضویت معتبر باید دوباره فعال و بررسی شود.
 کد feature-based و منطق محاسبه/timer/sync از JSX جدا. abstraction اضافی و چند backend نساز. dependencyها و lockfile ثبت شوند.
 داده واقعی/اندازه/جلسه/credential یا service_role در ریپوی عمومی ممنوع. fixtures مصنوعی. دو حساب دعوتی و workspace خصوصی؛ انتخاب H/R امنیت ورود نیست.
 project مستقلی برای Gymrez و فقط پس از بررسی پلن رایگان بساز؛ به LifeMate یا پروژه دیگر دست نزن و منبع پولی فعال نکن.
@@ -27,4 +27,4 @@ project مستقلی برای Gymrez و فقط پس از بررسی پلن را�
 داده mock برای demo واضح باشد؛ ذخیره موفق جعلی، نمودار جعلی و play/QR بی‌عمل در محصول نهایی ممنوع.
 برنامه منتشرشده/جلسه قدیمی immutable snapshot؛ عملیات ذخیره و import idempotent؛ تعارض چنددستگاهی overwrite خاموش نشود.
 در پایان هر نوبت STATUS و tracker را به‌روز و نتیجه واقعی/محدودیت/اقدام بعدی را ثبت کن.
-مرحله فعلی اسکلت فنی است؛ صفحه foundation طراحی نهایی نیست و backend هنوز فعال نیست.
+backend خصوصی فعال شده است؛ حالت بدون اتصال همچنان local preview است. وضعیت واقعی انتشار و قابلیت‌های باقی‌مانده در RELEASE_PROGRESS ثبت شود؛ کل roadmap را تکمیل‌شده اعلام نکن.

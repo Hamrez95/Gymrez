@@ -7,7 +7,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export function Button({ variant = 'primary', loading = false, disabled, className = '', children, ...props }: ButtonProps) {
   const classes = ['pace-button', `pace-button--${variant}`, className].filter(Boolean).join(' ');
-  return <button {...props} className={classes} disabled={disabled || loading} aria-busy={loading || undefined}>{children}</button>;
+  return <button {...props} className={classes} disabled={disabled || loading} aria-busy={loading || undefined}>{loading && <span className="pace-button-spinner" aria-hidden="true" />}{children}</button>;
 }
 
 export function Card({ title, children, className = '' }: { title?: string; children: ReactNode; className?: string }) {
