@@ -6,12 +6,21 @@ import { FoundationPage } from '../features/foundation/FoundationPage';
 import { LoginPage } from '../features/foundation/LoginPage';
 import { ProfileChooser } from '../features/foundation/ProfileChooser';
 import { RequireAuth, RequireProfile } from '../features/auth/RequireAuth';
+import { LocalProgramsPage } from '../features/programs/LocalProgramsPage';
 import { runtimeConfig } from '../data/supabase/client';
 import type { ShellContext } from './shellContext';
 
 function ShellContextOutlet() {
   const shellContext = useOutletContext<ShellContext>();
   return <Outlet context={shellContext} />;
+}
+
+function ProgramsRoute() {
+  const { activeProfile } = useOutletContext<ShellContext>();
+  if (runtimeConfig.guestMode && activeProfile) {
+    return <LocalProgramsPage key={activeProfile.id} profileId={activeProfile.id} profileName={activeProfile.displayName} />;
+  }
+  return <FoundationPage section="برنامه‌ها" />;
 }
 
 function NotFoundPage() {
@@ -25,7 +34,7 @@ export function AppRoutes() {
       <Route index element={<ProfileChooser />} />
       <Route element={<RequireProfile />}>
         <Route path="dashboard/:profileId" element={<DashboardPreview />} />
-        <Route path="programs" element={<FoundationPage section="برنامه‌ها" />} />
+        <Route path="programs" element={<ProgramsRoute />} />
         <Route path="workout" element={<FoundationPage section="تمرین" />} />
         <Route path="progress" element={<FoundationPage section="پیشرفت و سابقه" />} />
         <Route path="profile" element={<FoundationPage section="پروفایل" />} />
