@@ -8,6 +8,8 @@ import { runtimeConfig, supabaseClient } from '../data/supabase/client';
 import type { Profile } from '../shared/contracts/profile';
 import type { ShellContext } from './shellContext';
 
+import { ProfileAvatar } from '../shared/design/ProfileAvatar';
+
 const EMPTY_PROFILES: readonly Profile[] = [];
 const GUEST_PROFILES: readonly Profile[] = [
   { id: '00000000-0000-4000-8000-000000000001', householdId: '00000000-0000-4000-8000-000000000000', displayName: 'hamrez95', initial: 'H' },
@@ -15,8 +17,8 @@ const GUEST_PROFILES: readonly Profile[] = [
 ];
 
 export function AppShell() {
-  const { status, userId, email, signOut } = useAuth();
-  const guestMode = runtimeConfig.guestMode;
+  const { status, userId, email, signOut, connectionError } = useAuth();
+  const guestMode = runtimeConfig.guestMode && status !== 'signedIn';
   const [selection, setSelection] = useState<{ userId: string; profileId: string } | null>(null);
   const [signOutError, setSignOutError] = useState('');
   const location = useLocation();
@@ -68,7 +70,7 @@ export function AppShell() {
 
   const context: ShellContext = {
     profiles,
-    profilesPending: !guestMode && status === 'signedIn' && userProfiles.isPending,
+    profilesPending: status === 'loading' || (!guestMode && status === 'signedIn' && userProfiles.isPending),
     profilesError: !guestMode && userProfiles.isError,
     activeProfile,
     setActiveProfile: changeProfile,
@@ -78,10 +80,10 @@ export function AppShell() {
   return <div className="pace-app-shell" dir="rtl">
     <a className="skip" href="#main-content">رفتن به محتوا</a>
     <header className="pace-app-header">
-      <NavLink className="pace-app-brand" to="/" aria-label="Gymrez — خانه" dir="ltr">// GYMREZ</NavLink>
+      <NavLink className="pace-app-brand" to="/" aria-label="Gymrez — خانه" dir="ltr">GYMREZ</NavLink>
       <div className="pace-app-header__actions">
         {!isEntry && activeProfile && <div className="pace-profile-switch" role="group" aria-label="انتخاب پروفایل">
-          {profiles.map(profile => <Button key={profile.id} type="button" variant={profile.id === activeProfile.id ? 'primary' : 'secondary'} aria-label={'انتخاب پروفایل ' + profile.displayName} aria-pressed={profile.id === activeProfile.id} onClick={() => changeProfile(profile)}><bdi>{profile.initial}</bdi><span>{profile.displayName}</span></Button>)}
+          {profiles.map(profile => <Button key={profile.id} type="button" variant={profile.id === activeProfile.id ? 'primary' : 'secondary'} aria-label={'انتخاب پروفایل ' + profile.displayName} aria-pressed={profile.id === activeProfile.id} onClick={() => changeProfile(profile)}><ProfileAvatar profile={profile} /><span>{profile.displayName}</span></Button>)}
         </div>}
         {!guestMode && status === 'signedIn' && <Button type="button" variant="quiet" onClick={handleSignOut} aria-label={'خروج از حساب ' + (email ?? '')}>خروج</Button>}
         <Button type="button" variant="secondary" className="pace-theme-toggle" aria-label={theme === 'dark' ? 'روشن کردن تم' : 'تاریک کردن تم'} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
@@ -89,8 +91,11 @@ export function AppShell() {
         </Button>
       </div>
     </header>
+    {connectionError && <p role="alert">{connectionError}</p>}
     {signOutError && <p role="alert">{signOutError}</p>}
-    {guestMode && !isEntry && <div className="pace-guest-banner" role="status">پیش‌نمایش بدون ورود · اطلاعات Supabase در این حالت خوانده یا ذخیره نمی‌شوند.</div>}
+    {guestMode && !isEntry && <div className="pace-guest-banner" role="status">پیش‌نمایش بدون ورود · داده‌های این حالت فقط روی همین دستگاه هستند. برای داده‌های مشترک، لینک اختصاصی را باز کن.</div>}
+
+    {!guestMode && !isEntry && <div className="pace-cloud-status" role="status">متصل به فضای خصوصی · ذخیره‌سازی مشترک</div>}
 
     {!isEntry && activeProfile && <nav className={'pace-desktop-nav' + (showSidebar ? ' pace-desktop-nav--sidebar' : '')} aria-label="ناوبری اصلی">
       {destinations.map(item => <NavLink key={item.label} end={item.label === 'خانه'} to={item.to}>{item.label}</NavLink>)}

@@ -43,7 +43,7 @@ test('imports an actionable plan and honest baseline, then persists a workout', 
 
   await page.getByRole('link', { name: 'Gymrez — خانه' }).click();
   await page.getByRole('button', { name: 'ورود به پروفایل hamrez95' }).click();
-  await page.getByRole('link', { name: 'دیدن سابقه' }).click();
+  await page.getByRole('link', { name: 'دیدن روند و اندازه‌ها' }).click();
   await expect(page.getByRole('img', { name: 'نمودار وزن' })).toBeVisible();
   await expect(page.getByText('برای دیدن روند، یک اندازه‌گیری دیگر ثبت کن.')).toBeVisible();
   await page.getByRole('button', { name: 'انتخاب پروفایل Ryxy' }).click();

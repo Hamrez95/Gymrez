@@ -1,3 +1,7 @@
+# Current review candidate — cloud/profile fixes
+
+See [CLOUD_PROFILE_PROGRESS](CLOUD_PROFILE_PROGRESS.md) for this continuation, verification and remaining authorization blockers. The candidate is not deployed or complete.
+
 # Gymrez — وضعیت اجرا
 آخرین بررسی: 2026-11-18
 

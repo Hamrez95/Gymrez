@@ -9,6 +9,7 @@ import { RequireAuth, RequireProfile } from '../features/auth/RequireAuth';
 import { BodyProgress } from '../features/training/BodyProgress';
 import { TrainingPage } from '../features/training/TrainingPage';
 import { LocalProgramsPage } from '../features/programs/LocalProgramsPage';
+import { ProfilePage } from '../features/foundation/ProfilePage';
 import { runtimeConfig } from '../data/supabase/client';
 import type { ShellContext } from './shellContext';
 
@@ -19,7 +20,7 @@ function ShellContextOutlet() {
 
 function ProgramsRoute() {
   const { activeProfile } = useOutletContext<ShellContext>();
-  if (runtimeConfig.guestMode && activeProfile) {
+  if (activeProfile) {
     return <LocalProgramsPage key={activeProfile.id} profileId={activeProfile.id} profileName={activeProfile.displayName} />;
   }
   return <FoundationPage section="برنامه‌ها" />;
@@ -27,7 +28,7 @@ function ProgramsRoute() {
 
 function TrainingRoute({ kind }: { kind: 'workout' | 'body' }) {
   const { activeProfile } = useOutletContext<ShellContext>();
-  if (runtimeConfig.guestMode && activeProfile) {
+  if (activeProfile) {
     return kind === 'workout'
       ? <TrainingPage key={activeProfile.id} profileId={activeProfile.id} />
       : <BodyProgress key={activeProfile.id} profileId={activeProfile.id} />;
@@ -49,7 +50,7 @@ export function AppRoutes() {
         <Route path="programs" element={<ProgramsRoute />} />
         <Route path="workout" element={<TrainingRoute kind="workout" />} />
         <Route path="progress" element={<TrainingRoute kind="body" />} />
-        <Route path="profile" element={<FoundationPage section="پروفایل" />} />
+        <Route path="profile" element={<ProfilePage />} />
       </Route>
     </Route>
     {import.meta.env.DEV && <Route path="__design-system" element={<DesignSystemPreview />} />}

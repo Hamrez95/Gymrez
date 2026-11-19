@@ -1,8 +1,11 @@
 import Dexie, { type EntityTable, type Table } from 'dexie';
 import { z } from 'zod';
+import { supabaseClient } from '../../data/supabase/client';
+import { cloudScope, cloudReadArchive, cloudImportDocument, cloudSelectProgram, cloudReadMeasurements, cloudSaveMeasurement, cloudReadWorkouts, cloudStartWorkout, cloudUpdateWorkout, cloudCancelWorkout } from '../../data/supabase/trainingRepository';
 import { measurementSchema, trainingSchema, type Measurement, type TrainingPlan, type Workout } from '../training/trainingModel';
 
-type ProgramDocument = {
+export type ProgramDocument = {
+  pdfPath?: string;
   profileId: string;
   id: string;
   title: string;
@@ -46,7 +49,9 @@ const bundleSchema = z.object({
 
 export const archiveKey = (profileId: string | undefined) => ['local-program-archive', profileId];
 
-export function readArchive(profileId: string) {
+export async function readArchive(profileId: string) {
+  const scope = await cloudScope(profileId);
+  if (scope) return cloudReadArchive(scope);
   return db.transaction('r', db.documents, db.selections, async () => {
     const [documents, selection] = await Promise.all([
       db.documents.where('profileId').equals(profileId).toArray(),
@@ -84,6 +89,15 @@ export async function importArchive(file: File, profileId: string, profileName: 
     const id = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), byte => byte.toString(16).padStart(2, '0')).join('');
     return { ...entry, profileId, id, pdf: new Blob([bytes], { type: 'application/pdf' }) };
   }));
+  const scope = await cloudScope(profileId);
+  if (scope) {
+    let programs = 0;
+    for (const document of documents) if (await cloudImportDocument(scope, document)) programs++;
+    for (const measurement of bundle.measurements) await cloudSaveMeasurement(scope, measurement, true);
+    const current = await cloudReadArchive(scope);
+    if (!current.currentId && bundle.currentIndex !== undefined) await cloudSelectProgram(scope, documents[bundle.currentIndex].id);
+    return { programs, measurements: bundle.measurements.length };
+  }
   return db.transaction('rw', [db.documents, db.selections, db.measurements], async () => {
     let count = 0;
     const preferred = bundle.currentIndex === undefined ? undefined : documents[bundle.currentIndex];
@@ -115,15 +129,25 @@ export async function importArchive(file: File, profileId: string, profileName: 
   });
 }
 
-export function selectCurrentProgram(profileId: string, id: string) {
+export async function selectCurrentProgram(profileId: string, id: string) {
+  const scope = await cloudScope(profileId);
+  if (scope) return cloudSelectProgram(scope, id);
   return db.transaction('rw', db.documents, db.selections, async () => {
     if (!await db.documents.get([profileId, id])) throw new Error('این برنامه پیدا نشد.');
     await db.selections.put({ profileId, currentId: id });
   });
 }
 
-export function downloadProgram(document: ProgramDocument) {
-  const href = URL.createObjectURL(document.pdf);
+export async function downloadProgram(document: ProgramDocument) {
+  let pdf = document.pdf;
+  if (document.pdfPath) {
+    if (!supabaseClient) throw new Error('اتصال در دسترس نیست.');
+    const result = await supabaseClient.storage.from('program-pdfs').download(document.pdfPath);
+    if (result.error) throw new Error('دریافت PDF انجام نشد.');
+    pdf = result.data;
+  }
+  if (!pdf.size) throw new Error('فایل PDF هنوز منتقل نشده است.');
+  const href = URL.createObjectURL(pdf);
   const link = window.document.createElement('a');
   link.href = href;
   link.download = document.filename;
@@ -134,15 +158,21 @@ export function downloadProgram(document: ProgramDocument) {
 export const measurementKey = (id: string) => ['local-measurements', id];
 export const workoutKey = (id: string) => ['local-workout', id];
 
-export function readMeasurements(profileId: string) {
+export async function readMeasurements(profileId: string) {
+  const scope = await cloudScope(profileId);
+  if (scope) return cloudReadMeasurements(scope);
   return db.measurements.where('profileId').equals(profileId).sortBy('date');
 }
 
-export function saveMeasurement(profileId: string, entry: Measurement) {
+export async function saveMeasurement(profileId: string, entry: Measurement) {
+  const scope = await cloudScope(profileId);
+  if (scope) return cloudSaveMeasurement(scope, entry);
   return db.measurements.add({ ...measurementSchema.parse(entry), profileId });
 }
 
 export async function readWorkouts(profileId: string) {
+  const scope = await cloudScope(profileId);
+  if (scope) return cloudReadWorkouts(scope);
   const [records, selection] = await Promise.all([
     db.workouts.where('profileId').equals(profileId).toArray(),
     db.activeWorkouts.get(profileId),
@@ -153,7 +183,9 @@ export async function readWorkouts(profileId: string) {
   };
 }
 
-export function startWorkout(profileId: string, documentId: string, day: TrainingPlan['days'][number]) {
+export async function startWorkout(profileId: string, documentId: string, day: TrainingPlan['days'][number]) {
+  const scope = await cloudScope(profileId);
+  if (scope) return cloudStartWorkout(scope, documentId, day);
   return db.transaction('rw', db.workouts, db.activeWorkouts, async () => {
     if (await db.activeWorkouts.get(profileId)) return;
     const workout: Workout = { id: crypto.randomUUID(), profileId, documentId, day, started: Date.now(), sets: [] };
@@ -162,7 +194,9 @@ export function startWorkout(profileId: string, documentId: string, day: Trainin
   });
 }
 
-export function updateWorkout(expected: Workout, change: Partial<Pick<Workout, 'sets' | 'restUntil' | 'restPaused' | 'restDuration' | 'finished'>>) {
+export async function updateWorkout(expected: Workout, change: Partial<Pick<Workout, 'sets' | 'restUntil' | 'restPaused' | 'restDuration' | 'finished'>>) {
+  const scope = await cloudScope(expected.profileId);
+  if (scope) return cloudUpdateWorkout(scope, expected, change);
   return db.transaction('rw', db.workouts, db.activeWorkouts, async () => {
     const current = await db.workouts.get(expected.id);
     if (!current || current.finished !== undefined || current.sets.length !== expected.sets.length || current.restUntil !== expected.restUntil || current.restPaused !== expected.restPaused) {
@@ -173,7 +207,9 @@ export function updateWorkout(expected: Workout, change: Partial<Pick<Workout, '
   });
 }
 
-export function cancelEmptyWorkout(workout: Workout) {
+export async function cancelEmptyWorkout(workout: Workout) {
+  const scope = await cloudScope(workout.profileId);
+  if (scope) return cloudCancelWorkout(scope, workout);
   return db.transaction('rw', db.workouts, db.activeWorkouts, async () => {
     const current = await db.workouts.get(workout.id);
     if (!current || current.sets.length || current.finished !== undefined) throw new Error('جلسه تغییر کرده است.');

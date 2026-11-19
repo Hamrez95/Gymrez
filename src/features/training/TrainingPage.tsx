@@ -43,11 +43,11 @@ export function TrainingPage({ profileId }: { profileId: string }) {
 
   return <section className="pace-training">
     <header className="pace-training-hero">
-      <h1>تمرین من <span aria-hidden="true">//</span></h1>
+      <h1>تمرین من </h1>
       {current && <p>{current.title}{plan && <> · {number(plan.weeks)} هفته</>}</p>}
     </header>
     {error && <p role="alert">{error}</p>}
-    {(archive.isError || workouts.isError) && <p role="alert">خواندن داده‌های این مرورگر ممکن نبود.</p>}
+    {(archive.isError || workouts.isError) && <p role="alert">دریافت داده‌ها انجام نشد. اتصال را بررسی کن.</p>}
     {active ? <WorkoutPlayer key={active.id} workout={active} busy={busy} commit={commit} /> :
       selected && plan && current && exercise ? <>
         <div className="pace-workout-tabs" role="group" aria-label="انتخاب جلسه">

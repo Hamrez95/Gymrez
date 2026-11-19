@@ -52,6 +52,7 @@ export const measurementSchema = z.object({
 export type Measurement = z.infer<typeof measurementSchema>;
 export type LoggedSet = { task: number; amount: number; weight?: number; rir?: number };
 export type Workout = {
+  revision?: number;
   id: string; profileId: string; documentId: string; day: TrainingDay;
   started: number; finished?: number; sets: LoggedSet[]; restUntil?: number; restPaused?: number; restDuration?: number;
 };

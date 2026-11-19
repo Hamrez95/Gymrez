@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '../../shared/design/components';
 import { measurementKey, readMeasurements, saveMeasurement } from '../programs/localProgramArchive';
 import { faDate, faNumber, tehranDate, type Measurement } from './trainingModel';
+import { useAuth } from '../auth/useAuth';
 import './training.css';
 
 const metrics = {
@@ -29,6 +30,7 @@ function metricText(value: number, key: Metric) {
 }
 
 export function BodyProgress({ profileId }: { profileId: string }) {
+  const { userId } = useAuth();
   const queryClient = useQueryClient();
   const key = measurementKey(profileId);
   const query = useQuery({ queryKey: key, queryFn: () => readMeasurements(profileId) });
@@ -65,7 +67,7 @@ export function BodyProgress({ profileId }: { profileId: string }) {
       await queryClient.invalidateQueries({ queryKey: key });
       setFormOpen(false);
       setError('');
-      setNotice('اندازه‌گیری در همین مرورگر ذخیره شد.');
+      setNotice(userId ? 'اندازه‌گیری در دیتابیس ذخیره شد.' : 'اندازه‌گیری در همین مرورگر ذخیره شد.');
     } catch {
       setError('مقادیر واردشده را بررسی کن. اندازه‌گیری ذخیره نشد.');
     } finally {
@@ -75,10 +77,10 @@ export function BodyProgress({ profileId }: { profileId: string }) {
 
   return <section className="pace-training">
     <header className="pace-training-hero pace-training-hero--body">
-      <h1>بدن من، مسیر من <span aria-hidden="true">//</span></h1>
+      <h1>بدن من، مسیر من </h1>
       {latest && <p>آخرین اندازه‌گیری · {faDate.format(new Date(latest.date))} · {latest.source}</p>}
     </header>
-    {query.isError && <p role="alert">خواندن اندازه‌های این مرورگر ممکن نبود.</p>}
+    {query.isError && <p role="alert">دریافت اندازه‌ها انجام نشد. اتصال را بررسی کن.</p>}
     {latest && <div className="pace-body-stats">{(['weight', 'bmi', 'fat', 'muscle'] as const).map(field => {
       const value = metricValue(latest, field);
       return value === undefined ? null : <div key={field}><span>{metrics[field][0]}</span><strong>{metricText(value, field)}</strong></div>;

@@ -2,7 +2,7 @@ import { createContext } from 'react';
 import type { Session } from '@supabase/supabase-js';
 
 export type AuthStatus = 'loading' | 'signedOut' | 'signedIn' | 'unavailable';
-export type AuthSnapshot = { status: AuthStatus; session: Session | null; recoveryRequired: boolean };
+export type AuthSnapshot = { status: AuthStatus; session: Session | null; recoveryRequired: boolean; connectionError?: string };
 export type AuthContextValue = AuthSnapshot & {
   userId: string | null;
   email: string | null;

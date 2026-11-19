@@ -27,7 +27,7 @@ export function FoundationPage({ section = 'در حال ساخت' }: { section?:
 
   return <section className="foundation-content" aria-labelledby="title">
     <p className="eyebrow">GYMREZ / PACE</p>
-    <h1 id="title">{section}<span aria-hidden="true"> //</span></h1>
+    <h1 id="title">{section}</h1>
     <p role="status">{guestPreview ? 'پیش‌نمایش بدون ورود؛ داده‌ای خوانده یا ذخیره نمی‌شود.' : 'اطلاعات فقط برای پروفایل «' + activeProfile?.displayName + '» از workspace مجاز خوانده می‌شود.'}</p>
     {section === 'برنامه‌ها' && <>
       {!guestPreview && programs.isPending && <p role="status">در حال دریافت برنامه‌ها…</p>}

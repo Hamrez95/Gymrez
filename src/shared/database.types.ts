@@ -24,10 +24,12 @@ export type Database = {
           household_id: string
           id: string
           measurement_date: string
+          metrics: Json | null
           neck_cm: number | null
           notes: string | null
           profile_id: string
           revision: number
+          source: string
           thigh_cm: number | null
           updated_at: string
           waist_cm: number | null
@@ -42,10 +44,12 @@ export type Database = {
           household_id: string
           id?: string
           measurement_date: string
+          metrics?: Json | null
           neck_cm?: number | null
           notes?: string | null
           profile_id: string
           revision?: number
+          source?: string
           thigh_cm?: number | null
           updated_at?: string
           waist_cm?: number | null
@@ -60,10 +64,12 @@ export type Database = {
           household_id?: string
           id?: string
           measurement_date?: string
+          metrics?: Json | null
           neck_cm?: number | null
           notes?: string | null
           profile_id?: string
           revision?: number
+          source?: string
           thigh_cm?: number | null
           updated_at?: string
           waist_cm?: number | null
@@ -529,6 +535,7 @@ export type Database = {
           created_at: string
           household_id: string
           id: string
+          plan_snapshot: Json | null
           profile_id: string
           program_id: string
           published_at: string | null
@@ -542,6 +549,7 @@ export type Database = {
           created_at?: string
           household_id: string
           id?: string
+          plan_snapshot?: Json | null
           profile_id: string
           program_id: string
           published_at?: string | null
@@ -555,6 +563,7 @@ export type Database = {
           created_at?: string
           household_id?: string
           id?: string
+          plan_snapshot?: Json | null
           profile_id?: string
           program_id?: string
           published_at?: string | null
@@ -582,6 +591,8 @@ export type Database = {
       }
       programs: {
         Row: {
+          archive_checksum: string | null
+          archive_metadata: Json | null
           created_at: string
           ends_on: string | null
           household_id: string
@@ -594,6 +605,8 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          archive_checksum?: string | null
+          archive_metadata?: Json | null
           created_at?: string
           ends_on?: string | null
           household_id: string
@@ -606,6 +619,8 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          archive_checksum?: string | null
+          archive_metadata?: Json | null
           created_at?: string
           ends_on?: string | null
           household_id?: string
@@ -762,7 +777,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      activate_archive_program: {
+        Args: { p_checksum: string; p_profile: string }
+        Returns: undefined
+      }
+      import_archive_program: {
+        Args: { p_checksum: string; p_metadata: Json; p_profile: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { QueryClient } from '@tanstack/react-query';
 import { buildPasswordRecoveryRedirectUrl } from '../../app/config';
 import { runtimeConfig, supabaseClient } from '../../data/supabase/client';
+import { connectDevice } from './deviceConnection';
 import { AuthContext, type AuthContextValue, type AuthSnapshot } from './authContext';
 
 export function AuthProvider({ queryClient, children }: { queryClient: QueryClient; children: ReactNode }) {
@@ -28,6 +29,7 @@ export function AuthProvider({ queryClient, children }: { queryClient: QueryClie
           : event === 'SIGNED_OUT' ? false : current.recoveryRequired,
       }));
     });
+    void connectDevice(supabaseClient).catch(error => setSnapshot(current => ({ ...current, connectionError: error.message })));
     return () => subscription.unsubscribe();
   }, [queryClient]);
 
