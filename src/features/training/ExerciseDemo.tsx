@@ -46,7 +46,7 @@ export function ExerciseDemo({ exercise }: { exercise: Exercise }) {
   const limb = (from: keyof Pose, to: keyof Pose, width: number, color: string, key: string) => <motion.line key={key} x1={poses[0][from][0]} y1={poses[0][from][1]} x2={poses[0][to][0]} y2={poses[0][to][1]} stroke={color} strokeWidth={width} strokeLinecap="round" initial={false} animate={{ x1: values(from,0), y1: values(from,1), x2: values(to,0), y2: values(to,1) }} transition={transition} />;
   return <div className="pace-movement-demo" ref={ref}>
     <svg viewBox="0 0 330 340" role="img" aria-label={'نمای شماتیک ' + exercise.name}>
-      <defs><linearGradient id={id} x1="0" y1="0" x2="1" y2="1"><stop stopColor="#b7d3ed" /><stop offset=".45" stopColor="#456784" /><stop offset="1" stopColor="#173550" /></linearGradient></defs>
+      <defs><linearGradient id={id} gradientUnits="userSpaceOnUse" x1="90" y1="40" x2="235" y2="310"><stop stopColor="#b7d3ed" /><stop offset=".45" stopColor="#456784" /><stop offset="1" stopColor="#173550" /></linearGradient></defs>
       <ellipse cx="165" cy="323" rx="125" ry="7" fill="#02101e" />
       {['row','pulldown','legcurl','extension','calf'].includes(pattern) && <path d="M96 205h85m-67 0v105m56-105v105" stroke="#466178" strokeWidth="9" fill="none" strokeLinecap="round" />}
       {pattern === 'press' && <path d="m82 110 101 116m-42-50-35 134m69-97 33 97" stroke="#466178" strokeWidth="9" fill="none" strokeLinecap="round" />}
