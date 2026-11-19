@@ -1,7 +1,8 @@
 import { useRef, useState, type ChangeEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button, Card, Toast } from '../../shared/design/components';
-import { archiveKey, downloadProgram, importArchive, readArchive, selectCurrentProgram } from './localProgramArchive';
+import { archiveKey, downloadProgram, importArchive, measurementKey, readArchive, selectCurrentProgram } from './localProgramArchive';
 import './localPrograms.css';
 
 const sourceDateFormat = new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeZone: 'UTC' });
@@ -23,9 +24,14 @@ export function LocalProgramsPage({ profileId, profileName }: { profileId: strin
     setBusy(true);
     setNotice(undefined);
     try {
-      const count = await importArchive(file, profileId, profileName);
+      const result = await importArchive(file, profileId, profileName);
       await queryClient.invalidateQueries({ queryKey: key });
-      setNotice(count ? { message: `${count.toLocaleString('fa-IR')} برنامه در این مرورگر ثبت شد.`, kind: 'success' } : { message: 'برنامه‌های این فایل قبلاً وارد شده‌اند.', kind: 'info' });
+      await queryClient.invalidateQueries({ queryKey: measurementKey(profileId) });
+      const summary = [
+        result.programs ? result.programs.toLocaleString('fa-IR') + ' برنامه' : '',
+        result.measurements ? result.measurements.toLocaleString('fa-IR') + ' آنالیز بدن' : '',
+      ].filter(Boolean).join(' و ');
+      setNotice(summary ? { message: summary + ' در این مرورگر ثبت شد.', kind: 'success' } : { message: 'برنامه‌های این فایل قبلاً وارد شده‌اند.', kind: 'info' });
     } catch (error) {
       setNotice({ message: error instanceof Error ? error.message : 'ذخیرهٔ بایگانی ممکن نبود.', kind: 'error' });
     } finally {
@@ -59,7 +65,7 @@ export function LocalProgramsPage({ profileId, profileName }: { profileId: strin
       <div className="pace-local-programs" aria-label="برنامهٔ فعلی">
         <h2>برنامهٔ فعلی</h2>
         {current ? <Card title={current.title}>
-          <Button type="button" variant="secondary" onClick={() => downloadProgram(current)}>دریافت PDF</Button>
+          <div className="pace-local-programs__actions">{current.training && <Link className="pace-button pace-button--primary" to="/workout">دیدن جلسه‌ها و شروع تمرین</Link>}<Button type="button" variant="secondary" onClick={() => downloadProgram(current)}>دریافت PDF</Button></div>
         </Card> : <p>هنوز برنامهٔ فعلی انتخاب نشده است.</p>}
       </div>
       <div className="pace-local-programs" aria-label="آرشیو برنامه‌ها">

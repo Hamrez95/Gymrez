@@ -1,5 +1,6 @@
 import Dexie, { type EntityTable, type Table } from 'dexie';
 import { z } from 'zod';
+import { measurementSchema, trainingSchema, type Measurement, type TrainingPlan, type Workout } from '../training/trainingModel';
 
 type ProgramDocument = {
   profileId: string;
@@ -8,15 +9,21 @@ type ProgramDocument = {
   filename: string;
   sourceDate?: string;
   pdf: Blob;
+  training?: TrainingPlan;
 };
 
 class ArchiveDatabase extends Dexie {
   documents!: Table<ProgramDocument, [string, string]>;
   selections!: EntityTable<{ profileId: string; currentId: string }, 'profileId'>;
 
+  measurements!: Table<Measurement & { profileId: string }, [string, string, string]>;
+  workouts!: EntityTable<Workout, 'id'>;
+  activeWorkouts!: EntityTable<{ profileId: string; id: string }, 'profileId'>;
+
   constructor() {
     super('gymrez-local-program-archive');
     this.version(1).stores({ documents: '[profileId+id], profileId', selections: 'profileId' });
+    this.version(2).stores({ measurements: '[profileId+date+source], profileId', workouts: 'id, profileId', activeWorkouts: 'profileId' });
   }
 }
 
@@ -26,11 +33,13 @@ const bundleSchema = z.object({
   format: z.literal('gymrez-program-archive'),
   version: z.literal(1),
   profile: z.string().trim().min(1).max(100).optional(),
+  measurements: z.array(measurementSchema).max(500).default([]),
   currentIndex: z.number().int().nonnegative().optional(),
   programs: z.array(z.object({
     title: z.string().trim().min(1).max(200),
     filename: z.string().trim().min(1).max(250),
     sourceDate: z.iso.date().optional(),
+    training: trainingSchema.optional(),
     pdfBase64: z.string().min(1),
   })).min(1).max(60),
 });
@@ -75,12 +84,20 @@ export async function importArchive(file: File, profileId: string, profileName: 
     const id = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), byte => byte.toString(16).padStart(2, '0')).join('');
     return { ...entry, profileId, id, pdf: new Blob([bytes], { type: 'application/pdf' }) };
   }));
-  return db.transaction('rw', db.documents, db.selections, async () => {
+  return db.transaction('rw', [db.documents, db.selections, db.measurements], async () => {
     let count = 0;
     const preferred = bundle.currentIndex === undefined ? undefined : documents[bundle.currentIndex];
     let preferredAdded = false;
     for (const document of documents) {
-      if (await db.documents.get([profileId, document.id])) continue;
+      const existing = await db.documents.get([profileId, document.id]);
+      if (existing) {
+        if (document.training && !existing.training) {
+          await db.documents.put({ ...existing, training: document.training });
+          count += 1;
+          preferredAdded ||= document.id === preferred?.id;
+        }
+        continue;
+      }
       await db.documents.add(document);
       count += 1;
       preferredAdded ||= document.id === preferred?.id;
@@ -88,7 +105,13 @@ export async function importArchive(file: File, profileId: string, profileName: 
     if (preferred && (preferredAdded || !await db.selections.get(profileId))) {
       await db.selections.put({ profileId, currentId: preferred.id });
     }
-    return count;
+    let measurements = 0;
+    for (const entry of bundle.measurements) {
+      if (await db.measurements.get([profileId, entry.date, entry.source])) continue;
+      await db.measurements.add({ ...entry, profileId });
+      measurements += 1;
+    }
+    return { programs: count, measurements };
   });
 }
 
@@ -106,4 +129,55 @@ export function downloadProgram(document: ProgramDocument) {
   link.download = document.filename;
   link.click();
   window.setTimeout(() => URL.revokeObjectURL(href), 60_000);
+}
+
+export const measurementKey = (id: string) => ['local-measurements', id];
+export const workoutKey = (id: string) => ['local-workout', id];
+
+export function readMeasurements(profileId: string) {
+  return db.measurements.where('profileId').equals(profileId).sortBy('date');
+}
+
+export function saveMeasurement(profileId: string, entry: Measurement) {
+  return db.measurements.add({ ...measurementSchema.parse(entry), profileId });
+}
+
+export async function readWorkouts(profileId: string) {
+  const [records, selection] = await Promise.all([
+    db.workouts.where('profileId').equals(profileId).toArray(),
+    db.activeWorkouts.get(profileId),
+  ]);
+  return {
+    active: records.find(record => record.id === selection?.id),
+    history: records.filter(record => record.finished !== undefined).sort((a, b) => b.started - a.started),
+  };
+}
+
+export function startWorkout(profileId: string, documentId: string, day: TrainingPlan['days'][number]) {
+  return db.transaction('rw', db.workouts, db.activeWorkouts, async () => {
+    if (await db.activeWorkouts.get(profileId)) return;
+    const workout: Workout = { id: crypto.randomUUID(), profileId, documentId, day, started: Date.now(), sets: [] };
+    await db.workouts.add(workout);
+    await db.activeWorkouts.add({ profileId, id: workout.id });
+  });
+}
+
+export function updateWorkout(expected: Workout, change: Partial<Pick<Workout, 'sets' | 'restUntil' | 'restPaused' | 'restDuration' | 'finished'>>) {
+  return db.transaction('rw', db.workouts, db.activeWorkouts, async () => {
+    const current = await db.workouts.get(expected.id);
+    if (!current || current.finished !== undefined || current.sets.length !== expected.sets.length || current.restUntil !== expected.restUntil || current.restPaused !== expected.restPaused) {
+      throw new Error('جلسه در پنجرهٔ دیگری تغییر کرده است.');
+    }
+    await db.workouts.put({ ...current, ...change });
+    if (change.finished !== undefined) await db.activeWorkouts.delete(current.profileId);
+  });
+}
+
+export function cancelEmptyWorkout(workout: Workout) {
+  return db.transaction('rw', db.workouts, db.activeWorkouts, async () => {
+    const current = await db.workouts.get(workout.id);
+    if (!current || current.sets.length || current.finished !== undefined) throw new Error('جلسه تغییر کرده است.');
+    await db.workouts.delete(workout.id);
+    await db.activeWorkouts.delete(workout.profileId);
+  });
 }

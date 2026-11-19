@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useShellProfile } from '../../app/shellContext';
 import { listMeasurements, listPrograms, listWorkoutSessions } from '../../data/supabase/profileDataRepository';
@@ -52,7 +53,7 @@ export function FoundationPage({ section = 'در حال ساخت' }: { section?:
     </>}
     {section === 'پروفایل' && <Card title={activeProfile?.displayName ?? 'پروفایل'}>
       <p>{guestPreview ? 'این یک پروفایل نمایشی برای انتخاب سریع است.' : 'شناسه این پروفایل در workspace با RLS بررسی می‌شود.'}</p>
-      <p className="pace-demo-note">فرم ویرایش در مرحلهٔ پروفایل بدن اضافه می‌شود؛ این صفحه هنوز هیچ تغییری ذخیره نمی‌کند.</p>
+      {guestPreview && <Link to="/progress">اندازه‌ها و نمودار بدن</Link>}
     </Card>}
   </section>;
 }

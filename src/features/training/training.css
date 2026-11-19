@@ -1,0 +1,78 @@
+.pace-training { display:grid; gap:clamp(1rem,2vw,1.6rem); max-width:1180px; margin-inline:auto }
+.pace-training h1,.pace-training h2,.pace-training h3,.pace-training p,.pace-training figure { margin:0 }
+.pace-training h2 { font-weight:800; font-size:clamp(1.18rem,2vw,1.48rem) }
+.pace-training p,.pace-training small { color:var(--pace-text-muted); line-height:1.7 }
+.pace-training-hero {
+  display:grid; align-content:center; min-height:clamp(9rem,23vw,15rem); padding:clamp(1rem, 4vw, 3rem);
+  border-radius:1rem; overflow:hidden; border:1px solid #345577;
+  background:#061526 linear-gradient(270deg,#061526 8%,#06152650 58%,transparent 82%);
+  background-image:linear-gradient(270deg,#061526 8%,#06152650 58%,transparent 82%),url('./assets/pace-training.webp');
+  background-size:cover; background-position:left center;
+  color:#f4f8ff;
+}
+.pace-training-hero p { color:#c1d9f2 }
+.pace-training-hero h1 { font-size:clamp(2rem,5vw,3.7rem); font-weight:800; line-height:1.2 }
+.pace-training-hero h1 span { color:#5b94ff; font-family:Arial,sans-serif; font-style:italic; font-weight:900 }
+.pace-training-grid { display:grid; gap:1rem; grid-template-columns:minmax(0, 1.08fr) minmax(0, 0.92fr); align-items:start }
+.pace-training-panel { display:grid; gap:.85rem; min-width:0; border:1px solid var(--pace-border-subtle); border-radius:.85rem; background:var(--pace-surface); padding:clamp(.85rem,2.2vw,1.5rem) }
+.pace-training-panel summary { cursor:pointer; font-weight:700; padding:.6rem 0; color:var(--pace-text); overflow-wrap:anywhere }
+.pace-training-panel details + details { border-block-start:1px solid var(--pace-border-subtle) }
+.pace-training-panel li { margin-block:.35rem; line-height:1.8 }
+.pace-workout-tabs,.pace-train-actions,.pace-chart-dates { display:flex; flex-wrap:wrap; gap:.46rem }
+.pace-workout-tabs .pace-button { font-size:.87rem; padding-inline:.65rem }
+.pace-exercise-list { list-style:none; margin:0; padding:0; display:grid; gap:.45rem }
+.pace-exercise-list li { margin:0 }
+.pace-exercise-list button { position:relative; text-align:start; width:100%; padding:.65rem .75rem; padding-inline-end:2.45rem; border:1px solid var(--pace-border-subtle); border-radius:.6rem; display:grid; color:var(--pace-text); background:var(--pace-surface-raised); cursor:pointer; transition:border-color .18s,background-color .18s }
+.pace-exercise-list button[aria-pressed='true'] { border-color:var(--pace-accent-soft); background:color-mix(in srgb,var(--pace-accent) 15%,var(--pace-surface)) }
+.pace-exercise-group { position:absolute; inset-inline-end:.65rem; inset-block-start:.85rem; color:var(--pace-accent-soft); font-size:.82rem }
+.pace-wide { width:100% }
+.pace-exercise-en { text-align:right; font-family:Arial,sans-serif }
+.pace-exercise-prescription { color:var(--pace-text)!important; font-weight:700 }
+.pace-muscle-map { padding:.5rem .75rem; border-radius:.8rem; color:#d9e8ff; border:1px solid #2b4d6b; background:radial-gradient(ellipse at 50% 48%,#133b64,#081d32 78%) }
+.pace-muscle-map__views { display:flex; justify-content:space-evenly; gap:.65rem; text-align:center; font-size:.78rem }
+.pace-muscle-map__views > div { display:grid; justify-items:center; flex:1; min-width:0 }
+.pace-muscle-map svg { display:block; width:min(100%, 150px); height:auto }
+.pace-muscle-map figcaption { margin-block:.65rem .2rem }
+.pace-muscle-map figcaption p { color:#d9e8ff; font-size:.83rem }
+.pace-anatomy-base { fill:#14314c; stroke:#6296bf; stroke-width:1.5 }
+.pace-anatomy-landmark { fill:none; stroke:#8299b3; opacity:.52 }
+.pace-anatomy-region--base { fill:#254b70; stroke:#547792; stroke-width:.85 }
+.pace-anatomy-region--primary { fill:#4da1ff; stroke:#b2dcff; stroke-width:1.3; filter:drop-shadow(0 0 5px #2683ff) }
+.pace-anatomy-region--assist { fill:#4cd7ca; stroke:#b2f8ff; stroke-width:1 }
+.pace-dot { display:inline-block; width:.6rem; height:.6rem; border-radius:50%; background:#4da1ff; margin-inline-end:.25rem }
+.pace-dot--assist { background:#4cd7ca }
+.pace-rest-panel { padding:.8rem; border:1px solid var(--pace-accent-soft); border-radius:.6rem; display:grid; gap:.5rem; background:var(--pace-surface-raised) }
+.pace-rest-panel strong { font-variant-numeric:tabular-nums; color:var(--pace-accent-soft); font-size:2rem }
+.pace-log-form { display:grid; gap:.65rem }
+.pace-log-form label { display:grid; gap:.25rem; font-size:.88rem }
+.pace-log-form input { min-width:0; width:100%; padding:.5rem .6rem; border:1px solid var(--pace-border); background:var(--pace-bg); color:var(--pace-text); border-radius:.45rem; font:inherit }
+.pace-body-stats { display:grid; gap:.6rem; grid-template-columns:repeat(auto-fit,minmax(min(100%,8.2rem),1fr)) }
+.pace-body-stats > div { display:grid; gap:.35rem; background:var(--pace-surface); border:1px solid var(--pace-border-subtle); border-radius:.65rem; padding:.85rem }
+.pace-body-stats strong,.pace-chart-reading strong { color:var(--pace-accent-soft); font-size:clamp(1.25rem,3vw,1.8rem); font-weight:800 }
+.pace-body-stats span,.pace-chart-reading span { color:var(--pace-text-muted); font-size:.85rem }
+.pace-chart-reading { display:flex; justify-content:space-between; align-items:baseline; gap:.75rem; flex-wrap:wrap }
+.pace-body-chart svg { display:block; width:100%; height:auto; margin-block:.2rem }
+.pace-chart-gridline { stroke:var(--pace-border-subtle); stroke-width:1 }
+.pace-chart-line { stroke:var(--pace-accent-soft); stroke-width:2.8; stroke-linejoin:round; stroke-linecap:round }
+.pace-chart-point { fill:var(--pace-accent-soft); stroke:var(--pace-surface); stroke-width:1.5 }
+.pace-chart-dates button { font:inherit; font-size:.78rem; color:var(--pace-text); border:1px solid var(--pace-border-subtle); border-radius:.4rem; background:var(--pace-surface-raised); padding:.4rem .55rem; cursor:pointer }
+.pace-chart-dates button[aria-pressed='true'] { border-color:var(--pace-accent-soft) }
+.pace-measure-values { display:grid; gap:.3rem; margin:0; font-size:.88rem }
+.pace-measure-values div { display:flex; justify-content:space-between; gap:.45rem; border-block-end:1px solid var(--pace-border-subtle); padding-block:.35rem }
+.pace-measure-values dd { margin:0; white-space:nowrap }
+@media(max-width:690px) { .pace-training-grid { grid-template-columns:1fr } }
+@media(prefers-reduced-motion:reduce) { .pace-exercise-list button { transition:none } }
+
+.pace-session-chart ol { display:flex; gap:.7rem; padding:0; margin:.65rem 0; list-style:none; overflow-x:auto }
+.pace-session-chart li { flex:1; display:grid; justify-items:center; min-width:4.75rem; max-width:8rem; text-align:center }
+.pace-session-chart li > div { position:relative; height:4.5rem; width:min(2.6rem,100%); background:var(--pace-bg); border-block-end:1px solid var(--pace-border); border-radius:.38rem .38rem 0 0 }
+.pace-session-chart li span { position:absolute; inset-inline:0; bottom:0; transform-origin:bottom center; background:linear-gradient(#61a8ff,var(--pace-accent)); border-radius:.38rem .38rem 0 0 }
+.pace-session-chart figcaption { color:var(--pace-text-muted) }
+@media(max-width:690px) { .pace-inspector { grid-row:1 } }
+
+.pace-training-hero--body {
+  background-image:linear-gradient(270deg,#061526 8%,#06152630 65%,transparent 87%),url('./assets/pace-body.webp');
+}
+.pace-training-hero h1,.pace-rest-panel strong,.pace-chart-reading strong,.pace-body-stats strong { font-variant-numeric:tabular-nums; letter-spacing:-.035em }
+.pace-rest-panel .pace-segments__segment { transition:background-color 180ms ease }
+@media(prefers-reduced-motion:reduce) { .pace-rest-panel .pace-segments__segment { transition:none } }
