@@ -93,10 +93,11 @@ export async function importArchive(file: File, profileId: string, profileName: 
   if (scope) {
     let programs = 0;
     for (const document of documents) if (await cloudImportDocument(scope, document)) programs++;
-    for (const measurement of bundle.measurements) await cloudSaveMeasurement(scope, measurement, true);
+    let measurements = 0;
+    for (const measurement of bundle.measurements) if (await cloudSaveMeasurement(scope, measurement, true)) measurements++;
     const current = await cloudReadArchive(scope);
     if (!current.currentId && bundle.currentIndex !== undefined) await cloudSelectProgram(scope, documents[bundle.currentIndex].id);
-    return { programs, measurements: bundle.measurements.length };
+    return { programs, measurements };
   }
   return db.transaction('rw', [db.documents, db.selections, db.measurements], async () => {
     let count = 0;

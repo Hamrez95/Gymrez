@@ -43,7 +43,7 @@ export function ExerciseDemo({ exercise }: { exercise: Exercise }) {
   const looping = playing && visible && !reduced;
   const values = (key: keyof Pose, axis: 0 | 1) => looping ? [poses[0][key][axis], poses[1][key][axis], poses[0][key][axis]] : poses[phase][key][axis];
   const transition = { duration: looping ? 3.6 : .22, repeat: looping ? Infinity : 0, ease: 'easeInOut' as const };
-  const limb = (from: keyof Pose, to: keyof Pose, width: number, color: string, key: string) => <motion.line key={key} stroke={color} strokeWidth={width} strokeLinecap="round" initial={false} animate={{ x1: values(from,0), y1: values(from,1), x2: values(to,0), y2: values(to,1) }} transition={transition} />;
+  const limb = (from: keyof Pose, to: keyof Pose, width: number, color: string, key: string) => <motion.line key={key} x1={poses[0][from][0]} y1={poses[0][from][1]} x2={poses[0][to][0]} y2={poses[0][to][1]} stroke={color} strokeWidth={width} strokeLinecap="round" initial={false} animate={{ x1: values(from,0), y1: values(from,1), x2: values(to,0), y2: values(to,1) }} transition={transition} />;
   return <div className="pace-movement-demo" ref={ref}>
     <svg viewBox="0 0 330 340" role="img" aria-label={'نمای شماتیک ' + exercise.name}>
       <defs><linearGradient id={id} x1="0" y1="0" x2="1" y2="1"><stop stopColor="#b7d3ed" /><stop offset=".45" stopColor="#456784" /><stop offset="1" stopColor="#173550" /></linearGradient></defs>
@@ -55,12 +55,11 @@ export function ExerciseDemo({ exercise }: { exercise: Exercise }) {
       {limb('hip','knee',22,`url(#${id})`,'thigh')}{limb('knee','ankle',15,`url(#${id})`,'shin')}
       {limb('shoulder','hip',40,`url(#${id})`,'torso')}
       {limb('shoulder','hip',3,'#65a9e5','spine')}
-      <motion.circle r="20" fill={`url(#${id})`} stroke="#a8c9e6" strokeWidth="1.5" initial={false} animate={{ cx: values('head',0), cy: values('head',1) }} transition={transition} />
+      <motion.circle cx={poses[0].head[0]} cy={poses[0].head[1]} r="20" fill={`url(#${id})`} stroke="#a8c9e6" strokeWidth="1.5" initial={false} animate={{ cx: values('head',0), cy: values('head',1) }} transition={transition} />
       {limb('shoulder','elbow',16,`url(#${id})`,'upperarm')}{limb('elbow','wrist',12,'#75acdc','forearm')}
-      <motion.circle r="5" fill="#b2ddff" initial={false} animate={{ cx: values('elbow',0), cy: values('elbow',1) }} transition={transition} />
-      <motion.circle r="7" fill="#d3eaff" initial={false} animate={{ cx: values('wrist',0), cy: values('wrist',1) }} transition={transition} />
+      <motion.circle cx={poses[0].elbow[0]} cy={poses[0].elbow[1]} r="5" fill="#b2ddff" initial={false} animate={{ cx: values('elbow',0), cy: values('elbow',1) }} transition={transition} />
+      <motion.circle cx={poses[0].wrist[0]} cy={poses[0].wrist[1]} r="7" fill="#d3eaff" initial={false} animate={{ cx: values('wrist',0), cy: values('wrist',1) }} transition={transition} />
       {['curl','press','hinge','raise','carry'].includes(pattern) && <motion.g initial={false} animate={{ x: values('wrist',0), y: values('wrist',1) }} transition={transition}><path d="M-17 0h34m-15-9v18m30-18v18" stroke="#b9cee4" strokeWidth="7" strokeLinecap="round" /></motion.g>}
-      <text x="20" y="330" fill="#6e9ec7" fontFamily="Arial" fontSize="8" letterSpacing="3">GYMREZ · MOTION</text>
     </svg>
     <div className="pace-demo-controls"><span>نمای شماتیک مسیر حرکت</span><Button type="button" variant="secondary" onClick={() => setPlaying(!playing)} aria-pressed={playing && !reduced}>{playing && !reduced ? 'مکث نمایش' : 'نمایش حرکت'}</Button></div>
     {(reduced || !playing) && <div className="pace-demo-controls"><Button variant={phase === 0 ? 'primary' : 'secondary'} onClick={() => setPhase(0)}>وضعیت شروع</Button><Button variant={phase === 1 ? 'primary' : 'secondary'} onClick={() => setPhase(1)}>وضعیت پایان</Button></div>}

@@ -404,3 +404,10 @@
 @media(prefers-reduced-motion:reduce) { .pace-button { transition:none; } .pace-button:not(:disabled):active { transform:none; } .pace-button-spinner { animation:none; border-style:dotted; } }
 .pace-install-bar,.pace-connection-banner { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:.75rem; width:min(100% - 2rem,86rem); margin:.75rem auto; padding:.65rem 1rem; background:var(--pace-surface-raised); border:1px solid var(--pace-border-subtle); border-radius:.7rem; font-size:.85rem; }
 .pace-connection-banner { color:#ffcc81; }
+/* Keep both people within a practical entry-page scroll on phones. */
+.pace-entry__intro h1,.pace-dashboard__intro h1 { font-weight:800; }
+.pace-entry__profiles { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.pace-profile-card { min-height:21rem; }
+.pace-profile-card .pace-avatar--hero { object-position:50% 25%; }
+.pace-desktop-nav--sidebar { inset-block-start:11rem; }
+@media(max-width:600px) { .pace-entry__profiles { grid-template-columns:1fr; } .pace-profile-card { min-height:12.5rem; } }

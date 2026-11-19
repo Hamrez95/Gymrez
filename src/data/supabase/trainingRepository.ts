@@ -52,8 +52,9 @@ export async function cloudReadMeasurements(scope: Scope) {
 export async function cloudSaveMeasurement(scope: Scope, value: Measurement, ignoreDuplicate = false) {
   const entry = measurementSchema.parse(value);
   const record = { household_id: scope.householdId, profile_id: scope.profileId, measurement_date: entry.date, source: entry.source, height_cm: entry.height, weight_kg: entry.weight, waist_cm: entry.waist, metrics: json(entry) };
-  const { error } = ignoreDuplicate ? await scope.client.from('body_measurements').upsert(record, { onConflict: 'profile_id,measurement_date,source', ignoreDuplicates: true }) : await scope.client.from('body_measurements').insert(record);
+  const { data, error } = ignoreDuplicate ? await scope.client.from('body_measurements').upsert(record, { onConflict: 'profile_id,measurement_date,source', ignoreDuplicates: true }).select('id') : await scope.client.from('body_measurements').insert(record).select('id');
   if (error) throw new Error('ثبت اندازه‌گیری در دیتابیس انجام نشد.');
+  return Boolean(data?.length);
 }
 export async function cloudReadWorkouts(scope: Scope) {
   const { data, error } = await scope.client.from('workout_sessions').select('plan_snapshot,revision,status').eq('profile_id', scope.profileId).order('started_at', { ascending: false });

@@ -17,7 +17,7 @@ export function AuthProvider({ queryClient, children }: { queryClient: QueryClie
     if (!supabaseClient) return;
     const { data: { subscription } } = supabaseClient.auth.onAuthStateChange((event, session) => {
       const nextUserId = session?.user.id ?? null;
-      if (event === 'SIGNED_OUT' || (previousUserId.current !== null && previousUserId.current !== nextUserId)) {
+      if (event === 'SIGNED_OUT' || previousUserId.current !== nextUserId) {
         queryClient.clear();
       }
       previousUserId.current = nextUserId;

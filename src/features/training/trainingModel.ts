@@ -74,7 +74,7 @@ export function trainingTasks(day: TrainingDay) {
 }
 
 export const faNumber = new Intl.NumberFormat('fa-IR', { maximumFractionDigits: 1 });
-export const faDate = new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeZone: 'UTC' });
+export const faDate = new Intl.DateTimeFormat('fa-IR', { dateStyle: 'medium', timeZone: 'Asia/Tehran' });
 export function tehranDate() {
   return new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Tehran' }).format(new Date());
 }

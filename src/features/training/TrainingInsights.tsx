@@ -12,7 +12,7 @@ const dayKey = (time: number) => new Intl.DateTimeFormat('en-CA', { year: 'numer
 export function TrainingInsights({ profileId }: { profileId: string }) {
   const query = useQuery({ queryKey: workoutKey(profileId), queryFn: () => readWorkouts(profileId) });
   const [today] = useState(() => dayKey(Date.now()));
-  const [monthAnchor, setMonthAnchor] = useState(() => Date.now());
+  const [monthAnchor, setMonthAnchor] = useState(() => Date.parse(dayKey(Date.now()) + 'T12:00:00Z'));
   const reduce = useReducedMotion();
   const history = query.data?.history ?? [];
   const stats = workoutAnalytics(history);
