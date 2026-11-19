@@ -4,6 +4,7 @@ import { useShellProfile } from '../../app/shellContext';
 import { listMeasurements, listPrograms, listWorkoutSessions } from '../../data/supabase/profileDataRepository';
 import { profileKey } from '../../data/queryKeys';
 import { supabaseClient } from '../../data/supabase/client';
+import { archiveKey, readArchive } from '../programs/localProgramArchive';
 import { Button, Card } from '../../shared/design/components';
 
 export function DashboardPreview() {
@@ -14,6 +15,12 @@ export function DashboardPreview() {
   const programs = useQuery({ queryKey: [...baseKey, 'programs'], queryFn: () => listPrograms(supabaseClient!, scope!), enabled });
   const workouts = useQuery({ queryKey: [...baseKey, 'workout-sessions'], queryFn: () => listWorkoutSessions(supabaseClient!, scope!), enabled });
   const measurements = useQuery({ queryKey: [...baseKey, 'measurements'], queryFn: () => listMeasurements(supabaseClient!, scope!), enabled });
+  const localArchive = useQuery({
+    queryKey: archiveKey(activeProfile?.id),
+    queryFn: () => readArchive(activeProfile!.id),
+    enabled: !userId && Boolean(activeProfile),
+  });
+  const localCurrent = localArchive.data?.documents.find(item => item.id === localArchive.data?.currentId);
   const activeProgram = programs.data?.find(item => item.status === 'active');
   const recentWorkout = workouts.data?.[0];
   const recentMeasurement = measurements.data?.[0];
@@ -25,7 +32,7 @@ export function DashboardPreview() {
     {!guestPreview && [programs, workouts, measurements].some(query => query.isPending) && <p role="status">در حال دریافت اطلاعات پروفایل…</p>}
     {!guestPreview && [programs, workouts, measurements].some(query => query.isError) && <p role="alert">بخشی از اطلاعات این پروفایل بارگذاری نشد.</p>}
     <Card className="pace-dashboard__progress" title="برنامه فعال">
-      {guestPreview ? <p>اطلاعات برنامه در حالت بدون ورود نمایش داده نمی‌شود.</p> : activeProgram ? <><p>{activeProgram.title}</p><p>{activeProgram.starts_on ?? 'بدون تاریخ شروع'} تا {activeProgram.ends_on ?? 'بدون تاریخ پایان'}</p></> : <p>برای این پروفایل برنامه فعالی ثبت نشده است.</p>}
+      {guestPreview ? <p>{localCurrent?.title ?? (localArchive.isPending ? 'در حال خواندن برنامه…' : localArchive.isError ? 'خواندن بایگانی ممکن نبود.' : 'برنامهٔ فعلی در این مرورگر ثبت نشده است.')}</p> : activeProgram ? <><p>{activeProgram.title}</p><p>{activeProgram.starts_on ?? 'بدون تاریخ شروع'} تا {activeProgram.ends_on ?? 'بدون تاریخ پایان'}</p></> : <p>برای این پروفایل برنامه فعالی ثبت نشده است.</p>}
       <Link to="/programs">دیدن برنامه‌ها</Link>
     </Card>
     <Card className="pace-dashboard__workout" title="آخرین جلسه">
