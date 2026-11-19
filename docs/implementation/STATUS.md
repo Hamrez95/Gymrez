@@ -1,3 +1,7 @@
+# Release continuation
+
+See [RELEASE_PROGRESS](RELEASE_PROGRESS.md) for the current implementation, private-backend verification and remaining roadmap work. Earlier blocker notes below describe the previous review stage.
+
 # Current review candidate — cloud/profile fixes
 
 See [CLOUD_PROFILE_PROGRESS](CLOUD_PROFILE_PROGRESS.md) for this continuation, verification and remaining authorization blockers. The candidate is not deployed or complete.

@@ -16,17 +16,10 @@ describe('cloud training boundaries', () => {
     expect(await cloudScope('synthetic-profile')).toBeNull();
   });
   it('rejects stale writes instead of silently reporting success', async () => {
-    const filters: unknown[][] = [];
-    const chain = {
-      update: vi.fn().mockReturnThis(),
-      eq: vi.fn((...args: unknown[]) => { filters.push(args); return chain; }),
-      select: vi.fn().mockResolvedValue({ data: [], error: null }),
-    };
-    mocks.from.mockReturnValue(chain);
-    const client = { from: mocks.from } as unknown as NonNullable<Awaited<ReturnType<typeof cloudScope>>>['client'];
+    const rpc = vi.fn().mockResolvedValue({ data: null, error: { code: '40001' } });
+    const client = { rpc } as unknown as NonNullable<Awaited<ReturnType<typeof cloudScope>>>['client'];
     const workout: Workout = { id: 'synthetic-session', profileId: 'synthetic-profile', documentId: 'test', started: 1000, day: { title: 'Test', warmup: '', exercises: [] }, sets: [], revision: 7 };
     await expect(cloudUpdateWorkout({ client, householdId: 'synthetic-workspace', profileId: workout.profileId }, workout, { finished: 2000 })).rejects.toThrow();
-    expect(filters).toContainEqual(['revision', 7]);
-    expect(filters).toContainEqual(['profile_id', workout.profileId]);
+    expect(rpc).toHaveBeenCalledWith('save_workout_snapshot', expect.objectContaining({ p_revision: 7, p_profile: workout.profileId }));
   });
 });

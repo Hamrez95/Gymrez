@@ -1,3 +1,5 @@
+import { motion, useReducedMotion } from 'motion/react';
+import { Icon, type IconName } from '../shared/design/Icon';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -8,6 +10,7 @@ import { runtimeConfig, supabaseClient } from '../data/supabase/client';
 import type { Profile } from '../shared/contracts/profile';
 import type { ShellContext } from './shellContext';
 
+import { InstallApp } from './InstallApp';
 import { ProfileAvatar } from '../shared/design/ProfileAvatar';
 
 const EMPTY_PROFILES: readonly Profile[] = [];
@@ -17,9 +20,13 @@ const GUEST_PROFILES: readonly Profile[] = [
 ];
 
 export function AppShell() {
+  const reduced = useReducedMotion();
   const { status, userId, email, signOut, connectionError } = useAuth();
   const guestMode = runtimeConfig.guestMode && status !== 'signedIn';
-  const [selection, setSelection] = useState<{ userId: string; profileId: string } | null>(null);
+  const [selection, setSelection] = useState<{ userId: string; profileId: string } | null>(() => {
+    try { return JSON.parse(window.localStorage.getItem('gymrez-selected-profile') ?? 'null'); }
+    catch { return null; }
+  });
   const [signOutError, setSignOutError] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
@@ -46,21 +53,21 @@ export function AppShell() {
     }
   }, [activeProfile, isDashboard, navigate, routeProfileId]);
 
-  const destinations = [
-    { to: activeProfile ? '/dashboard/' + activeProfile.id : '/', label: 'خانه', short: 'خانه' },
-    { to: '/programs', label: 'برنامه‌ها', short: 'برنامه' },
-    { to: '/workout', label: 'تمرین', short: 'تمرین' },
-    { to: '/progress', label: 'پیشرفت', short: 'پیشرفت' },
-    { to: '/profile', label: 'پروفایل', short: 'پروفایل' },
+  const destinations: { to: string; label: string; short: string; icon: IconName }[] = [
+    { to: activeProfile ? '/dashboard/' + activeProfile.id : '/', label: 'خانه', short: 'خانه', icon: 'home' },
+    { to: '/programs', label: 'برنامه‌ها', short: 'برنامه', icon: 'calendar' },
+    { to: '/workout', label: 'تمرین', short: 'تمرین', icon: 'dumbbell' },
+    { to: '/progress', label: 'پیشرفت', short: 'پیشرفت', icon: 'chart' },
+    { to: '/profile', label: 'پروفایل', short: 'پروفایل', icon: 'user' },
   ];
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => window.localStorage.getItem('gymrez-theme') === 'light' ? 'light' : 'dark');
   const changeProfile = (profile: Profile) => {
-    if (profileIdentity) setSelection({ userId: profileIdentity, profileId: profile.id });
+    if (profileIdentity) { const next = { userId: profileIdentity, profileId: profile.id }; setSelection(next); window.localStorage.setItem('gymrez-selected-profile', JSON.stringify(next)); }
     setSignOutError('');
     if (isDashboard) navigate('/dashboard/' + profile.id, { replace: true });
   };
 
-  useEffect(() => { document.documentElement.dataset.theme = theme; }, [theme]);
+  useEffect(() => { document.documentElement.dataset.theme = theme; window.localStorage.setItem('gymrez-theme', theme); }, [theme]);
 
   const handleSignOut = async () => {
     setSignOutError('');
@@ -92,21 +99,22 @@ export function AppShell() {
       </div>
     </header>
     {connectionError && <p role="alert">{connectionError}</p>}
+    <InstallApp />
     {signOutError && <p role="alert">{signOutError}</p>}
     {guestMode && !isEntry && <div className="pace-guest-banner" role="status">پیش‌نمایش بدون ورود · داده‌های این حالت فقط روی همین دستگاه هستند. برای داده‌های مشترک، لینک اختصاصی را باز کن.</div>}
 
     {!guestMode && !isEntry && <div className="pace-cloud-status" role="status">متصل به فضای خصوصی · ذخیره‌سازی مشترک</div>}
 
     {!isEntry && activeProfile && <nav className={'pace-desktop-nav' + (showSidebar ? ' pace-desktop-nav--sidebar' : '')} aria-label="ناوبری اصلی">
-      {destinations.map(item => <NavLink key={item.label} end={item.label === 'خانه'} to={item.to}>{item.label}</NavLink>)}
+      {destinations.map(item => <NavLink key={item.label} end={item.label === 'خانه'} to={item.to}>{({ isActive }) => <><Icon name={item.icon} /><span>{item.label}</span>{isActive && <motion.span className="pace-nav-indicator" layoutId="desktop-nav" transition={{ duration: reduced ? 0 : .18 }} />}</>}</NavLink>)}
     </nav>}
 
     <main id="main-content" className={'pace-page-content' + (showSidebar ? ' pace-page-content--sidebar' : '')}>
-      <Outlet context={context} />
+      <motion.div className="pace-route-view" key={location.pathname + (activeProfile?.id ?? '')} initial={reduced ? false : { opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .2 }}><Outlet context={context} /></motion.div>
     </main>
 
     {!isEntry && activeProfile && <nav className="pace-mobile-nav" aria-label="ناوبری اصلی">
-      {destinations.map(item => <NavLink key={item.label} aria-label={item.label} end={item.label === 'خانه'} to={item.to}><span className="pace-mobile-nav__label">{item.short}</span></NavLink>)}
+      {destinations.map(item => <NavLink key={item.label} aria-label={item.label} end={item.label === 'خانه'} to={item.to}>{({ isActive }) => <><Icon name={item.icon} /><span className="pace-mobile-nav__label">{item.short}</span>{isActive && <motion.span className="pace-nav-indicator" layoutId="mobile-nav" transition={{ duration: reduced ? 0 : .18 }} />}</>}</NavLink>)}
     </nav>}
   </div>;
 }

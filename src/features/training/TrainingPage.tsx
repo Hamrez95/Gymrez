@@ -4,6 +4,11 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Button, SegmentProgress } from '../../shared/design/components';
 import { archiveKey, cancelEmptyWorkout, readArchive, readWorkouts, startWorkout, updateWorkout, workoutKey } from '../programs/localProgramArchive';
+import { ExerciseDemo } from './ExerciseDemo';
+import { previousPerformance } from './workoutAnalytics';
+import { SuccessMark } from '../../shared/design/SuccessMark';
+import { useShellProfile } from '../../app/shellContext';
+import { ProfileAvatar } from '../../shared/design/ProfileAvatar';
 import { MuscleMap } from './MuscleMap';
 import { faDate, faNumber, trainingTasks, type Exercise, type Workout } from './trainingModel';
 import './training.css';
@@ -13,6 +18,9 @@ const number = (n: number) => faNumber.format(n);
 const restLabel = (exercise: Exercise) => exercise.restTo ? `${number(exercise.rest)} تا ${number(exercise.restTo)} ثانیه` : exercise.rest ? `${number(exercise.rest)} ثانیه` : 'بدون استراحت';
 
 export function TrainingPage({ profileId }: { profileId: string }) {
+  const { activeProfile } = useShellProfile();
+  const [savedAction, setSavedAction] = useState(0);
+  const [finishedId, setFinishedId] = useState<string>();
   const archive = useQuery({ queryKey: archiveKey(profileId), queryFn: () => readArchive(profileId) });
   const workouts = useQuery({ queryKey: workoutKey(profileId), queryFn: () => readWorkouts(profileId) });
   const queryClient = useQueryClient();
@@ -29,9 +37,13 @@ export function TrainingPage({ profileId }: { profileId: string }) {
 
   async function commit(action: () => Promise<unknown>) {
     setBusy(true);
+    setSavedAction(0);
     setError('');
     try {
+      const finishing = Boolean(active?.sets.length);
       await action();
+      setSavedAction(Date.now());
+      if (finishing && active) setFinishedId(active.id);
       await queryClient.invalidateQueries({ queryKey: workoutKey(profileId) });
     } catch (cause) {
       await queryClient.invalidateQueries({ queryKey: workoutKey(profileId) });
@@ -42,13 +54,11 @@ export function TrainingPage({ profileId }: { profileId: string }) {
   }
 
   return <section className="pace-training">
-    <header className="pace-training-hero">
-      <h1>تمرین من </h1>
-      {current && <p>{current.title}{plan && <> · {number(plan.weeks)} هفته</>}</p>}
-    </header>
+    <header className="pace-training-hero pace-training-hero--personal"><div><h1>تمرین من</h1>{current && <p>{current.title}{plan && <> · {number(plan.weeks)} هفته</>}</p>}</div>{activeProfile && <ProfileAvatar profile={activeProfile} hero />}</header>
     {error && <p role="alert">{error}</p>}
     {(archive.isError || workouts.isError) && <p role="alert">دریافت داده‌ها انجام نشد. اتصال را بررسی کن.</p>}
-    {active ? <WorkoutPlayer key={active.id} workout={active} busy={busy} commit={commit} /> :
+    {!active && workouts.data?.history.find(record => record.id === finishedId) && <motion.div className="pace-workout-success" role="status" initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}><SuccessMark /><div><strong>تمرینت ثبت شد</strong><p>یک قدم قوی‌تر. جزئیات جلسه در سابقهٔ تمرینت قرار گرفت.</p></div></motion.div>}
+    {active ? <WorkoutPlayer key={active.id} workout={active} history={workouts.data?.history ?? []} savedAction={savedAction} busy={busy} commit={commit} /> :
       selected && plan && current && exercise ? <>
         <div className="pace-workout-tabs" role="group" aria-label="انتخاب جلسه">
           {plan.days.map((option, i) => <Button key={option.title} variant={day === i ? 'primary' : 'secondary'} aria-pressed={day === i} onClick={() => { setDay(i); setFocus(0); }}>{option.title}</Button>)}
@@ -73,7 +83,7 @@ export function TrainingPage({ profileId }: { profileId: string }) {
             </motion.div>
           </AnimatePresence>
         </div>
-        {plan.guide.length > 0 && <details className="pace-training-panel"><summary>روش اجرای برنامهٔ شش‌هفته‌ای</summary><ul>{plan.guide.map(step => <li key={step}>{step}</li>)}</ul></details>}
+        {plan.guide.length > 0 && <details className="pace-training-panel"><summary>راهنمای اجرای برنامه</summary><ul>{plan.guide.map(step => <li key={step}>{step}</li>)}</ul></details>}
       </> : archive.isSuccess && workouts.isSuccess && <div className="pace-training-panel"><p>برای شروع، بستهٔ برنامه شامل جلسه‌ها و حرکت‌ها را وارد کن.</p><Link to="/programs">رفتن به برنامه‌ها</Link></div>}
     <section className="pace-training-panel" aria-labelledby="gymrez-training-history">
       <h2 id="gymrez-training-history">سابقهٔ تمرین</h2>
@@ -108,15 +118,17 @@ function ExerciseDetails({ exercise }: { exercise: Exercise }) {
   return <>
     <h2>{exercise.name}</h2>
     <p lang="en" dir="ltr" className="pace-exercise-en">{exercise.label}</p>
-    <MuscleMap primary={exercise.muscles} assists={exercise.assists} />
+    <ExerciseDemo key={exercise.label} exercise={exercise} />
+    <details className="pace-anatomy-details" open><summary>عضلات درگیر</summary><MuscleMap primary={exercise.muscles} assists={exercise.assists} /></details>
     <p className="pace-exercise-prescription">{exercise.target} · {restLabel(exercise)}</p>
     {exercise.note && <p>{exercise.note}</p>}
   </>;
 }
 
-function WorkoutPlayer({ workout, busy, commit }: { workout: Workout; busy: boolean; commit: (action: () => Promise<unknown>) => Promise<void> }) {
+function WorkoutPlayer({ workout, history, savedAction, busy, commit }: { workout: Workout; history: Workout[]; savedAction: number; busy: boolean; commit: (action: () => Promise<unknown>) => Promise<void> }) {
   const tasks = trainingTasks(workout.day);
   const task = tasks[workout.sets.length];
+  const previous = task ? previousPerformance([workout, ...history], task.exercise.label) : undefined;
   const [now, setNow] = useState(() => Date.now());
   const reduce = useReducedMotion();
   const restUntil = workout.restUntil;
@@ -153,6 +165,7 @@ function WorkoutPlayer({ workout, busy, commit }: { workout: Workout; busy: bool
   return <div className="pace-training-grid">
     <div className="pace-training-panel">
       <h2>{workout.day.title}</h2>
+      {savedAction > 0 && <motion.p key={savedAction} className="pace-save-confirmation" role="status" initial={reduce ? false : { opacity: 0, scale: .98 }} animate={{ opacity: 1, scale: 1 }}><span aria-hidden="true">✓</span> تغییرات ذخیره شد</motion.p>}
       <p>{number(workout.sets.length)} از {number(tasks.length)} ست و نوبت ثبت شده</p>
       <SegmentProgress label="پیشرفت جلسه" value={workout.sets.length} max={tasks.length} />
       {rest > 0 && <div className="pace-rest-panel"><p>استراحت</p>
@@ -168,9 +181,10 @@ function WorkoutPlayer({ workout, busy, commit }: { workout: Workout; busy: bool
       </div>}
       {task && <form className="pace-log-form" key={workout.sets.length} onSubmit={save}>
         <h3>ست {number(task.round)} · {task.exercise.name}</h3>
-        <label>{task.exercise.unit === 'seconds' ? 'زمان (ثانیه)' : 'تکرار'}<input name="amount" type="number" min="1" max={task.exercise.unit === 'seconds' ? 7200 : 500} required inputMode="numeric" /></label>
+        {previous && <p className="pace-previous-set">آخرین عملکرد ثبت‌شده: {number(previous.amount)} {task.exercise.unit === 'seconds' ? 'ثانیه' : 'تکرار'}{previous.weight !== undefined && <> × {number(previous.weight)} کیلوگرم</>}</p>}
+        <label>{task.exercise.unit === 'seconds' ? 'زمان (ثانیه)' : 'تکرار'}<input name="amount" defaultValue={previous?.amount} type="number" min="1" max={task.exercise.unit === 'seconds' ? 7200 : 500} required inputMode="numeric" /></label>
         {task.exercise.unit === 'reps' && <>
-          <label>وزنه (کیلوگرم)<input name="weight" type="number" min="0" max="1000" step="0.1" inputMode="decimal" /></label>
+          <label>وزنه (کیلوگرم)<input name="weight" defaultValue={previous?.weight} type="number" min="0" max="1000" step="0.1" inputMode="decimal" /></label>
           <label>تکرار مانده (RIR)<input name="rir" type="number" min="0" max="10" inputMode="numeric" /></label>
         </>}
         <Button type="submit" disabled={rest > 0} loading={busy}>ثبت ست</Button>
@@ -178,6 +192,6 @@ function WorkoutPlayer({ workout, busy, commit }: { workout: Workout; busy: bool
       {workout.sets.length ? <Button variant={task ? 'secondary' : 'primary'} disabled={busy} onClick={() => void commit(() => updateWorkout(workout, { finished: Date.now(), restUntil: undefined, restPaused: undefined }))}>پایان و ذخیرهٔ جلسه</Button>
         : <Button variant="quiet" disabled={busy} onClick={() => void commit(() => cancelEmptyWorkout(workout))}>لغو جلسه</Button>}
     </div>
-    {task && <div className="pace-training-panel"><ExerciseDetails exercise={task.exercise} /></div>}
+    {task && <motion.div key={task.exercise.label} className="pace-training-panel" initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .18 }}><ExerciseDetails exercise={task.exercise} /></motion.div>}
   </div>;
 }

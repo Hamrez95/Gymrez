@@ -785,6 +785,15 @@ export type Database = {
         Args: { p_checksum: string; p_metadata: Json; p_profile: string }
         Returns: string
       }
+      save_workout_snapshot: {
+        Args: {
+          p_id: string
+          p_profile: string
+          p_revision: number
+          p_snapshot: Json
+        }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never

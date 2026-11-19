@@ -5,6 +5,9 @@ import { Link } from 'react-router-dom';
 import { Button } from '../../shared/design/components';
 import { measurementKey, readMeasurements, saveMeasurement } from '../programs/localProgramArchive';
 import { faDate, faNumber, tehranDate, type Measurement } from './trainingModel';
+import { TrainingInsights } from './TrainingInsights';
+import { useShellProfile } from '../../app/shellContext';
+import { ProfileAvatar } from '../../shared/design/ProfileAvatar';
 import { useAuth } from '../auth/useAuth';
 import './training.css';
 
@@ -31,6 +34,7 @@ function metricText(value: number, key: Metric) {
 
 export function BodyProgress({ profileId }: { profileId: string }) {
   const { userId } = useAuth();
+  const { activeProfile } = useShellProfile();
   const queryClient = useQueryClient();
   const key = measurementKey(profileId);
   const query = useQuery({ queryKey: key, queryFn: () => readMeasurements(profileId) });
@@ -76,10 +80,8 @@ export function BodyProgress({ profileId }: { profileId: string }) {
   }
 
   return <section className="pace-training">
-    <header className="pace-training-hero pace-training-hero--body">
-      <h1>بدن من، مسیر من </h1>
-      {latest && <p>آخرین اندازه‌گیری · {faDate.format(new Date(latest.date))} · {latest.source}</p>}
-    </header>
+    <header className="pace-training-hero pace-training-hero--personal"><div><h1>بدن من، مسیر من</h1>{latest && <p>آخرین اندازه‌گیری · {faDate.format(new Date(latest.date))} · {latest.source}</p>}</div>{activeProfile && <ProfileAvatar profile={activeProfile} hero />}</header>
+    <TrainingInsights profileId={profileId} />
     {query.isError && <p role="alert">دریافت اندازه‌ها انجام نشد. اتصال را بررسی کن.</p>}
     {latest && <div className="pace-body-stats">{(['weight', 'bmi', 'fat', 'muscle'] as const).map(field => {
       const value = metricValue(latest, field);

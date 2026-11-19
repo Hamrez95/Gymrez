@@ -68,8 +68,8 @@ export async function cloudStartWorkout(scope: Scope, documentId: string, day: W
 }
 export async function cloudUpdateWorkout(scope: Scope, expected: Workout, change: Partial<Workout>) {
   const next = { ...expected, ...change };
-  const { data, error } = await scope.client.from('workout_sessions').update({ plan_snapshot: json(next), status: next.finished ? 'completed' : 'active', ended_at: next.finished ? new Date(next.finished).toISOString() : null, elapsed_seconds: Math.max(0, Math.floor(((next.finished ?? Date.now()) - next.started) / 1000)) }).eq('id', expected.id).eq('profile_id', scope.profileId).eq('revision', expected.revision ?? 1).eq('status', 'active').select('id');
-  if (error || !data?.length) throw new Error('ذخیره نشد؛ جلسه در دستگاه دیگری تغییر کرده یا اتصال قطع است.');
+  const { error } = await scope.client.rpc('save_workout_snapshot', { p_id: expected.id, p_profile: scope.profileId, p_revision: expected.revision ?? 1, p_snapshot: json(next) });
+  if (error) throw new Error('ذخیره نشد؛ جلسه در دستگاه دیگری تغییر کرده یا اتصال قطع است.');
 }
 export async function cloudCancelWorkout(scope: Scope, workout: Workout) {
   if (workout.sets.length || workout.finished) throw new Error('جلسه قابل حذف نیست.');

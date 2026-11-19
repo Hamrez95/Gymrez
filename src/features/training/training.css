@@ -76,3 +76,40 @@
 .pace-training-hero h1,.pace-rest-panel strong,.pace-chart-reading strong,.pace-body-stats strong { font-variant-numeric:tabular-nums; letter-spacing:-.035em }
 .pace-rest-panel .pace-segments__segment { transition:background-color 180ms ease }
 @media(prefers-reduced-motion:reduce) { .pace-rest-panel .pace-segments__segment { transition:none } }
+
+.pace-training-hero--personal { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:0; background:var(--pace-surface); }
+.pace-training-hero--personal > div { padding:clamp(1rem,3vw,2.5rem); flex:1; }
+.pace-training-hero--personal .pace-avatar--hero { width:clamp(7rem,26vw,16rem); height:100%; min-height:11rem; align-self:stretch; border-radius:0; object-fit:cover; object-position:center 20%; mask-image:linear-gradient(to right,#000 80%,transparent); }
+.pace-training-hero--personal p { max-width:36rem; }
+.pace-insights { display:grid; gap:1rem; }
+.pace-section-title { display:flex; align-items:center; justify-content:space-between; }
+.pace-insight-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.75rem; }
+.pace-insight-metrics > div { display:grid; gap:.2rem; border-block-start:2px solid var(--pace-accent); padding:.8rem; background:var(--pace-surface); border-radius:.5rem; }
+.pace-insight-metrics strong { font-size:clamp(1.5rem,4vw,2.4rem); font-weight:800; color:var(--pace-accent-soft); font-variant-numeric:tabular-nums; }
+.pace-insight-metrics span,.pace-insight-metrics small { color:var(--pace-text-muted); font-size:.8rem; }
+.pace-calendar header { display:flex; justify-content:space-between; align-items:center; }
+.pace-calendar header button { width:2.5rem; height:2.5rem; border:1px solid var(--pace-border-subtle); border-radius:.5rem; background:var(--pace-surface-raised); font-size:1.5rem; cursor:pointer; }
+.pace-calendar-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); text-align:center; gap:.3rem; }
+.pace-calendar-grid span { min-height:2.1rem; display:grid; place-items:center; border:1px solid transparent; border-radius:.5rem; font-size:.85rem; }
+.pace-calendar-grid [data-completed='true'] { color:white; background:var(--pace-accent); }
+.pace-calendar-grid [data-today='true'] { border-color:var(--pace-accent-soft); }
+.pace-muscle-distribution { display:grid; gap:.7rem; list-style:none; padding:0; margin:0; }
+.pace-muscle-distribution li { margin:0; }
+.pace-muscle-distribution li > div:first-child { display:flex; justify-content:space-between; gap:.5rem; font-size:.85rem; }
+.pace-distribution-track { height:.4rem; border-radius:1rem; background:var(--pace-bg); margin-top:.3rem; overflow:hidden; }
+.pace-distribution-track span { display:block; height:100%; transform-origin:right; border-radius:inherit; background:linear-gradient(90deg,#83c8ff,var(--pace-accent)); }
+.pace-records { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.7rem; }
+.pace-records > div { display:grid; gap:.4rem; padding:.8rem; background:var(--pace-surface-raised); border-radius:.6rem; }
+.pace-records strong { color:var(--pace-accent-soft); font-size:1.35rem; }
+.pace-records small { font-size:.75rem; }
+.pace-workout-success { display:flex; align-items:center; gap:1rem; background:color-mix(in srgb,var(--pace-accent) 12%,var(--pace-surface)); border:1px solid var(--pace-accent-soft); border-radius:1rem; padding:1rem; }
+.pace-success-mark { color:#80c5ff; width:3.2rem; height:3.2rem; flex:none; }
+.pace-save-confirmation { color:#86dcc5!important; font-size:.8rem; }
+.pace-previous-set { font-size:.85rem; padding:.65rem; background:var(--pace-surface-raised); border-radius:.5rem; }
+.pace-movement-demo { border:1px solid var(--pace-border-subtle); border-radius:.7rem; background:radial-gradient(ellipse at center,#163855,#061929); overflow:hidden; }
+.pace-movement-demo > svg { display:block; max-height:23rem; width:100%; }
+.pace-demo-controls { display:flex; align-items:center; justify-content:space-between; gap:.5rem; padding:.7rem; color:#b8d1e7; font-size:.75rem; flex-wrap:wrap; }
+.pace-demo-controls .pace-button { font-size:.75rem; padding:.35rem .6rem; }
+.pace-anatomy-details summary { font-size:.85rem; }
+.pace-anatomy-details .pace-muscle-map__views svg { max-height:13rem; }
+@media(max-width:600px) { .pace-insight-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } .pace-records { grid-template-columns:1fr; } .pace-training-hero--personal h1 { font-size:1.6rem; } }

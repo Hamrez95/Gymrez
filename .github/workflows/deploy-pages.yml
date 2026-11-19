@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - feat/t06-invite-auth
   workflow_dispatch:
 
 permissions:
