@@ -72,6 +72,15 @@ async function installDevice(context: BrowserContext, records: Map<string, Row>,
       await navigator.serviceWorker.ready;
       if (!navigator.serviceWorker.controller) await new Promise<void>(resolve => navigator.serviceWorker.addEventListener('controllerchange', () => resolve(), { once: true }));
     });
+    if (production && offline) {
+      const cache = await page.evaluate(async () => ({
+        controller: navigator.serviceWorker.controller?.scriptURL,
+        required: Array.from(document.querySelectorAll<HTMLScriptElement | HTMLLinkElement>('script[src],link[rel=stylesheet]')).map(element => element instanceof HTMLScriptElement ? element.src : element.href),
+        stored: (await Promise.all((await caches.keys()).map(async key => (await (await caches.open(key)).keys()).map(request => request.url)))).flat(),
+      }));
+      console.log('Synthetic PWA cache:', cache);
+      expect(cache.stored).toEqual(expect.arrayContaining(cache.required));
+    }
     if (production) await context.setOffline(offline);
     disconnected = offline;
     await page.evaluate(value => { localStorage.setItem('synthetic-offline', String(value)); window.dispatchEvent(new Event(value ? 'offline' : 'online')); }, offline);
@@ -79,6 +88,7 @@ async function installDevice(context: BrowserContext, records: Map<string, Row>,
 }
 
 test('two private devices recover API outage and reload, reject conflicts, then sync sets and measurements', async ({ page, browser }, testInfo) => {
+  page.on('requestfailed', request => console.log('Synthetic failed request:', request.url(), request.failure()?.errorText));
   page.on('pageerror', error => console.log('Synthetic browser error:', error.message));
   page.on('console', message => { if (message.type() === 'error') console.log('Synthetic console error:', message.text()); });
   const records = new Map<string, Row>(), readings: Record<string, unknown>[] = [];
