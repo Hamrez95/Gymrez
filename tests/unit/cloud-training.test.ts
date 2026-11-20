@@ -19,7 +19,7 @@ describe('cloud training boundaries', () => {
     const rpc = vi.fn().mockResolvedValue({ data: null, error: { code: '40001' } });
     const client = { rpc } as unknown as NonNullable<Awaited<ReturnType<typeof cloudScope>>>['client'];
     const workout: Workout = { id: 'synthetic-session', profileId: 'synthetic-profile', documentId: 'test', started: 1000, day: { title: 'Test', warmup: '', exercises: [] }, sets: [], revision: 7 };
-    await expect(cloudUpdateWorkout({ client, householdId: 'synthetic-workspace', profileId: workout.profileId }, workout, { finished: 2000 })).rejects.toThrow();
+    await expect(cloudUpdateWorkout({ client, userId: 'synthetic-user', householdId: 'synthetic-workspace', profileId: workout.profileId }, workout, { finished: 2000 })).rejects.toThrow();
     expect(rpc).toHaveBeenCalledWith('save_workout_snapshot', expect.objectContaining({ p_revision: 7, p_profile: workout.profileId }));
   });
 });

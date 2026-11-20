@@ -1,23 +1,27 @@
 import { z } from 'zod';
+import { cachedProfiles, cloudError, CloudError } from '../sync/database';
 import { supabaseClient } from './client';
 import type { Json } from '../../shared/database.types';
 import type { ProgramDocument } from '../../features/programs/localProgramArchive';
 import { measurementSchema, trainingSchema, type Measurement, type Workout } from '../../features/training/trainingModel';
 const metadataSchema = z.object({ title: z.string(), filename: z.string(), sourceDate: z.string().optional(), training: trainingSchema.optional(), pdfPath: z.string().optional() });
 const json = (value: unknown): Json => JSON.parse(JSON.stringify(value)) as Json;
+const canonical = (value: unknown) => JSON.stringify(value, (_key, item: unknown) => item && typeof item === 'object' && !Array.isArray(item) ? Object.fromEntries(Object.entries(item).sort(([a], [b]) => a.localeCompare(b))) : item);
 export async function cloudScope(profileId: string) {
   if (!supabaseClient) return null;
   const { data, error } = await supabaseClient.auth.getSession();
   if (error) throw new Error('بررسی اتصال حساب انجام نشد.');
   if (!data.session) return null;
+  const known = (await cachedProfiles(data.session.user.id))?.find(profile => profile.id === profileId);
+  if (known) return { client: supabaseClient, householdId: known.householdId, profileId, userId: data.session.user.id };
   const { data: profile, error: profileError } = await supabaseClient.from('profiles').select('household_id').eq('id', profileId).single();
-  if (profileError) throw new Error('این پروفایل در دسترس حساب نیست.');
-  return { client: supabaseClient, householdId: profile.household_id, profileId };
+  if (profileError) throw cloudError(profileError, 'این پروفایل در دسترس حساب نیست.');
+  return { client: supabaseClient, householdId: profile.household_id, profileId, userId: data.session.user.id };
 }
 type Scope = NonNullable<Awaited<ReturnType<typeof cloudScope>>>;
 export async function cloudReadArchive(scope: Scope) {
   const { data, error } = await scope.client.from('programs').select('archive_checksum,archive_metadata,status').eq('profile_id', scope.profileId).order('created_at', { ascending: false });
-  if (error) throw new Error('دریافت برنامه‌ها از سرور انجام نشد.');
+  if (error) throw cloudError(error, 'دریافت برنامه‌ها از سرور انجام نشد.');
   const documents: ProgramDocument[] = [];
   let currentId: string | undefined;
   for (const row of data ?? []) {
@@ -46,34 +50,51 @@ export async function cloudSelectProgram(scope: Scope, checksum: string) {
 }
 export async function cloudReadMeasurements(scope: Scope) {
   const { data, error } = await scope.client.from('body_measurements').select('*').eq('profile_id', scope.profileId).order('measurement_date');
-  if (error) throw new Error('دریافت اندازه‌های بدن انجام نشد.');
+  if (error) throw cloudError(error, 'دریافت اندازه‌های بدن انجام نشد.');
   return (data ?? []).map(row => measurementSchema.parse(row.metrics ?? { date: row.measurement_date, source: row.source, weight: row.weight_kg, height: row.height_cm ?? undefined, waist: row.waist_cm ?? undefined }));
 }
-export async function cloudSaveMeasurement(scope: Scope, value: Measurement, ignoreDuplicate = false) {
+export async function cloudSaveMeasurement(scope: Scope, value: Measurement, ignoreDuplicate = false, id?: string) {
   const entry = measurementSchema.parse(value);
-  const record = { household_id: scope.householdId, profile_id: scope.profileId, measurement_date: entry.date, source: entry.source, height_cm: entry.height, weight_kg: entry.weight, waist_cm: entry.waist, metrics: json(entry) };
+  const record = { ...(id ? { id } : {}), household_id: scope.householdId, profile_id: scope.profileId, measurement_date: entry.date, source: entry.source, height_cm: entry.height, weight_kg: entry.weight, waist_cm: entry.waist, metrics: json(entry) };
   const { data, error } = ignoreDuplicate ? await scope.client.from('body_measurements').upsert(record, { onConflict: 'profile_id,measurement_date,source', ignoreDuplicates: true }).select('id') : await scope.client.from('body_measurements').insert(record).select('id');
-  if (error) throw new Error('ثبت اندازه‌گیری در دیتابیس انجام نشد.');
+  if (error) {
+    if (id && error.code === '23505') {
+      const existing = await scope.client.from('body_measurements').select('id').eq('id', id).eq('profile_id', scope.profileId).maybeSingle();
+      if (!existing.error && existing.data) return true;
+    }
+    throw cloudError(error, 'ثبت اندازه‌گیری در دیتابیس انجام نشد.');
+  }
   return Boolean(data?.length);
 }
 export async function cloudReadWorkouts(scope: Scope) {
   const { data, error } = await scope.client.from('workout_sessions').select('plan_snapshot,revision,status').eq('profile_id', scope.profileId).order('started_at', { ascending: false });
-  if (error) throw new Error('دریافت سابقهٔ تمرین انجام نشد.');
+  if (error) throw cloudError(error, 'دریافت سابقهٔ تمرین انجام نشد.');
   const records = (data ?? []).filter(row => row.status !== 'abandoned').map(row => ({ ...(row.plan_snapshot as unknown as Workout), revision: row.revision }));
   return { active: records.find(row => row.finished === undefined), history: records.filter(row => row.finished !== undefined) };
 }
-export async function cloudStartWorkout(scope: Scope, documentId: string, day: Workout['day']) {
-  const workout: Workout = { id: crypto.randomUUID(), profileId: scope.profileId, documentId, day, started: Date.now(), sets: [] };
+export async function cloudStartWorkout(scope: Scope, documentId: string, day: Workout['day'], prepared?: Workout) {
+  const workout: Workout = prepared ?? { id: crypto.randomUUID(), profileId: scope.profileId, documentId, day, started: Date.now(), sets: [] };
+  // A stable UUID and identical snapshot make an ambiguous insert retry safe.
+  const existing = await scope.client.from('workout_sessions').select('id,plan_snapshot,status').eq('id', workout.id).eq('profile_id', scope.profileId).maybeSingle();
+  if (existing.error) throw cloudError(existing.error, 'بررسی جلسه انجام نشد.');
+  if (existing.data) {
+    if (existing.data.status !== 'active' || canonical(existing.data.plan_snapshot) !== canonical(json(workout))) throw new CloudError('جلسه در سرور تغییر کرده است.', 'conflict');
+    return;
+  }
   const { error } = await scope.client.from('workout_sessions').insert({ id: workout.id, household_id: scope.householdId, profile_id: scope.profileId, title_snapshot: day.title, plan_snapshot: json(workout), started_at: new Date(workout.started).toISOString() });
-  if (error) throw new Error('شروع جلسه ثبت نشد؛ شاید جلسهٔ دیگری فعال باشد.');
+  if (error) throw cloudError(error, 'شروع جلسه ثبت نشد؛ شاید جلسهٔ دیگری فعال باشد.');
 }
 export async function cloudUpdateWorkout(scope: Scope, expected: Workout, change: Partial<Workout>) {
   const next = { ...expected, ...change };
   const { error } = await scope.client.rpc('save_workout_snapshot', { p_id: expected.id, p_profile: scope.profileId, p_revision: expected.revision ?? 1, p_snapshot: json(next) });
-  if (error) throw new Error('ذخیره نشد؛ جلسه در دستگاه دیگری تغییر کرده یا اتصال قطع است.');
+  if (error) throw cloudError(error, 'ذخیره نشد؛ جلسه در دستگاه دیگری تغییر کرده یا اتصال قطع است.');
 }
 export async function cloudCancelWorkout(scope: Scope, workout: Workout) {
   if (workout.sets.length || workout.finished) throw new Error('جلسه قابل حذف نیست.');
-  const { data, error } = await scope.client.from('workout_sessions').delete().eq('id', workout.id).eq('profile_id', scope.profileId).eq('revision', workout.revision ?? 1).eq('status', 'active').select('id');
-  if (error || !data?.length) throw new Error('جلسه تغییر کرده است. دوباره دریافت کن.');
+  const existing = await scope.client.from('workout_sessions').select('status').eq('id', workout.id).eq('profile_id', scope.profileId).maybeSingle();
+  if (existing.error) throw cloudError(existing.error, 'بررسی جلسه انجام نشد.');
+  if (existing.data?.status === 'abandoned') return;
+  const { data, error } = await scope.client.from('workout_sessions').update({ status: 'abandoned' }).eq('id', workout.id).eq('profile_id', scope.profileId).eq('revision', workout.revision ?? 1).eq('status', 'active').select('id');
+  if (error) throw cloudError(error, 'لغو جلسه انجام نشد.');
+  if (!data?.length) throw new CloudError('جلسه تغییر کرده است. دوباره دریافت کن.', 'conflict');
 }

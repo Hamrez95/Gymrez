@@ -3,6 +3,7 @@ import type { QueryClient } from '@tanstack/react-query';
 import { buildPasswordRecoveryRedirectUrl } from '../../app/config';
 import { runtimeConfig, supabaseClient } from '../../data/supabase/client';
 import { connectDevice } from './deviceConnection';
+import { clearPrivateCache, hasPendingWrites } from '../../data/sync/database';
 import { AuthContext, type AuthContextValue, type AuthSnapshot } from './authContext';
 
 export function AuthProvider({ queryClient, children }: { queryClient: QueryClient; children: ReactNode }) {
@@ -60,6 +61,8 @@ export function AuthProvider({ queryClient, children }: { queryClient: QueryClie
       setSnapshot(current => ({ ...current, recoveryRequired: false }));
     },
     async signOut() {
+      if (snapshot.session?.user.id && await hasPendingWrites(snapshot.session.user.id)) throw new Error('تغییرات ارسال‌نشده داری؛ پیش از خروج آن‌ها را همگام کن.');
+      if (snapshot.session?.user.id) await clearPrivateCache(snapshot.session.user.id);
       queryClient.clear();
       const { error } = await requireClient().auth.signOut({ scope: 'local' });
       if (error) throw new Error('خروج کامل نشد. دوباره تلاش کن.');

@@ -781,8 +781,29 @@ export type Database = {
         Args: { p_checksum: string; p_profile: string }
         Returns: undefined
       }
+      activate_program: {
+        Args: {
+          p_household_id: string
+          p_profile_id: string
+          p_program_id: string
+        }
+        Returns: string
+      }
       import_archive_program: {
         Args: { p_checksum: string; p_metadata: Json; p_profile: string }
+        Returns: string
+      }
+      save_program_draft: {
+        Args: {
+          p_ends_on: string
+          p_expected_revision?: number
+          p_household_id: string
+          p_profile_id: string
+          p_program_id?: string
+          p_sessions: Json
+          p_starts_on: string
+          p_title: string
+        }
         Returns: string
       }
       save_workout_snapshot: {

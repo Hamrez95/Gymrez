@@ -1,7 +1,8 @@
 import Dexie, { type EntityTable, type Table } from 'dexie';
 import { z } from 'zod';
 import { supabaseClient } from '../../data/supabase/client';
-import { cloudScope, cloudReadArchive, cloudImportDocument, cloudSelectProgram, cloudReadMeasurements, cloudSaveMeasurement, cloudReadWorkouts, cloudStartWorkout, cloudUpdateWorkout, cloudCancelWorkout } from '../../data/supabase/trainingRepository';
+import { cloudScope, cloudReadArchive, cloudImportDocument, cloudSelectProgram, cloudSaveMeasurement } from '../../data/supabase/trainingRepository';
+import { syncReadArchive, syncReadMeasurements, syncReadWorkouts, syncStartWorkout, syncUpdateWorkout, syncCancelWorkout, syncSaveMeasurement } from '../../data/sync/trainingSync';
 import { measurementSchema, trainingSchema, type Measurement, type TrainingPlan, type Workout } from '../training/trainingModel';
 
 export type ProgramDocument = {
@@ -51,7 +52,7 @@ export const archiveKey = (profileId: string | undefined) => ['local-program-arc
 
 export async function readArchive(profileId: string) {
   const scope = await cloudScope(profileId);
-  if (scope) return cloudReadArchive(scope);
+  if (scope) return syncReadArchive(scope);
   return db.transaction('r', db.documents, db.selections, async () => {
     const [documents, selection] = await Promise.all([
       db.documents.where('profileId').equals(profileId).toArray(),
@@ -161,19 +162,19 @@ export const workoutKey = (id: string) => ['local-workout', id];
 
 export async function readMeasurements(profileId: string) {
   const scope = await cloudScope(profileId);
-  if (scope) return cloudReadMeasurements(scope);
+  if (scope) return syncReadMeasurements(scope);
   return db.measurements.where('profileId').equals(profileId).sortBy('date');
 }
 
 export async function saveMeasurement(profileId: string, entry: Measurement) {
   const scope = await cloudScope(profileId);
-  if (scope) return cloudSaveMeasurement(scope, entry);
+  if (scope) return syncSaveMeasurement(scope, entry);
   return db.measurements.add({ ...measurementSchema.parse(entry), profileId });
 }
 
 export async function readWorkouts(profileId: string) {
   const scope = await cloudScope(profileId);
-  if (scope) return cloudReadWorkouts(scope);
+  if (scope) return syncReadWorkouts(scope);
   const [records, selection] = await Promise.all([
     db.workouts.where('profileId').equals(profileId).toArray(),
     db.activeWorkouts.get(profileId),
@@ -186,7 +187,7 @@ export async function readWorkouts(profileId: string) {
 
 export async function startWorkout(profileId: string, documentId: string, day: TrainingPlan['days'][number]) {
   const scope = await cloudScope(profileId);
-  if (scope) return cloudStartWorkout(scope, documentId, day);
+  if (scope) return syncStartWorkout(scope, documentId, day);
   return db.transaction('rw', db.workouts, db.activeWorkouts, async () => {
     if (await db.activeWorkouts.get(profileId)) return;
     const workout: Workout = { id: crypto.randomUUID(), profileId, documentId, day, started: Date.now(), sets: [] };
@@ -197,7 +198,7 @@ export async function startWorkout(profileId: string, documentId: string, day: T
 
 export async function updateWorkout(expected: Workout, change: Partial<Pick<Workout, 'sets' | 'restUntil' | 'restPaused' | 'restDuration' | 'finished'>>) {
   const scope = await cloudScope(expected.profileId);
-  if (scope) return cloudUpdateWorkout(scope, expected, change);
+  if (scope) return syncUpdateWorkout(scope, expected, change);
   return db.transaction('rw', db.workouts, db.activeWorkouts, async () => {
     const current = await db.workouts.get(expected.id);
     if (!current || current.finished !== undefined || current.sets.length !== expected.sets.length || current.restUntil !== expected.restUntil || current.restPaused !== expected.restPaused) {
@@ -210,7 +211,7 @@ export async function updateWorkout(expected: Workout, change: Partial<Pick<Work
 
 export async function cancelEmptyWorkout(workout: Workout) {
   const scope = await cloudScope(workout.profileId);
-  if (scope) return cloudCancelWorkout(scope, workout);
+  if (scope) return syncCancelWorkout(scope, workout);
   return db.transaction('rw', db.workouts, db.activeWorkouts, async () => {
     const current = await db.workouts.get(workout.id);
     if (!current || current.sets.length || current.finished !== undefined) throw new Error('جلسه تغییر کرده است.');

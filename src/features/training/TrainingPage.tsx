@@ -57,7 +57,7 @@ export function TrainingPage({ profileId }: { profileId: string }) {
     <header className="pace-training-hero pace-training-hero--personal"><div><h1>تمرین من</h1>{current && <p>{current.title}{plan && <> · {number(plan.weeks)} هفته</>}</p>}</div>{activeProfile && <ProfileAvatar profile={activeProfile} hero />}</header>
     {error && <p role="alert">{error}</p>}
     {(archive.isError || workouts.isError) && <p role="alert">دریافت داده‌ها انجام نشد. اتصال را بررسی کن.</p>}
-    {!active && workouts.data?.history.find(record => record.id === finishedId) && <motion.div className="pace-workout-success" role="status" initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}><SuccessMark /><div><strong>تمرینت ثبت شد</strong><p>یک قدم قوی‌تر. جزئیات جلسه در سابقهٔ تمرینت قرار گرفت.</p></div></motion.div>}
+    {!active && workouts.data?.history.find(record => record.id === finishedId) && <motion.div className="pace-workout-success" role="status" initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}><SuccessMark /><div><strong>تمرینت ثبت شد</strong><p>جزئیات در سابقهٔ دستگاه قرار گرفت. وضعیت ارسال به سرور در بخش همگام‌سازی است.</p></div></motion.div>}
     {active ? <WorkoutPlayer key={active.id} workout={active} history={workouts.data?.history ?? []} savedAction={savedAction} busy={busy} commit={commit} /> :
       selected && plan && current && exercise ? <>
         <div className="pace-workout-tabs" role="group" aria-label="انتخاب جلسه">
@@ -179,7 +179,7 @@ function WorkoutPlayer({ workout, history, savedAction, busy, commit }: { workou
           <Button variant="quiet" disabled={busy} onClick={() => setRest({ restUntil: undefined, restPaused: undefined })}>رد کردن استراحت</Button>
         </div>
       </div>}
-      {task && <form className="pace-log-form" key={workout.sets.length} onSubmit={save}>
+      {task && <form className="pace-log-form" key={[workout.sets.length, previous?.amount, previous?.weight].join(':')} onSubmit={save}>
         <h3>ست {number(task.round)} · {task.exercise.name}</h3>
         {previous && <p className="pace-previous-set">آخرین عملکرد ثبت‌شده: {number(previous.amount)} {task.exercise.unit === 'seconds' ? 'ثانیه' : 'تکرار'}{previous.weight !== undefined && <> × {number(previous.weight)} کیلوگرم</>}</p>}
         <label>{task.exercise.unit === 'seconds' ? 'زمان (ثانیه)' : 'تکرار'}<input name="amount" defaultValue={previous?.amount} type="number" min="1" max={task.exercise.unit === 'seconds' ? 7200 : 500} required inputMode="numeric" /></label>
