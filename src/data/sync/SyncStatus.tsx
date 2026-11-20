@@ -79,7 +79,8 @@ export function SyncStatus({ userId, householdId, profileId }: Identity) {
     const link = document.createElement('a'); link.href = url; link.download = 'gymrez-pending-recovery.json'; link.click();
     setTimeout(() => URL.revokeObjectURL(url), 60000);
   }
-  const summary = offline ? 'آفلاین · تغییرات روی این دستگاه می‌مانند'
+  const summary = pending.isPending ? 'در حال بررسی تغییرات دستگاه…' : pending.isError ? 'وضعیت ذخیره‌سازی دستگاه در دسترس نیست'
+    : offline ? 'آفلاین · تغییرات روی این دستگاه می‌مانند'
     : all.length ? `${all.length.toLocaleString('fa-IR')} تغییر روی دستگاه · در انتظار ثبت در سرور`
     : 'فضای خصوصی · تغییر ارسال‌نشده‌ای روی این دستگاه نیست';
   return <aside className="pace-sync" aria-label="همگام‌سازی">

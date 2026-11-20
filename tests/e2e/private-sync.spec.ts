@@ -71,14 +71,14 @@ async function installDevice(context: BrowserContext, records: Map<string, Row>,
 test('two private devices recover API outage and reload, reject conflicts, then sync sets and measurements', async ({ page, browser }, testInfo) => {
   const records = new Map<string, Row>(), readings: Record<string, unknown>[] = [];
   const disconnect = await installDevice(page.context(), records, readings);
-  const second = await browser.newContext({ viewport: { width: 412, height: 915 } });
+  const second = await browser.newContext({ baseURL: 'http://127.0.0.1:4173', viewport: { width: 412, height: 915 } });
   const peer = await second.newPage();
   await installDevice(second, records, readings);
   async function openWorkout(target: Page) {
     await target.goto('/');
     await expect(target.getByRole('button', { name: /خروج از حساب/ })).toBeVisible();
     await target.getByRole('button', { name: 'ورود به پروفایل hamrez95' }).click();
-    await target.getByRole('link', { name: 'شروع تمرین', exact: true }).click();
+    await target.getByRole('link', { name: /^(شروع تمرین|ادامهٔ تمرین)$/ }).click();
   }
   async function log(target: Page, reps: string) {
     await target.getByRole('spinbutton', { name: 'تکرار', exact: true }).fill(reps);

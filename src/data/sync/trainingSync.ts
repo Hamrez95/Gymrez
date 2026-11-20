@@ -49,7 +49,7 @@ export const syncReadWorkouts = (scope: Scope) => cachedRead(scope, 'workouts', 
     if (op.kind === 'measurement') continue;
     const local = [cached?.active, ...(cached?.history ?? [])].find(w => w?.id === op.workout.id);
     if (op.kind === 'cancel') records.delete(op.workout.id);
-    else if (local) records.set(local.id, local);
+    else records.set(op.workout.id, local ?? { ...op.workout, revision: op.kind === 'start' ? 1 : op.expectedRevision + 1 });
   }
   const all = [...records.values()].sort((a, b) => b.started - a.started);
   return { active: all.find(w => w.finished === undefined), history: all.filter(w => w.finished !== undefined) };

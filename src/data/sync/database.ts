@@ -41,8 +41,8 @@ export async function hasPendingWrites(userId: string) {
 }
 export async function clearPrivateCache(userId: string) {
   // Explicit logout is allowed only after its queue has been dealt with.
-  if (await hasPendingWrites(userId)) throw new Error('تغییرات ارسال‌نشده داری؛ پیش از خروج آن‌ها را همگام کن.');
-  await syncDb.transaction('rw', syncDb.cache, syncDb.profiles, async () => {
+  await syncDb.transaction('rw', syncDb.cache, syncDb.profiles, syncDb.operations, async () => {
+    if (await hasPendingWrites(userId)) throw new Error('تغییرات ارسال‌نشده داری؛ پیش از خروج آن‌ها را همگام کن.');
     const rows = await syncDb.cache.toArray();
     await syncDb.cache.bulkDelete(rows.filter(row => JSON.parse(row.scope)[0] === userId).map(row => row.key));
     await syncDb.profiles.delete(userId);

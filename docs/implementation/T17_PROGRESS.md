@@ -15,6 +15,7 @@ The shared status panel distinguishes device storage, pending sends, conflicts a
 - TypeScript, ESLint, production build and 17 unit tests pass locally.
 - Six new tests exercise actual IndexedDB via fake-indexeddb: reopen durability/order; ambiguous insert retry; conflict with blocked descendants and separate measurement delivery; stale local write/account switch isolation; cancellation/measurement retry; and stale fetch versus a new local write.
 - The synthetic two-device browser scenario tests API outage, reload, conflict/server selection, resumed offline completion and measurement delivery. Mobile/desktop screenshots are captured by CI under `evidence/T17`.
+- Authenticated real-database rollback verification passed revision checks, duplicate snapshot/finish retry, exactly one normalized set, stale conflict rejection, cancellation tombstone and stable measurement insert. Fixtures were rolled back. The security advisor reports only the previously documented disabled compromised-password screening warning.
 - Local Chromium cannot launch because the host denies its Unix socket. Browser validation and screenshot review must be recorded from CI before release acceptance.
 
 ## Scope and remaining acceptance
