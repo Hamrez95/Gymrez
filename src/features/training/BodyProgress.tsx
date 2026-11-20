@@ -71,7 +71,7 @@ export function BodyProgress({ profileId }: { profileId: string }) {
       await queryClient.invalidateQueries({ queryKey: key });
       setFormOpen(false);
       setError('');
-      setNotice(userId ? 'اندازه‌گیری در دیتابیس ذخیره شد.' : 'اندازه‌گیری در همین مرورگر ذخیره شد.');
+      setNotice(userId ? 'اندازه‌گیری روی دستگاه ذخیره شد؛ وضعیت ارسال به سرور در بخش همگام‌سازی است.' : 'اندازه‌گیری در همین مرورگر ذخیره شد.');
     } catch {
       setError('مقادیر واردشده را بررسی کن. اندازه‌گیری ذخیره نشد.');
     } finally {

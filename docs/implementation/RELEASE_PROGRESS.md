@@ -30,3 +30,7 @@ The real private API was checked for profile/program/measurement reads, both ava
 The Supabase advisor reports an Auth warning for disabled compromised-password screening; the technical account uses a newly generated random high-entropy credential, and no user password sign-up UI is offered. No paid feature was enabled.
 
 Remaining roadmap work must stay open: offline write outbox and conflict-resolution UI, migration of browser-only archives to cloud, full plan editor/catalog, shared-file enrichment into new plan versions, richer export/settings, and exact-reference review of all eight sheets. This release does not mark T01–T24 complete.
+
+## Continuation — scoped offline writes
+
+Recovered T07 source/RPC definitions and old branch ancestry are reconciled without exposing the unfinished schedule-only manager. The active archive/player remains the entry point. The new private IndexedDB outbox covers workout start/update/finish/cancel and manual measurements, caches downloaded training data, preserves account/profile boundaries, retries stable IDs and presents explicit conflict recovery. See T17_PROGRESS.md for checks and limits; see TASK_AUDIT.md for all 24 tasks. Browser verification is pending CI at the point this source is prepared; the full roadmap remains open.

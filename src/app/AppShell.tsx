@@ -12,6 +12,7 @@ import type { ShellContext } from './shellContext';
 
 import { InstallApp } from './InstallApp';
 import { ProfileAvatar } from '../shared/design/ProfileAvatar';
+import { SyncStatus } from '../data/sync/SyncStatus';
 
 const EMPTY_PROFILES: readonly Profile[] = [];
 const GUEST_PROFILES: readonly Profile[] = [
@@ -72,7 +73,7 @@ export function AppShell() {
   const handleSignOut = async () => {
     setSignOutError('');
     try { await signOut(); navigate('/login', { replace: true }); }
-    catch { setSignOutError('خروج کامل نشد. اتصال را بررسی کن و دوباره تلاش کن.'); }
+    catch (cause) { setSignOutError(cause instanceof Error ? cause.message : 'خروج کامل نشد. اتصال را بررسی کن و دوباره تلاش کن.'); }
   };
 
   const context: ShellContext = {
@@ -103,7 +104,7 @@ export function AppShell() {
     {signOutError && <p role="alert">{signOutError}</p>}
     {guestMode && !isEntry && <div className="pace-guest-banner" role="status">پیش‌نمایش بدون ورود · داده‌های این حالت فقط روی همین دستگاه هستند. برای داده‌های مشترک، لینک اختصاصی را باز کن.</div>}
 
-    {!guestMode && !isEntry && <div className="pace-cloud-status" role="status">متصل به فضای خصوصی · ذخیره‌سازی مشترک</div>}
+    {!guestMode && !isEntry && userId && activeProfile && <SyncStatus key={userId + activeProfile.id} userId={userId} householdId={activeProfile.householdId} profileId={activeProfile.id} />}
 
     {!isEntry && activeProfile && <nav className={'pace-desktop-nav' + (showSidebar ? ' pace-desktop-nav--sidebar' : '')} aria-label="ناوبری اصلی">
       {destinations.map(item => <NavLink key={item.label} end={item.label === 'خانه'} to={item.to}>{({ isActive }) => <><Icon name={item.icon} /><span>{item.label}</span>{isActive && <motion.span className="pace-nav-indicator" layoutId="desktop-nav" transition={{ duration: reduced ? 0 : .18 }} />}</>}</NavLink>)}

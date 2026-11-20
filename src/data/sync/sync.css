@@ -1,0 +1,6 @@
+.pace-sync { margin:.5rem auto; max-width:1180px; padding:.6rem 1rem; border:1px solid var(--pace-border-subtle); border-radius:.65rem; background:var(--pace-surface); color:var(--pace-text); font-size:.82rem; }
+.pace-sync p { margin:.2rem 0; line-height:1.8; }
+.pace-sync__summary { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.5rem; }
+.pace-sync details { border-block-start:1px solid var(--pace-border-subtle); padding-block:.5rem; }
+.pace-sync summary { cursor:pointer; font-weight:700; }
+.pace-sync .pace-button { font-size:.8rem; margin-inline-end:.4rem; }

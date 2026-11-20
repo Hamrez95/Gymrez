@@ -37,7 +37,7 @@ function TrainingRoute({ kind }: { kind: 'workout' | 'body' }) {
 }
 
 function NotFoundPage() {
-  return <section className="foundation-content"><h1>صفحه پیدا نشد<span aria-hidden="true"> //</span></h1></section>;
+  return <section className="foundation-content"><h1>صفحه پیدا نشد</h1></section>;
 }
 
 export function AppRoutes() {

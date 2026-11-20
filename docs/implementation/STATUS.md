@@ -1,57 +1,21 @@
-# Release continuation
+# Gymrez — current execution status
 
-See [RELEASE_PROGRESS](RELEASE_PROGRESS.md) for the current implementation, private-backend verification and remaining roadmap work. Earlier blocker notes below describe the previous review stage.
+Production baseline: main/e7e8d02 on https://hamrez95.github.io/Gymrez/ . The current continuation reconciles previous branch source and adds durable private training writes. Production verification of this continuation must be recorded after its CI/deployment.
 
-# Current review candidate — cloud/profile fixes
+## Current change
 
-See [CLOUD_PROFILE_PROGRESS](CLOUD_PROFILE_PROGRESS.md) for this continuation, verification and remaining authorization blockers. The candidate is not deployed or complete.
+- Recovered T07 program manager, repository, CSS and RPC migration source are preserved. The unfinished manager stays unexposed until catalog/exercise editing produces playable published plans.
+- Private user/household/profile IndexedDB cache and atomic outbox cover workout start, set/rest changes, completion, cancellation and manual body readings.
+- Stable IDs/revisions, ordered foreground/reconnect retry, backoff, account checks, cancellation tombstones and explicit server/conflict choice preserve local work.
+- Save wording distinguishes device storage from server acknowledgement. Logout blocks outstanding writes and clears the completed account's private cache.
+- Downloaded profile/program/workout/measurement data can be read during transient private-API failure. Initial download and reauthentication still need connectivity.
 
-# Gymrez — وضعیت اجرا
-آخرین بررسی: 2026-11-18
+## Validation and limits
 
-## پیشرفت
+TypeScript, lint, 17 unit tests and production build pass locally. Chromium launch is denied by this host's Unix socket restriction; synthetic two-device mobile/desktop checks run in CI. T17 acceptance and release verification stay pending until those results and screenshots are reviewed. Complete production app-shell-offline/update behavior belongs to T18; exact comparison against all eight original mockups remains T21.
 
-- T01/#2 و T02/#3 تکمیل شدند؛ اسکلت React/TypeScript/Vite و CI در main است.
-- T03/#4 و T04/#5 ادغام شده‌اند؛ ساختار و پوسته آماده است، اما تطبیق تصویری دقیق و پولیش نهایی طبق برنامه در T19/T21 باز می‌ماند.
-- T05/#6 در پروژهٔ مستقل Supabase اجرا شده: ۹ migration، ۱۴ جدول با RLS، bucket خصوصی `profile-media`، seed هشت حرکت و ۱۴ assertion موفق pgTAP. PR #29 هنوز draft است تا شواهد تصویری نهایی ثبت شوند.
-- T06/#7: ورود دعوتی، بازیابی رمز با allowlist، queryهای scopeشده و پاک‌سازی cache در PR #30 روی شاخهٔ `feat/t06-invite-auth` آماده است. در پیش‌نمایش فعلی، ورود موقتاً bypass شده و تا زمان بازگشت `VITE_GUEST_MODE=false` دادهٔ Supabase خوانده/نوشته نمی‌شود.
-- پروژهٔ Supabase در آخرین بررسی `ACTIVE_HEALTHY` بود. شمارش read-only: ۰ کاربر Auth، ۰ household، ۰ عضویت و ۰ پروفایل.
-- مشاورهای امنیت و سلامت Supabase lintی نداشتند. مشاور عملکرد ۱۸ مورد INFO برای index استفاده‌نشده نشان می‌دهد؛ با توجه به خالی بودن جدول‌های کاربری، فعلاً شواهدی برای حذف آن‌ها نیست.
-- Gymrez روی GitHub Pages در `https://hamrez95.github.io/Gymrez/` منتشر شده است. Vite، BrowserRouter، fallback مسیرهای SPA و بازیابی رمز برای زیرمسیر `/Gymrez/` پشتیبانی می‌شوند. Source روی GitHub Actions تنظیم شده و Environment اجازهٔ انتشار از شاخه‌های `main` و `feat/t06-invite-auth` را دارد. آخرین build و deploy موفق‌اند: [workflow](https://github.com/Hamrez95/Gymrez/actions/runs/44155382887).
-- پروژهٔ رایگان Cloudflare Pages با نام `gymrez` هم ساخته شده، اما هنوز deployment ندارد.
+No personal files, credentials or seed datasets are committed. RLS and private Storage remain in place; avatars are the previously provisioned private files. Preview-only browser archives are not silently moved to a private account.
 
-## موارد باقی‌ماندهٔ T06
+## Remaining work
 
-- انتشار GitHub Pages انجام شد؛ workflow در pushهای بعدی روی شاخه‌های `main` و `feat/t06-invite-auth` به‌صورت خودکار اجرا می‌شود.
-- پس از deployment، Site URL و redirect allowlist بازیابی رمز در Supabase باید روی `https://hamrez95.github.io/Gymrez/` تنظیم شوند.
-- تنظیم Auth dashboard هنوز انجام نشده است؛ فعلاً هیچ Auth user، household، membership یا profile واقعی وجود ندارد.
-- دو حساب باید در Supabase ایجاد شوند و بعد household خصوصی و پروفایل‌های `hamrez95` و `Ryxy` provision شوند. این دو شناسه نام نمایشی پروفایل‌اند؛ Auth فعلی از ایمیل/رمز استفاده می‌کند.
-- آزمون ورود دو حساب، بازیابی رمز و رد دسترسی حساب سوم هنوز انجام نشده است.
-- صف آفلاین/outbox هنوز ساخته نشده و معیار حذف/بازیابی تغییرات صف‌شده هنگام logout به T17 وابسته است.
-- شواهد screenshot موبایل/دسکتاپ و مقایسه با موکاپ همچنان باز هستند.
-
-T06 همچنان برای آزمون دو حساب و workspace واقعی باز است. T07 در PR draft #31 جریان برنامه‌ها را دنبال می‌کند؛ PR #32 پیش‌نمایش مهمان و انتخاب پروفایل را برای Pages آماده می‌کند. پیش‌نمایش مهمان، جایگزین احراز هویت برای دادهٔ واقعی نیست.
-
-## وضعیت مرحله‌ها
-
-| مرحله | وضعیت |
-| --- | --- |
-| M0 | T01/#2 و T02/#3 تکمیل |
-| M1 | پایهٔ T03/#4 و T04/#5 ادغام؛ تطبیق تصویری نهایی باز |
-| M2 | اسکیمای T05 آماده و GitHub Pages منتشر شده؛ اجرای واقعی T06 در انتظار تنظیم Auth/دو حساب |
-| M3–M6 | T07 در حال پیاده‌سازی؛ گرافیک و موشن نهایی طبق برنامه در T19 |
-
-## اقدام بعدی
-
-Pages منتشر شده است. قدم بعدی تنظیم Site URL/redirect allowlist در Supabase، ساخت دو حساب و آزمون واقعی دسترسی‌هاست. راهنمای Auth در [T06_SETUP.md](T06_SETUP.md) است.
-
-## بایگانی محلی برنامه‌ها
-
-- در حالت بدون ورود، مسیر برنامه‌ها بستهٔ JSON نسخهٔ ۱ بایگانی PDF را به‌صورت محلی در IndexedDB و به تفکیک پروفایل نگه می‌دارد. ورود دوبارهٔ فایل تکراری رکورد تازه نمی‌سازد و برنامهٔ فعلی در داشبورد دیده می‌شود.
-- این مسیر فقط نمایش و مدیریت اسناد برنامه را پوشش می‌دهد. اجرای ست‌ها، وارد کردن برنامهٔ ساختاریافته، اتصال به Supabase و بررسی تصویری PACE همچنان باز هستند.
-
-## تمرین و پیشرفت محلی PACE
-
-- بستهٔ بایگانی نسخهٔ ۱ می‌تواند برنامهٔ اجرایی و اندازه‌گیری اختیاری داشته باشد. IndexedDB نسخهٔ ۲ بایگانی‌های PDF پیشین را حفظ می‌کند. ورود دوبارهٔ نسخهٔ ساختاریافته، همان PDF را بدون رونوشت غنی می‌کند. هیچ برنامه یا اندازه‌گیری خصوصی در Git ثبت نمی‌شود.
-- مسیر تمرین محلی جلسه‌های برنامه، نقشهٔ جلو/پشت با عضلات اصلی و کمکی، ثبت ست و زمان، تایمر استراحت و سابقهٔ قابل بازبینی دارد. نمودار بدن از دادهٔ واقعی ساخته می‌شود و اندازه‌گیری دستی و BMI محاسبه‌شده را پشتیبانی می‌کند.
-- عکس‌های عمومی سربرگ تزیینی‌اند و نقشهٔ تعاملی، نمای شماتیک عضلات است. ثبت از دستگاه دیگر، همگام‌سازی، تصویر یا ویدئوی تکنیک هر حرکت و تطبیق کامل تمام موکاپ‌ها در این تحویل پوشش داده نشده‌اند.
+See [TASK_AUDIT](TASK_AUDIT.md): 2 of 24 tasks formally closed, 22 open with substantial partial implementation. Continue with full catalog/program editing and published-plan adapter (T08/T09/T07), import preview (T10), remaining history/body/settings/PDF/backup, production PWA verification, final art/motion, exact-reference review and the two-person pilot.
