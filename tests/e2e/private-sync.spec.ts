@@ -1,6 +1,10 @@
 import { expect, test, type BrowserContext, type Page } from '@playwright/test';
 import type { Workout } from '../../src/features/training/trainingModel';
 
+test.afterEach(async ({ page }, info) => {
+  if (info.status !== info.expectedStatus) console.log('Synthetic sync page at failure:', await page.locator('body').innerText().catch(() => 'unavailable'));
+});
+
 // Entirely synthetic API and identity. No production credentials or personal data.
 const profileId = '11111111-1111-4111-8111-111111111111';
 const householdId = '22222222-2222-4222-8222-222222222222';
@@ -69,6 +73,8 @@ async function installDevice(context: BrowserContext, records: Map<string, Row>,
 }
 
 test('two private devices recover API outage and reload, reject conflicts, then sync sets and measurements', async ({ page, browser }, testInfo) => {
+  page.on('pageerror', error => console.log('Synthetic browser error:', error.message));
+  page.on('console', message => { if (message.type() === 'error') console.log('Synthetic console error:', message.text()); });
   const records = new Map<string, Row>(), readings: Record<string, unknown>[] = [];
   const disconnect = await installDevice(page.context(), records, readings);
   const second = await browser.newContext({ baseURL: 'http://127.0.0.1:4173', viewport: { width: 412, height: 915 } });
