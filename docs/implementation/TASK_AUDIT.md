@@ -20,13 +20,13 @@ Authoritative roadmap: GitHub issue #1 and T01–T24. Only T01 and T02 are forma
 | T14 | Completion, history and set details | Filters, session metadata and richer reference layout |
 | T15 | Private body readings and BMI/history | Remaining measurements/profile editing and reference panels |
 | T16 | Real history/volume/muscle charts/calendar | Full period filters, records and comparison |
-| T17 | Durable scoped outbox added in this continuation | CI/two-device/screenshot review and production pilot |
+| T17 | Durable scoped outbox added in this continuation | Functional criteria verified (18 unit/15 browser); exact-reference visual acceptance remains |
 | T18 | Manifest, install UI, static-shell service worker | Production offline/reload/update and device-install acceptance |
 | T19 | Route/navigation/chart motion, avatars | Complete final artwork/motion pass |
 | T20 | Original PDFs and conflict recovery JSON | Printable program/history PDF, settings and tested backup/restore |
 | T21 | References preserved, some screenshots | All eight reference overlays and correction of major differences |
 | T22 | Unit, RLS and E2E checks already exist | Full final security/accessibility/performance matrix |
-| T23 | Main-only GitHub Pages deployment | Final recovery documentation and release validation |
+| T23 | Main-only GitHub Pages deployment | Recovery guide added; final release/device acceptance remains |
 | T24 | App available for intermediate use | Hamidreza/Reyhaneh real-device pilot and 1.0 acceptance |
 
 ## Priority order

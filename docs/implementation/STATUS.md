@@ -1,6 +1,6 @@
 # Gymrez — current execution status
 
-Production baseline: main/e7e8d02 on https://hamrez95.github.io/Gymrez/ . The current continuation reconciles previous branch source and adds durable private training writes. Production verification of this continuation must be recorded after its CI/deployment.
+Production URL: https://hamrez95.github.io/Gymrez/ . Release source: PR #37, reconciling previous branches and adding durable private training writes. Functional code at 25ae9fcd passed Quality run 81; the Pages workflow records the actual deployed main commit.
 
 ## Current change
 
@@ -12,7 +12,7 @@ Production baseline: main/e7e8d02 on https://hamrez95.github.io/Gymrez/ . The cu
 
 ## Validation and limits
 
-TypeScript, lint, 18 unit tests and production build pass locally. Chromium launch is denied by this host's Unix socket restriction; synthetic two-device mobile/desktop checks run in CI. T17 acceptance and release verification stay pending until those results and screenshots are reviewed. Complete production app-shell-offline/update behavior belongs to T18; exact comparison against all eight original mockups remains T21.
+TypeScript, lint, 18 unit tests and production build pass locally and in [Quality run 81](https://github.com/Hamrez95/Gymrez/actions/runs/44831414733). All 15 browser checks passed, including two-device mobile/desktop and production PWA full-internet-outage/reload/reconnect. The PWA check found and verified the fix for a public-shell Vary-header cache miss. Authenticated real-database rollback tests passed; no test rows remain. Screenshots and reference overlay were reviewed. The exact-reference visual gate keeps T17 formally open; complete installation/update/pilot coverage remains T18/T24 and all eight mockup comparisons remain T21.
 
 No personal files, credentials or seed datasets are committed. RLS and private Storage remain in place; avatars are the previously provisioned private files. Preview-only browser archives are not silently moved to a private account.
 
