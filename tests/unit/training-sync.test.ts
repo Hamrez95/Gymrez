@@ -139,4 +139,20 @@ describe('private durable training outbox', () => {
     expect((await reading).active?.documentId).toBe('document');
     expect((await active()).documentId).toBe('document');
   });
+
+  it('keeps a pending body reading visible until the user explicitly accepts a conflicting server reading', async () => {
+    await downloadBaseline();
+    const local = { date: '2026-01-03', source: 'Synthetic', weight: 70 };
+    await syncSaveMeasurement(scope, local);
+    const op = (await pendingOperations(scope))[0];
+    transport.measurements.mockResolvedValue([{ ...local, weight: 71 }]);
+    online = true;
+    expect((await syncReadMeasurements(scope))[0].weight).toBe(70);
+    await syncDb.operations.update(op.id, { state: 'conflict' });
+    await acceptServerVersion(scope, op.entity);
+    expect((await syncReadMeasurements(scope))[0].weight).toBe(71);
+    expect(await pendingOperations(scope)).toHaveLength(0);
+    transport.workouts.mockRejectedValueOnce(new CloudError('Access revoked', 'auth'));
+    await expect(syncReadWorkouts(scope)).rejects.toThrow('Access revoked');
+  });
 });

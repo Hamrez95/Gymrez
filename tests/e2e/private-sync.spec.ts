@@ -67,6 +67,12 @@ async function installDevice(context: BrowserContext, records: Map<string, Row>,
     await json({ message: 'Unexpected synthetic endpoint: ' + path }, 500);
   });
   return async (page: Page, offline: boolean) => {
+    const production = new URL(page.url()).port === '4174';
+    if (production && offline) await page.evaluate(async () => {
+      await navigator.serviceWorker.ready;
+      if (!navigator.serviceWorker.controller) await new Promise<void>(resolve => navigator.serviceWorker.addEventListener('controllerchange', () => resolve(), { once: true }));
+    });
+    if (production) await context.setOffline(offline);
     disconnected = offline;
     await page.evaluate(value => { localStorage.setItem('synthetic-offline', String(value)); window.dispatchEvent(new Event(value ? 'offline' : 'online')); }, offline);
   };
@@ -77,7 +83,7 @@ test('two private devices recover API outage and reload, reject conflicts, then 
   page.on('console', message => { if (message.type() === 'error') console.log('Synthetic console error:', message.text()); });
   const records = new Map<string, Row>(), readings: Record<string, unknown>[] = [];
   const disconnect = await installDevice(page.context(), records, readings);
-  const second = await browser.newContext({ baseURL: 'http://127.0.0.1:4173', viewport: { width: 412, height: 915 } });
+  const second = await browser.newContext({ baseURL: String(testInfo.project.use.baseURL ?? 'http://127.0.0.1:4173'), viewport: { width: 412, height: 915 } });
   const peer = await second.newPage();
   await installDevice(second, records, readings);
   async function openWorkout(target: Page) {

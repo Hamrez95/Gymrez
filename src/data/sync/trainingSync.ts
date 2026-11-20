@@ -39,7 +39,11 @@ async function cachedRead<T>(scope: Scope, kind: string, read: () => Promise<T>,
 export const syncReadArchive = (scope: Scope) => cachedRead(scope, 'archive', () => cloudReadArchive(scope));
 export const syncReadMeasurements = (scope: Scope) => cachedRead(scope, 'measurements', () => cloudReadMeasurements(scope), async remote => {
   const entries = [...remote];
-  for (const op of await operations(scope)) if (op.kind === 'measurement' && !entries.some(entry => entry.date === op.measurement.date && entry.source === op.measurement.source)) entries.push(op.measurement);
+  for (const op of await operations(scope)) if (op.kind === 'measurement') {
+    const index = entries.findIndex(entry => entry.date === op.measurement.date && entry.source === op.measurement.source);
+    if (index < 0) entries.push(op.measurement);
+    else entries[index] = op.measurement;
+  }
   return entries.sort((a, b) => a.date.localeCompare(b.date));
 });
 export const syncReadWorkouts = (scope: Scope) => cachedRead(scope, 'workouts', () => cloudReadWorkouts(scope), async remote => {

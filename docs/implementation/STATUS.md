@@ -12,7 +12,7 @@ Production baseline: main/e7e8d02 on https://hamrez95.github.io/Gymrez/ . The cu
 
 ## Validation and limits
 
-TypeScript, lint, 17 unit tests and production build pass locally. Chromium launch is denied by this host's Unix socket restriction; synthetic two-device mobile/desktop checks run in CI. T17 acceptance and release verification stay pending until those results and screenshots are reviewed. Complete production app-shell-offline/update behavior belongs to T18; exact comparison against all eight original mockups remains T21.
+TypeScript, lint, 18 unit tests and production build pass locally. Chromium launch is denied by this host's Unix socket restriction; synthetic two-device mobile/desktop checks run in CI. T17 acceptance and release verification stay pending until those results and screenshots are reviewed. Complete production app-shell-offline/update behavior belongs to T18; exact comparison against all eight original mockups remains T21.
 
 No personal files, credentials or seed datasets are committed. RLS and private Storage remain in place; avatars are the previously provisioned private files. Preview-only browser archives are not silently moved to a private account.
 
