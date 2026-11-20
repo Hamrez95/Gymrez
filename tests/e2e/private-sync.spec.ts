@@ -87,8 +87,11 @@ test('two private devices recover API outage and reload, reject conflicts, then 
     await target.getByRole('link', { name: /^(شروع تمرین|ادامهٔ تمرین)$/ }).click();
   }
   async function log(target: Page, reps: string) {
+    const counter = target.getByText(/^[۰-۹]+ از [۰-۹]+ ست و نوبت ثبت شده$/);
+    const before = await counter.innerText();
     await target.getByRole('spinbutton', { name: 'تکرار', exact: true }).fill(reps);
     await target.getByRole('button', { name: 'ثبت ست', exact: true }).click();
+    await expect(counter).not.toHaveText(before);
   }
   const status = page.getByRole('complementary', { name: 'همگام‌سازی' });
   await openWorkout(page);
@@ -115,6 +118,7 @@ test('two private devices recover API outage and reload, reject conflicts, then 
   await disconnect(page, true);
   await log(page, '8');
   await page.getByRole('button', { name: 'پایان و ذخیرهٔ جلسه' }).click();
+  await expect(page.getByText(/ست‌ها و نوبت‌های ثبت‌شده در/)).toBeVisible();
   await page.reload();
   await expect(page.getByText(/ست‌ها و نوبت‌های ثبت‌شده در/)).toBeVisible();
   await page.screenshot({ path: `docs/implementation/evidence/T17/pending-${testInfo.project.name}.png`, fullPage: true });
@@ -130,6 +134,7 @@ test('two private devices recover API outage and reload, reject conflicts, then 
   await disconnect(page, true);
   await page.getByRole('spinbutton', { name: 'وزن · کیلوگرم', exact: true }).fill('72');
   await page.getByRole('button', { name: 'ذخیرهٔ اندازه‌گیری' }).click();
+  await expect(page.getByText('اندازه‌گیری روی دستگاه ذخیره شد؛ وضعیت ارسال به سرور در بخش همگام‌سازی است.')).toBeVisible();
   await page.reload();
   await expect(page.getByRole('img', { name: 'نمودار وزن' })).toBeVisible();
   await disconnect(page, false);
