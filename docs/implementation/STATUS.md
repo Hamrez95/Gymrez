@@ -19,3 +19,12 @@ No personal files, credentials or seed datasets are committed. RLS and private S
 ## Remaining work
 
 See [TASK_AUDIT](TASK_AUDIT.md): 2 of 24 tasks formally closed, 22 open with substantial partial implementation. Continue with full catalog/program editing and published-plan adapter (T08/T09/T07), import preview (T10), remaining history/body/settings/PDF/backup, production PWA verification, final art/motion, exact-reference review and the two-person pilot.
+
+
+## Continuation — T10 archive preview (2026-11-21)
+
+Confirmed previous merge 61dc5a7 is deployed: main Quality run 83 and Pages run 9 succeeded; production returned HTTP 200. The existing private database has both profiles and five program records (read-only count verification).
+
+Archive selection now validates and displays destination profile, storage mode, program/PDF titles, dates, weekly sessions, exercises/sets/reps/rest and measurement count before any writes. Cancel discards preparation. Confirmation imports with stable content IDs; it never activates a plan implicitly. Activation remains a separate existing action. An account change between preview and confirmation is rejected. Cloud batch retries preserve completed items; batch import is not claimed atomic.
+
+TypeScript, ESLint, 21 unit tests and production build passed locally. Local browser execution is blocked at Chromium launch by the host's Unix socket policy; updated mobile/desktop E2E checks and preview screenshots must pass in GitHub CI before merge. This is a scoped T10 improvement; manifest fetching, complete immutable version import, editor/catalog and exact visual acceptance remain open. No roadmap issue is marked complete by this change.

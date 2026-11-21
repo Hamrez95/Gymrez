@@ -14,6 +14,8 @@ test('imports an actionable plan and honest baseline, then persists a workout', 
       name: 'archive.json', mimeType: 'application/json',
       buffer: Buffer.from(JSON.stringify({ ...original, programs, measurements })),
     });
+    await page.getByRole('button', { name: 'تأیید و ذخیرهٔ بایگانی' }).click();
+    await expect(page.getByRole('region', { name: 'بررسی قبل از ذخیره' })).toHaveCount(0);
   }
   await importFile([program]);
   await expect(page.getByRole('heading', { name: 'Plan A' })).toBeVisible();
@@ -25,6 +27,7 @@ test('imports an actionable plan and honest baseline, then persists a workout', 
     }] },
   }], [{ date: '2025-01-09', source: 'ترازوی تست', weight: 68.4, bmi: 22.3 }]);
 
+  await page.getByRole('button', { name: 'انتخاب به‌عنوان برنامهٔ فعلی' }).click();
   await page.getByRole('link', { name: 'دیدن جلسه‌ها و شروع تمرین' }).click();
   await expect(page.getByRole('img', { name: 'نمای روبه‌رو' })).toBeVisible();
   await expect(page.getByText(/اصلی.*سینه/)).toBeVisible();

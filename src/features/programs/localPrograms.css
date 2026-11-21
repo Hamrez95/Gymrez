@@ -9,3 +9,9 @@
   flex-wrap: wrap;
   gap: var(--pace-space-2, 0.5rem);
 }
+
+.pace-import-preview { margin-block: var(--pace-space-5, 1.25rem); overflow-wrap: anywhere; }
+.pace-import-preview ol { padding-inline-start: 1.5rem; }
+.pace-import-preview ol > li { padding-block: 0.75rem; border-block-end: 1px solid var(--pace-border); }
+.pace-import-preview summary { min-height: 44px; padding-block: 0.75rem; cursor: pointer; }
+.pace-import-preview details li { padding-block: 0.375rem; }

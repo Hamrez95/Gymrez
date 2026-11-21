@@ -32,6 +32,7 @@ jobs:
             docs/implementation/evidence/T04/*.png
             docs/implementation/evidence/T19/*.png
             docs/implementation/evidence/T17/*.png
+            docs/implementation/evidence/T10/*.png
             test-results/
           if-no-files-found: ignore
           retention-days: 7

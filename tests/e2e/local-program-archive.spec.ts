@@ -21,15 +21,24 @@ test('imports a current program and archive once for the selected profile', asyn
     })),
   };
   await picker.setInputFiles(bundle);
+  await expect(page.getByRole('region', { name: 'بررسی قبل از ذخیره' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Current', exact: true })).toHaveCount(0);
+  await page.getByRole('button', { name: 'انصراف', exact: true }).click();
+  await page.reload();
+  await expect(page.getByText('آرشیو این پروفایل خالی است.')).toBeVisible();
+  await picker.setInputFiles(bundle);
+  await page.getByRole('button', { name: 'تأیید و ذخیرهٔ بایگانی' }).click();
+  await expect(page.getByText('هنوز برنامهٔ فعلی انتخاب نشده است.')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Current', exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Archived', exact: true })).toBeVisible();
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Current', exact: true })).toBeVisible();
   await picker.setInputFiles(bundle);
+  await page.getByRole('button', { name: 'تأیید و ذخیرهٔ بایگانی' }).click();
   await expect(page.getByText('برنامه‌های این فایل قبلاً وارد شده‌اند.')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Current', exact: true })).toHaveCount(1);
 
-  await page.getByRole('button', { name: 'انتخاب به‌عنوان برنامهٔ فعلی' }).click();
+  await page.getByRole('button', { name: 'انتخاب به‌عنوان برنامهٔ فعلی' }).first().click();
   await page.getByRole('link', { name: 'Gymrez — خانه' }).click();
   await page.getByRole('button', { name: 'ورود به پروفایل hamrez95' }).click();
   await expect(page.getByText('Archived', { exact: true })).toBeVisible();
