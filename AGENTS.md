@@ -28,3 +28,6 @@ project مستقلی برای Gymrez و فقط پس از بررسی پلن را�
 برنامه منتشرشده/جلسه قدیمی immutable snapshot؛ عملیات ذخیره و import idempotent؛ تعارض چنددستگاهی overwrite خاموش نشود.
 در پایان هر نوبت STATUS و tracker را به‌روز و نتیجه واقعی/محدودیت/اقدام بعدی را ثبت کن.
 backend خصوصی فعال شده است؛ حالت بدون اتصال همچنان local preview است. وضعیت واقعی انتشار و قابلیت‌های باقی‌مانده در RELEASE_PROGRESS ثبت شود؛ کل roadmap را تکمیل‌شده اعلام نکن.
+
+## Updated exercise-media direction — 2026-11-21
+The user explicitly corrected the exercise character style: muscular anatomical gray/white figures with the working muscle highlighted red, matching the supplied FitnessProgrammer machine-curl GIF and the supplied start/end reference sheets. Simple joint-line stick figures are temporary and do not satisfy this direction. Each exercise needs its own correct equipment and execution media; never assign one curl animation to all curl variants or claim media coverage is complete. Retain source branding on user-supplied references. This correction supersedes the earlier defer-all-visual-work ordering for the exercise-demo player.

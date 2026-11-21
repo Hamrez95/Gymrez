@@ -1,5 +1,7 @@
 import { useId, useRef, useState } from 'react';
 import { motion, useInView, useReducedMotion } from 'motion/react';
+import { AnatomicalDemo } from './AnatomicalDemo';
+import { exerciseMedia } from './exerciseMedia';
 import { exercisePattern } from './exercisePattern';
 import type { Exercise } from './trainingModel';
 import { Button } from '../../shared/design/components';
@@ -31,6 +33,19 @@ const patterns = {
 } satisfies Record<string, [Pose, Pose]>;
 
 export function ExerciseDemo({ exercise }: { exercise: Exercise }) {
+  const media = exerciseMedia(exercise.label);
+  if (media) return <AnatomicalDemo media={media} name={exercise.name} />;
+  return <>
+    <SchematicDemo exercise={exercise} />
+    <details className="pace-anatomy-example">
+      <summary>نمونهٔ سبک جدید: جلو بازو دستگاه</summary>
+      <p>این نمونه برای نمایش سبک آناتومیک است و اجرای حرکت انتخاب‌شده را نشان نمی‌دهد.</p>
+      <AnatomicalDemo media={exerciseMedia('seated machine biceps curl')!} name="جلو بازو دستگاه — نمونهٔ سبک نمایش" />
+    </details>
+  </>;
+}
+
+function SchematicDemo({ exercise }: { exercise: Exercise }) {
   const [playing, setPlaying] = useState(true);
   const [phase, setPhase] = useState(0);
   const reduced = useReducedMotion();
@@ -61,7 +76,7 @@ export function ExerciseDemo({ exercise }: { exercise: Exercise }) {
       <motion.circle cx={poses[0].wrist[0]} cy={poses[0].wrist[1]} r="7" fill="#d3eaff" initial={false} animate={{ cx: values('wrist',0), cy: values('wrist',1) }} transition={transition} />
       {['curl','press','hinge','raise','carry'].includes(pattern) && <motion.g initial={false} animate={{ x: values('wrist',0), y: values('wrist',1) }} transition={transition}><path d="M-17 0h34m-15-9v18m30-18v18" stroke="#b9cee4" strokeWidth="7" strokeLinecap="round" /></motion.g>}
     </svg>
-    <div className="pace-demo-controls"><span>نمای شماتیک مسیر حرکت</span><Button type="button" variant="secondary" onClick={() => setPlaying(!playing)} aria-pressed={playing && !reduced}>{playing && !reduced ? 'مکث نمایش' : 'نمایش حرکت'}</Button></div>
+    <div className="pace-demo-controls"><span>نمای سادهٔ موقت؛ نمایش آناتومیک این حرکت هنوز آماده نیست.</span><Button type="button" variant="secondary" onClick={() => setPlaying(!playing)} aria-pressed={playing && !reduced}>{playing && !reduced ? 'مکث نمایش' : 'نمایش حرکت'}</Button></div>
     {(reduced || !playing) && <div className="pace-demo-controls"><Button variant={phase === 0 ? 'primary' : 'secondary'} onClick={() => setPhase(0)}>وضعیت شروع</Button><Button variant={phase === 1 ? 'primary' : 'secondary'} onClick={() => setPhase(1)}>وضعیت پایان</Button></div>}
   </div>;
 }
