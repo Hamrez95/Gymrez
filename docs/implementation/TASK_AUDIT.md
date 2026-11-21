@@ -13,7 +13,7 @@ Authoritative roadmap: GitHub issue #1 and T01–T24. Only T01 and T02 are forma
 | T07 | Private archives and recovered manager source | Expose complete management only with playable published plans |
 | T08 | Eight catalog entries, schematic movement/muscles | Complete searchable catalog and safe replacement |
 | T09 | Schedule draft manager source | Exercise-level editor, validation, publish/version adapter |
-| T10 | Private archive JSON import | Preview/confirmation, manifest updates and complete version import |
+| T10 | Private archive JSON import with validated preview/confirmation and separate activation | Manifest updates, complete version import and final visual acceptance |
 | T11 | Dashboard and Persian calendar | All reference dashboard states |
 | T12 | Snapshot player and transactional set logging | Full offline/reload acceptance and remaining player states |
 | T13 | Deadline rest timer, supersets, schematic motion | Remaining reference controls and final motion review |

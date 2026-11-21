@@ -1,7 +1,7 @@
 import Dexie, { type EntityTable, type Table } from 'dexie';
 import { z } from 'zod';
 import { supabaseClient } from '../../data/supabase/client';
-import { cloudScope, cloudReadArchive, cloudImportDocument, cloudSelectProgram, cloudSaveMeasurement } from '../../data/supabase/trainingRepository';
+import { cloudScope, cloudImportDocument, cloudSelectProgram, cloudSaveMeasurement } from '../../data/supabase/trainingRepository';
 import { syncReadArchive, syncReadMeasurements, syncReadWorkouts, syncStartWorkout, syncUpdateWorkout, syncCancelWorkout, syncSaveMeasurement } from '../../data/sync/trainingSync';
 import { measurementSchema, trainingSchema, type Measurement, type TrainingPlan, type Workout } from '../training/trainingModel';
 
@@ -65,7 +65,7 @@ export async function readArchive(profileId: string) {
   });
 }
 
-export async function importArchive(file: File, profileId: string, profileName: string) {
+export async function prepareArchive(file: File, profileId: string, profileName: string, expectedUserId: string | null = null) {
   if (file.size > maxImportBytes) throw new Error('حجم فایل باید کمتر از ۳۲ مگابایت باشد.');
   let bundle: z.infer<typeof bundleSchema>;
   try {
@@ -90,45 +90,49 @@ export async function importArchive(file: File, profileId: string, profileName: 
     const id = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), byte => byte.toString(16).padStart(2, '0')).join('');
     return { ...entry, profileId, id, pdf: new Blob([bytes], { type: 'application/pdf' }) };
   }));
+  return { profileId, expectedUserId, documents, measurements: bundle.measurements };
+}
+
+export type PreparedArchive = Awaited<ReturnType<typeof prepareArchive>>;
+
+export async function importPreparedArchive(prepared: PreparedArchive) {
+  const { profileId, documents, measurements: readings } = prepared;
   const scope = await cloudScope(profileId);
+  if ((scope?.userId ?? null) !== prepared.expectedUserId) throw new Error('نشست تغییر کرده است؛ فایل را دوباره بررسی کن.');
   if (scope) {
     let programs = 0;
     for (const document of documents) if (await cloudImportDocument(scope, document)) programs++;
     let measurements = 0;
-    for (const measurement of bundle.measurements) if (await cloudSaveMeasurement(scope, measurement, true)) measurements++;
-    const current = await cloudReadArchive(scope);
-    if (!current.currentId && bundle.currentIndex !== undefined) await cloudSelectProgram(scope, documents[bundle.currentIndex].id);
+    for (const measurement of readings) if (await cloudSaveMeasurement(scope, measurement, true)) measurements++;
     return { programs, measurements };
   }
   return db.transaction('rw', [db.documents, db.selections, db.measurements], async () => {
     let count = 0;
-    const preferred = bundle.currentIndex === undefined ? undefined : documents[bundle.currentIndex];
-    let preferredAdded = false;
     for (const document of documents) {
       const existing = await db.documents.get([profileId, document.id]);
       if (existing) {
         if (document.training && !existing.training) {
           await db.documents.put({ ...existing, training: document.training });
           count += 1;
-          preferredAdded ||= document.id === preferred?.id;
         }
         continue;
       }
       await db.documents.add(document);
       count += 1;
-      preferredAdded ||= document.id === preferred?.id;
-    }
-    if (preferred && (preferredAdded || !await db.selections.get(profileId))) {
-      await db.selections.put({ profileId, currentId: preferred.id });
     }
     let measurements = 0;
-    for (const entry of bundle.measurements) {
+    for (const entry of readings) {
       if (await db.measurements.get([profileId, entry.date, entry.source])) continue;
       await db.measurements.add({ ...entry, profileId });
       measurements += 1;
     }
     return { programs: count, measurements };
   });
+}
+
+export async function importArchive(file: File, profileId: string, profileName: string) {
+  const scope = await cloudScope(profileId);
+  return importPreparedArchive(await prepareArchive(file, profileId, profileName, scope?.userId ?? null));
 }
 
 export async function selectCurrentProgram(profileId: string, id: string) {

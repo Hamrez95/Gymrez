@@ -14,6 +14,13 @@ test('motion controls, real-data empty states and profile continuity', async ({ 
       training: { weeks: 4, guide: [], days: [{ title: 'Synthetic day', warmup: 'Warm up', exercises: [{ name: 'جلو بازو نمونه', label: 'Dumbbell curl', sets: 1, target: '8', rest: 0, unit: 'reps', muscles: ['biceps'], assists: [] }] }] },
     }],
   })) });
+  await expect(page.locator('.pace-route-view')).toHaveCSS('opacity', '1');
+  await page.getByText('Synthetic day', { exact: false }).click();
+  await expect(page.getByText(/جلو بازو نمونه.*ست/)).toBeVisible();
+  await mkdir('docs/implementation/evidence/T10', { recursive: true });
+  await page.screenshot({ path: `docs/implementation/evidence/T10/${testInfo.project.name}-import-preview.png`, fullPage: true });
+  await page.getByRole('button', { name: 'تأیید و ذخیرهٔ بایگانی' }).click();
+  await page.getByRole('button', { name: 'انتخاب به‌عنوان برنامهٔ فعلی' }).click();
   await page.getByRole('link', { name: 'دیدن جلسه‌ها و شروع تمرین' }).click();
   await expect(page.getByRole('img', { name: 'نمای شماتیک جلو بازو نمونه' })).toBeVisible();
   await page.getByRole('button', { name: 'مکث نمایش' }).click();
