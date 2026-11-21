@@ -32,3 +32,7 @@ TypeScript, ESLint, 21 unit tests and production build passed locally. Local bro
 
 ## Continuation — anatomical demo correction
 The user's reference now explicitly requires anatomical muscular characters with red target muscles. Added an exact-variant media registry and controlled video player using the user's supplied seated machine-curl GIF, preserving the source logo. Other variants retain an explicitly temporary schematic fallback. Only one exercise has anatomical media; the catalog/artwork task remains open. See EXERCISE_MEDIA.md. No private program content was changed. Unit/build checks and mobile/desktop playback checks are required for this release.
+
+
+## Persistent new-program character instruction
+The user confirmed the supplied anatomical figure as the permanent character/style for future training programs, not just a one-off machine-curl example. AGENTS.md and planning/EXERCISE_CHARACTER.md now require consistent identity, grayscale muscular body/black shorts/red active muscles, exact per-variant equipment and motion, and honest missing-media coverage. This documentation change does not claim additional animations or an automatic generation engine.
